@@ -1,44 +1,101 @@
 /* General Styles */
 body {
-    font-family: 'MedievalSharp', cursive; /* Gothic-style font */
+    font-family: 'MedievalSharp', cursive;
     background-color: #1a1a1a;
     color: #e0e0e0;
     margin: 0;
     padding: 0;
-    scroll-behavior: smooth; /* Enables smooth scrolling */
-}
-
-section {
-    min-height: 100vh; /* Each section takes up the full viewport height */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
+    scroll-behavior: smooth;
 }
 
 h1, h2 {
+    font-family: 'UnifrakturMaguntia', cursive;
     color: #ff4444;
-    font-family: 'UnifrakturMaguntia', cursive; /* Gothic-style heading font */
 }
 
+a {
+    color: #ff4444;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Navigation Bar */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(26, 26, 26, 0.9);
+    z-index: 1000;
+    padding: 10px 0;
+    text-align: center;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: #e0e0e0;
+    font-size: 18px;
+}
+
+/* Hero Section */
+#home {
+    min-height: 100vh;
+    background: url('images/hero-bg.jpg') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #e0e0e0;
+}
+
+.hero-content h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+}
+
+/* CTA Button */
 .cta {
     display: inline-block;
     padding: 10px 20px;
     background-color: #ff4444;
     color: #1a1a1a;
-    text-decoration: none;
     border-radius: 5px;
-    margin-top: 20px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
 }
 
-/* Gallery Styles */
+.cta:hover {
+    background-color: #e03333;
+}
+
+/* Gallery Section */
+#gallery {
+    padding: 60px 20px;
+}
+
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -50,42 +107,34 @@ h1, h2 {
 
 .thumbnail {
     width: 100%;
-    height: 150px; /* Fixed height for thumbnails */
-    object-fit: cover; /* Ensures images cover the area without distortion */
+    height: 200px;
+    object-fit: cover;
     transition: transform 0.3s ease;
 }
 
 .thumbnail:hover {
-    transform: scale(1.1); /* Zoom effect on hover */
+    transform: scale(1.05);
 }
 
-/* Lightbox Styles */
-#lightbox {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+/* About Section */
+#about {
+    padding: 60px 20px;
+    text-align: center;
 }
 
-.lightbox-content {
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 10px;
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    color: #fff;
-    font-size: 40px;
-    cursor: pointer;
+/* Contact Section */
+#contact {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.contact-content .cta {
+    margin: 10px;
 }
 
 /* WhatsApp Floating Button */
@@ -97,10 +146,10 @@ h1, h2 {
     color: #fff;
     padding: 15px;
     border-radius: 50%;
-    text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     font-size: 24px;
     text-decoration: none;
+    z-index: 1000;
 }
 
 .whatsapp-float:hover {

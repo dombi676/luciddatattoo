@@ -31,43 +31,55 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-    <!-- Home Section -->
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="#home">Inicio</a></li>
+            <li><a href="#gallery">Galería</a></li>
+            <li><a href="#about">Sobre Mí</a></li>
+            <li><a href="#contact">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
     <section id="home">
-        <h1>Lucidda Tattoo</h1>
-        <a href="#gallery" class="cta">Mirá la galería</a>
+        <div class="hero-content">
+            <h1>Lucidda Tattoo</h1>
+            <p>El arte oscuro hecho tinta.</p>
+            <a href="#gallery" class="cta">Mirá la galería</a>
+        </div>
     </section>
 
     <!-- Gallery Section -->
     <section id="gallery">
         <h2>Galería</h2>
         <div class="gallery-grid">
-            <!-- Thumbnail Images -->
             <div class="gallery-item">
                 <img src="images/tattoo1.jpg" alt="Tatuaje 1" class="thumbnail">
             </div>
             <div class="gallery-item">
                 <img src="images/tattoo2.jpg" alt="Tatuaje 2" class="thumbnail">
             </div>
-            <!-- Add more images as needed -->
+            <!-- Add more images here -->
         </div>
     </section>
-
-    <!-- Lightbox Container -->
-    <div id="lightbox">
-        <span class="close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
-    </div>
 
     <!-- About Me Section -->
     <section id="about">
         <h2>Sobre Mí</h2>
-        <!-- Add description here later -->
+        <div class="about-content">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus leo nec justo aliquet, nec fermentum nisi tincidunt. Integer auctor, sapien in fermentum blandit, libero quam tincidunt neque, nec tincidunt libero nisi in eros.</p>
+        </div>
     </section>
 
     <!-- Contact Section -->
     <section id="contact">
         <h2>Contacto</h2>
-        <p>Seguime en Instagram: <a href="https://instagram.com/lucidda.tattoo" target="_blank">@lucidda.tattoo</a></p>
+        <div class="contact-content">
+            <p>¡Trabajemos juntos en tu próxima pieza de arte! Seguime en Instagram o contactame por WhatsApp.</p>
+            <a href="https://instagram.com/lucidda.tattoo" class="cta" target="_blank">Instagram</a>
+            <a href="https://wa.me/549XXXXXXXXXX" class="cta whatsapp" target="_blank">WhatsApp</a>
+        </div>
     </section>
 
     <!-- WhatsApp Floating Button -->
