@@ -33,12 +33,19 @@
 <body>
     <!-- Navigation Bar -->
     <nav>
-        <ul>
-            <li><a href="#home">Inicio</a></li>
-            <li><a href="#gallery">Galería</a></li>
-            <li><a href="#about">Sobre Mí</a></li>
-            <li><a href="#contact">Contacto</a></li>
-        </ul>
+        <div class="nav-left">
+            <ul>
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#gallery">Galería</a></li>
+                <li><a href="#about">Sobre Mí</a></li>
+            </ul>
+        </div>
+        <div class="nav-center">
+            <h1>Lucidda Tattoo</h1>
+        </div>
+        <div class="nav-right">
+            <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i> Agenda tu Turno</a>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -46,7 +53,7 @@
         <div class="hero-content">
             <h1>Lucidda Tattoo</h1>
             <p>El arte oscuro hecho tinta.</p>
-            <a href="#gallery" class="cta">Mirá la galería</a>
+            <a href="#gallery">Mirá la galería</a>
         </div>
     </section>
 
@@ -58,34 +65,33 @@
                 <img src="images/tattoo1.jpg" alt="Tatuaje 1" class="thumbnail">
             </div>
             <div class="gallery-item">
-                <img src="images/tattoo2.jpg" alt="Tatuaje 2" class="thumbnail">
+                <img src="images/tattoo2.jpg" alt="Tatuaje 2" class="thumbnail>
             </div>
             <!-- Add more images here -->
         </div>
     </section>
 
+    <!-- Lightbox Container -->
+    <div id="lightbox">
+        <span class="close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
     <!-- About Me Section -->
     <section id="about">
         <h2>Sobre Mí</h2>
         <div class="about-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec rhoncus leo nec justo aliquet, nec fermentum nisi tincidunt. Integer auctor, sapien in fermentum blandit, libero quam tincidunt neque, nec tincidunt libero nisi in eros.</p>
+            <p>Hola, soy Lucidda, una artista del tatuaje de Jujuy, Argentina. Mi trabajo está inspirado en la estética gótica y neotribal. Me especializo en crear diseños únicos, oscuros y con mucho significado que cuentan una historia. ¡Vamos a darle vida a tu idea!</p>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact">
-        <h2>Contacto</h2>
-        <div class="contact-content">
-            <p>¡Trabajemos juntos en tu próxima pieza de arte! Seguime en Instagram o contactame por WhatsApp.</p>
-            <a href="https://instagram.com/lucidda.tattoo" class="cta" target="_blank">Instagram</a>
-            <a href="https://wa.me/549XXXXXXXXXX" class="cta whatsapp" target="_blank">WhatsApp</a>
-        </div>
-    </section>
-
-    <!-- WhatsApp Floating Button -->
-    <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+    <!-- Social Media Buttons at the Bottom -->
+    <div class="social-media">
+        <a href="https://facebook.com/lucidda.tattoo" class="social-btn facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@lucidda.tattoo" class="social-btn tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
+        <a href="https://youtube.com/@lucidda.tattoo" class="social-btn youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+    </div>
 
     <!-- Link to JavaScript file -->
     <script src="script.js"></script>

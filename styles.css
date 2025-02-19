@@ -27,27 +27,76 @@ nav {
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: rgba(26, 26, 26, 0.9);
+    background-color: rgba(34, 34, 34, 0.9); /* Slightly lighter than background */
     z-index: 1000;
-    padding: 10px 0;
-    text-align: center;
+    padding: 15px 20px; /* Thicker bar */
+    display: flex;
+    justify-content: space-between; /* Space between sections */
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-nav ul {
+.nav-left, .nav-right {
+    flex: 1; /* Equal width for alignment */
+    display: flex;
+    align-items: center;
+}
+
+.nav-left {
+    justify-content: flex-start; /* Align left */
+}
+
+.nav-right {
+    justify-content: flex-end; /* Align right */
+}
+
+.nav-center {
+    flex: 2; /* Center section takes more space */
+    display: flex;
+    justify-content: center; /* Perfectly center the title */
+}
+
+.nav-left ul {
     list-style: none;
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
+    gap: 20px;
 }
 
-nav ul li {
-    margin: 0 15px;
-}
-
-nav ul li a {
+.nav-left ul li a {
     color: #e0e0e0;
     font-size: 18px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.nav-left ul li a:hover {
+    background-color: rgba(255, 68, 68, 0.2); /* Red hover effect */
+}
+
+.nav-center h1 {
+    font-size: 28px;
+    color: #ff4444;
+    margin: 0;
+}
+
+/* WhatsApp Button in Navbar */
+.whatsapp-btn {
+    background-color: #25d366; /* WhatsApp green */
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn:hover {
+    background-color: #128c7e; /* Darker green on hover */
 }
 
 /* Hero Section */
@@ -71,8 +120,7 @@ nav ul li a {
     margin-bottom: 30px;
 }
 
-/* CTA Button */
-.cta {
+.hero-content a {
     display: inline-block;
     padding: 10px 20px;
     background-color: #ff4444;
@@ -82,20 +130,22 @@ nav ul li a {
     transition: background-color 0.3s ease;
 }
 
-.cta:hover {
+.hero-content a:hover {
     background-color: #e03333;
 }
 
 /* Gallery Section */
 #gallery {
     padding: 60px 20px;
+    text-align: center; /* Center align gallery content */
+    max-width: 1200px; /* Ensure it doesn't stretch too wide */
+    margin: 0 auto; /* Center the section */
 }
 
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 15px;
-    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -116,42 +166,85 @@ nav ul li a {
     transform: scale(1.05);
 }
 
-/* About Section */
+/* Lightbox Styles */
+#lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+}
+
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+/* About Me Section */
 #about {
     padding: 60px 20px;
-    text-align: center;
+    text-align: center; /* Center align about content */
+    max-width: 800px; /* Limit width for better readability */
+    margin: 0 auto; /* Center the section */
 }
 
 .about-content {
-    max-width: 800px;
-    margin: 0 auto;
+    text-align: left; /* Align text to the left within the centered section */
 }
 
-/* Contact Section */
-#contact {
-    padding: 60px 20px;
-    text-align: center;
+/* Social Media Buttons at the Bottom */
+.social-media {
+    text-align: center; /* Center align buttons */
+    padding: 20px 0;
+    background-color: rgba(34, 34, 34, 0.9); /* Background for visibility */
+    margin-top: 40px; /* Spacing from the about section */
 }
 
-.contact-content .cta {
-    margin: 10px;
-}
-
-/* WhatsApp Floating Button */
-.whatsapp-float {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #25d366;
-    color: #fff;
-    padding: 15px;
+.social-btn {
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
     font-size: 24px;
-    text-decoration: none;
-    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    margin: 0 5px; /* Spacing between buttons */
 }
 
-.whatsapp-float:hover {
-    background-color: #128c7e;
+.social-btn.facebook {
+    background-color: #1877f2; /* Facebook blue */
+}
+
+.social-btn.instagram {
+    background-color: #e4405f; /* Instagram pink */
+}
+
+.social-btn.tiktok {
+    background-color: #000000; /* TikTok black */
+}
+
+.social-btn.youtube {
+    background-color: #ff0000; /* YouTube red */
+}
+
+.social-btn:hover {
+    opacity: 0.8;
 }
