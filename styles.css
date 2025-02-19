@@ -5,11 +5,11 @@ body {
     color: #e0e0e0;
     margin: 0;
     padding: 0;
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* Enables smooth scrolling */
 }
 
 section {
-    min-height: 100vh;
+    min-height: 100vh; /* Each section takes up the full viewport height */
     display: flex;
     flex-direction: column;
     justify-content: center;

@@ -1,4 +1,3 @@
-// script.js
 // Lightbox functionality
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
