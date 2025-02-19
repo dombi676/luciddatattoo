@@ -1,6 +1,6 @@
 /* General Styles */
 body {
-    font-family: 'Blackletter', sans-serif;
+    font-family: 'MedievalSharp', cursive; /* Gothic-style font */
     background-color: #1a1a1a;
     color: #e0e0e0;
     margin: 0;
@@ -20,6 +20,7 @@ section {
 
 h1, h2 {
     color: #ff4444;
+    font-family: 'UnifrakturMaguntia', cursive; /* Gothic-style heading font */
 }
 
 .cta {
