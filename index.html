@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=MedievalSharp&display=swap">
+    <meta http-equiv="Content-Security-Policy" 
+         content="default-src 'self'; 
+                  script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com; 
+                  style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+                  font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lucidda Tattoo - Descubre diseños exclusivos de tatuajes en Jujuy. Reserva tu turno y haz realidad tu tatuaje soñado.">
+    <meta name="keywords" content="tatuajes, diseños, Jujuy, Lucidda Tattoo, arte corporal">
     <title>Lucidda Tattoo</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=MedievalSharp&display=swap" rel="stylesheet">
     <!-- Favicon Links -->
     <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
@@ -17,31 +26,36 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="/android-icon-192x192.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-icon-precomposed.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#ff4444">
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
+    <meta property="og:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
+    <meta property="og:image" content="https://328e-170-84-127-105.ngrok-free.app/images/twittercard.jpg">
+    <meta property="og:url" content="https://luciddatattoo.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Lucidda Tattoo">
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
+    <meta name="twitter:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
+    <meta name="twitter:image" content="https://328e-170-84-127-105.ngrok-free.app/images/twittercard.jpg">
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FEL31JE33S');
-</script>
 <body>
     <!-- Navigation Bar -->
     <nav>
         <div class="nav-left">
             <ul>
                 <li><a href="#home">Inicio</a></li>
-                <li><a href="#gallery-preview">Galería</a></li>
+                <li><a href="#mis-disenos">Mis Diseños</a></li>
+                <li><a href="#mis-trabajos">Mis Trabajos</a></li>
                 <li><a href="#about">Sobre Mí</a></li>
             </ul>
         </div>
@@ -49,49 +63,79 @@
             <h1>Lucidda Tattoo</h1>
         </div>
         <div class="nav-right">
-            <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i> Agenda tu Turno</a>
+            <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp-btn" target="_blank" aria-label="Agendar turno por WhatsApp"><i class="fab fa-whatsapp"></i> Agenda tu Turno</a>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="home">
         <div class="hero-content">
-            <h1>Lucidda Tattoo</h1>
+            <img src="images/logo3.png" alt="Lucidda Tattoo Icon" class="hero-icon">
+            <h1 class="hero-title">Lucidda Tattoo</h1>
             <p>Lorem ipsum dolor sit amet</p>
-            <a href="#gallery-preview">Mirá la galería</a>
+            <a href="#mis-disenos">Explorar diseños</a>
         </div>
     </section>
 
-    <!-- Gallery Preview Section -->
-    <section id="gallery-preview">
-        <h2>Galería</h2>
+    <!-- Mis Diseños Section -->
+    <section id="mis-disenos">
+        <h2>Mis Diseños</h2>
         <div class="gallery-preview-grid">
             <div class="gallery-item">
-                <img src="images/tattoo1.jpg" alt="Tatuaje 1" class="thumbnail">
+                <img src="images/diseno1.png" alt="Diseño 1" class="thumbnail" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="images/tattoo2.jpg" alt="Tatuaje 2" class="thumbnail">
+                <img src="images/diseno2.png" alt="Diseño 2" class="thumbnail" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="images/tattoo3.jpg" alt="Tatuaje 3" class="thumbnail">
+                <img src="images/diseno3.png" alt="Diseño 3" class="thumbnail" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="images/tattoo4.jpg" alt="Tatuaje 4" class="thumbnail">
+                <img src="images/diseno4.png" alt="Diseño 4" class="thumbnail" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="images/tattoo5.jpg" alt="Tatuaje 5" class="thumbnail">
+                <img src="images/diseno5.png" alt="Diseño 5" class="thumbnail" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="images/tattoo6.jpg" alt="Tatuaje 6" class="thumbnail">
+                <img src="images/diseno6.png" alt="Diseño 6" class="thumbnail" loading="lazy">
             </div>
         </div>
-        <a href="gallery.html" class="gallery-btn">Ver Galería Completa</a>
     </section>
 
+    <!-- Mis Trabajos Section -->
+    <section id="mis-trabajos">
+        <h2>Mis Trabajos</h2>
+        <div class="gallery-preview-grid">
+            <div class="gallery-item">
+                <img src="images/trabajo1.jpg" alt="Trabajo 1" class="thumbnail" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="images/trabajo2.jpg" alt="Trabajo 2" class="thumbnail" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="images/trabajo3.jpg" alt="Trabajo 3" class="thumbnail" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="images/trabajo4.jpg" alt="Trabajo 4" class="thumbnail" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="images/trabajo5.jpg" alt="Trabajo 5" class="thumbnail" loading="lazy">
+            </div>
+            <div class="gallery-item">
+                <img src="images/trabajo6.jpg" alt="Trabajo 6" class="thumbnail" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Link to Full Gallery -->
+    <div class="gallery-link">
+        <a href="gallery.html" class="gallery-btn">Ver Galería Completa</a>
+    </div>
+
     <!-- Lightbox Container -->
-    <div id="lightbox">
-        <span class="close">&times;</span>
-        <img class="lightbox-content" id="lightbox-img">
+    <div id="lightbox" role="dialog" aria-label="Vista ampliada">
+        <span class="close" aria-label="Cerrar vista ampliada">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" alt="Imagen ampliada">
     </div>
 
     <!-- About Me Section -->
@@ -102,15 +146,14 @@
         </div>
     </section>
 
-    <!-- Social Media Buttons at the Bottom -->
+    <!-- Social Media Buttons -->
     <div class="social-media">
-        <a href="https://facebook.com/lucidda.tattoo" class="social-btn facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/@lucidda.tattoo" class="social-btn tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
-        <a href="https://youtube.com/@lucidda.tattoo" class="social-btn youtube" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank" aria-label="Seguir en Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@luciaa.nu" class="social-btn tiktok" target="_blank" aria-label="Seguir en TikTok"><i class="fab fa-tiktok"></i></a>
     </div>
 
-    <!-- Link to JavaScript file -->
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
     <script src="script.js"></script>
 </body>
 </html>
