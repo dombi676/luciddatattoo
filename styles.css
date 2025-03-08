@@ -266,11 +266,14 @@ nav {
     margin: 0 auto;
 }
 
+/* CSS Update - Add to styles.css */
 .gallery-item {
     overflow: hidden;
     border-radius: 10px;
     position: relative;
     aspect-ratio: 1 / 1;
+    min-height: 250px; /* Prevents collapse before CSS loads */
+    background-color: #2a2a2a; /* Placeholder background */
 }
 
 .thumbnail {

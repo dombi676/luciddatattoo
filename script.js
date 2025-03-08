@@ -176,4 +176,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+    // Set Mis Trabajos as the default selected filter on gallery page
+if (document.querySelector('.gallery-filter')) {
+    // Hide all "disenos" items by default
+    document.querySelectorAll('.gallery-item.disenos').forEach(item => {
+        item.style.display = 'none';
+    });
+    
+    // Make sure all "trabajos" items are visible
+    document.querySelectorAll('.gallery-item.trabajos').forEach(item => {
+        item.style.display = 'block';
+    });
+}
 });
