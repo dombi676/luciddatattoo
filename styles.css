@@ -1121,3 +1121,18 @@ nav {
         padding: 8px 16px;
     }
 }
+/* Add to styles.css */
+.lightbox-content.loading {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+    100% { opacity: 0.6; }
+  }
+  
+  .lightbox-content.loading {
+    animation: pulse 1.5s infinite;
+  }
