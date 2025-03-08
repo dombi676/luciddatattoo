@@ -66,7 +66,7 @@
   ExpiresDefault "access plus 1 month"
 </IfModule>
 
-# Add security headers
+# Add security headers - Modified for Cloudflare compatibility
 <IfModule mod_headers.c>
   # Set XSS Protection
   Header set X-XSS-Protection "1; mode=block"
@@ -77,6 +77,18 @@
   # Referrer Policy
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   
-  # HSTS (Uncomment if you have HTTPS enabled)
-  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+  # Disable HSTS here since Cloudflare is handling it
+  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+
+  # Add header to recognize Cloudflare's HTTPS
+  SetEnvIf X-Forwarded-Proto "https" HTTPS=on
+</IfModule>
+
+# Fix for Cloudflare redirect loops
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Check if request is coming through Cloudflare and set HTTPS properly
+  RewriteCond %{HTTP:CF-Visitor} '"scheme":"https"'
+  RewriteRule .* - [E=HTTPS:on]
 </IfModule>
