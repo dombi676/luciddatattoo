@@ -1,130 +1,356 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // DOM Elements
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightbox-img');
   const magnifier = document.getElementById('magnifier');
+  const closeButton = document.querySelector('.close');
+  const prevButton = document.querySelector('.lightbox-nav.prev');
+  const nextButton = document.querySelector('.lightbox-nav.next');
+  
+  // Constants
   const ZOOM_LEVEL = 1.2;
   const MAGNIFIER_SIZE = 400;
+  
+  // State
+  let currentIndex = 0;
+  let galleryImages = [];
+  let isChangingImage = false;
   let isTouchDevice = false;
-
-  // Check if touch device
+  
   try {
-      document.createEvent("TouchEvent");
-      isTouchDevice = true;
+    document.createEvent("TouchEvent");
+    isTouchDevice = true;
   } catch (e) {
-      isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+    isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
   }
 
-  // Lightbox open/close
-  document.querySelectorAll('.thumbnail').forEach(img => {
-      img.addEventListener('click', (e) => {
-          const compressedPath = img.src;
-          const fileExtension = compressedPath.split('.').pop().toLowerCase();
-          const uncompressedPath = compressedPath
-              .replace('/compressed/', '/uncompressed/')
-              .replace(/\.(jpg|jpeg|png)$/i, `.${fileExtension}`);
-
-          lightboxImg.src = uncompressedPath;
-          lightbox.style.display = 'flex';
-          magnifier.style.display = 'none';
-      });
-  });
-
-  // Only enable magnifier for non-touch devices
-  if (!isTouchDevice) {
-      lightboxImg.addEventListener('mousemove', (e) => {
-          const imgRect = lightboxImg.getBoundingClientRect();
-          const imgWidth = lightboxImg.naturalWidth;
-          const imgHeight = lightboxImg.naturalHeight;
-          
-          const mouseX = e.clientX - imgRect.left;
-          const mouseY = e.clientY - imgRect.top;
-          
-          if (mouseX < 0 || mouseX > imgRect.width || 
-              mouseY < 0 || mouseY > imgRect.height) {
-              magnifier.style.display = 'none';
-              return;
-          }
-
-          magnifier.style.display = 'block';
-          
-          // Position magnifier centered on cursor
-          magnifier.style.left = `${e.clientX - MAGNIFIER_SIZE/2}px`;
-          magnifier.style.top = `${e.clientY - MAGNIFIER_SIZE/2}px`;
-          
-          // Calculate background position for zoom
-          const bgX = (mouseX / imgRect.width) * imgWidth * ZOOM_LEVEL - MAGNIFIER_SIZE/2;
-          const bgY = (mouseY / imgRect.height) * imgHeight * ZOOM_LEVEL - MAGNIFIER_SIZE/2;
-          
-          magnifier.style.backgroundImage = `url('${lightboxImg.src}')`;
-          magnifier.style.backgroundSize = `${imgWidth * ZOOM_LEVEL}px ${imgHeight * ZOOM_LEVEL}px`;
-          magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
-      });
-
-      lightboxImg.addEventListener('mouseleave', () => {
-          magnifier.style.display = 'none';
-      });
+  // Initialize gallery images
+  function updateGalleryImages() {
+    galleryImages = Array.from(document.querySelectorAll('.thumbnail'));
+    return galleryImages;
   }
-
-  // Find and replace your existing lightbox close event with this:
-  lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox || e.target.classList.contains('close')) {
-        lightbox.style.display = 'none';
+  
+  // Create or get progress bar
+  function getProgressBar() {
+    let progressBar = document.getElementById('lightbox-progress');
+    
+    if (!progressBar) {
+      progressBar = document.createElement('div');
+      progressBar.id = 'lightbox-progress';
+      progressBar.className = 'lightbox-progress';
+      
+      // Force styles to ensure visibility
+      progressBar.style.position = 'absolute';
+      progressBar.style.bottom = '0';
+      progressBar.style.left = '0';
+      progressBar.style.height = '4px';
+      progressBar.style.backgroundColor = '#ff4444';
+      progressBar.style.width = '0%';
+      progressBar.style.transition = 'width 0.3s ease';
+      progressBar.style.zIndex = '1003';
+      progressBar.style.display = 'block';
+      
+      lightbox.appendChild(progressBar);
+    } else {
+      // Reset progress
+      progressBar.style.width = '0%';
+      progressBar.style.display = 'block';
+    }
+    
+    return progressBar;
+  }
+  
+  // SUPER SIMPLE image opening function
+  function openLightbox(index) {
+    if (isChangingImage) return;
+    isChangingImage = true;
+    
+    // Update gallery images
+    updateGalleryImages();
+    
+    if (index < 0 || index >= galleryImages.length) {
+      isChangingImage = false;
+      return;
+    }
+    
+    currentIndex = index;
+    
+    // Get the thumbnail
+    const img = galleryImages[currentIndex];
+    
+    // Get source image paths
+    const pictureEl = img.closest('picture');
+    let webpPath = '';
+    let compressedPath = img.src;
+    
+    // Try to get WebP path
+    if (pictureEl) {
+      const sourceEl = pictureEl.querySelector('source[type="image/webp"]');
+      if (sourceEl && sourceEl.srcset) {
+        webpPath = sourceEl.srcset;
       }
-  });
-
-  document.querySelector('.close').addEventListener('click', () => {
-      lightbox.style.display = 'none';
+    }
+    
+    // Get uncompressed path
+    const uncompressedPath = compressedPath
+      .replace('/compressed/', '/uncompressed/')
+      .replace(/\.(jpg|jpeg|png)$/i, `.${compressedPath.split('.').pop()}`);
+    
+    // Display lightbox
+    lightbox.style.display = 'flex';
+    
+    // IMPORTANT: Force the image to be visible immediately
+    lightboxImg.style.opacity = '1';
+    
+    // Show initial image (WebP if available, otherwise compressed)
+    lightboxImg.src = webpPath || compressedPath;
+    lightboxImg.alt = img.alt || 'Imagen ampliada';
+    
+    // Create progress bar
+    const progressBar = getProgressBar();
+    
+    // Set up a simple XHR to track loading progress
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', uncompressedPath, true);
+    xhr.responseType = 'blob';
+    
+    // Track progress
+    xhr.onprogress = function(e) {
+      if (e.lengthComputable) {
+        const percentComplete = Math.floor((e.loaded / e.total) * 100);
+        progressBar.style.width = `${percentComplete}%`;
+      }
+    };
+    
+    // When high-res image loads
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        // Switch to uncompressed image
+        lightboxImg.src = uncompressedPath;
+        progressBar.style.display = 'none';
+        
+        // Reset changing flag when image loads
+        lightboxImg.onload = function() {
+          isChangingImage = false;
+        };
+        
+        lightboxImg.onerror = function() {
+          // On error, keep the initial image and hide progress
+          progressBar.style.display = 'none';
+          isChangingImage = false;
+        };
+      } else {
+        // On error, keep the initial image and hide progress
+        progressBar.style.display = 'none';
+        isChangingImage = false;
+      }
+    };
+    
+    xhr.onerror = function() {
+      // On error, keep the initial image and hide progress
+      progressBar.style.display = 'none';
+      isChangingImage = false;
+    };
+    
+    xhr.send();
+  }
+  
+  // Navigation functions
+  function prevImage() {
+    if (isChangingImage) return;
+    updateGalleryImages();
+    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+    openLightbox(currentIndex);
+  }
+  
+  function nextImage() {
+    if (isChangingImage) return;
+    updateGalleryImages();
+    currentIndex = (currentIndex + 1) % galleryImages.length;
+    openLightbox(currentIndex);
+  }
+  
+  // Close lightbox
+  function closeLightbox() {
+    lightbox.style.display = 'none';
+    
+    // Reset/hide progress bar
+    const progressBar = document.getElementById('lightbox-progress');
+    if (progressBar) {
+      progressBar.style.display = 'none';
+      progressBar.style.width = '0%';
+    }
+    
+    // Reset image properties and state
+    setTimeout(() => {
+      lightboxImg.src = '';
+      isChangingImage = false;
+    }, 100);
+  }
+  
+  // Set up thumbnail listeners
+  function setupThumbnailListeners() {
+    document.querySelectorAll('.thumbnail').forEach((img, index) => {
+      img.addEventListener('click', function() {
+        openLightbox(index);
+      });
+    });
+  }
+  
+  // Initialize
+  updateGalleryImages();
+  setupThumbnailListeners();
+  
+  // Navigation events
+  if (prevButton) {
+    prevButton.addEventListener('click', function(e) {
+      e.stopPropagation();
+      prevImage();
+    });
+  }
+  
+  if (nextButton) {
+    nextButton.addEventListener('click', function(e) {
+      e.stopPropagation();
+      nextImage();
+    });
+  }
+  
+  // Close button events
+  closeButton.addEventListener('click', () => {
+    closeLightbox();
   });
   
-  // ======================
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+  
+  // Keyboard controls
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+      if (e.key === 'ArrowLeft') {
+        prevImage();
+      } else if (e.key === 'ArrowRight') {
+        nextImage();
+      } else if (e.key === 'Escape') {
+        closeLightbox();
+      }
+    }
+  });
+  
+  // Magnifier functionality (for non-touch devices)
+  if (!isTouchDevice) {
+    lightboxImg.addEventListener('mousemove', (e) => {
+      const imgRect = lightboxImg.getBoundingClientRect();
+      const imgWidth = lightboxImg.naturalWidth;
+      const imgHeight = lightboxImg.naturalHeight;
+      
+      const mouseX = e.clientX - imgRect.left;
+      const mouseY = e.clientY - imgRect.top;
+      
+      if (mouseX < 0 || mouseX > imgRect.width || 
+          mouseY < 0 || mouseY > imgRect.height) {
+        magnifier.style.display = 'none';
+        return;
+      }
+
+      magnifier.style.display = 'block';
+      
+      // Position magnifier centered on cursor
+      magnifier.style.left = `${e.clientX - MAGNIFIER_SIZE/2}px`;
+      magnifier.style.top = `${e.clientY - MAGNIFIER_SIZE/2}px`;
+      
+      // Calculate background position for zoom
+      const bgX = (mouseX / imgRect.width) * imgWidth * ZOOM_LEVEL - MAGNIFIER_SIZE/2;
+      const bgY = (mouseY / imgRect.height) * imgHeight * ZOOM_LEVEL - MAGNIFIER_SIZE/2;
+      
+      magnifier.style.backgroundImage = `url('${lightboxImg.src}')`;
+      magnifier.style.backgroundSize = `${imgWidth * ZOOM_LEVEL}px ${imgHeight * ZOOM_LEVEL}px`;
+      magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
+    });
+
+    lightboxImg.addEventListener('mouseleave', () => {
+      magnifier.style.display = 'none';
+    });
+  }
+  
+  // Touch swipe functionality
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  function checkSwipeDirection() {
+    if (touchEndX < touchStartX - 50) {
+      // Swiped left, go to next image
+      nextImage();
+    }
+    
+    if (touchEndX > touchStartX + 50) {
+      // Swiped right, go to previous image
+      prevImage();
+    }
+  }
+
+  if (lightboxImg) {
+    lightboxImg.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+    
+    lightboxImg.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      checkSwipeDirection();
+    });
+  }
+  
+  // =====================
   // Gallery Filter Functionality
-  // ======================
+  // =====================
   const filterButtons = document.querySelectorAll('.filter-btn');
   
   if (filterButtons.length > 0) {
-      // Make all gallery items visible by default
-      if (document.querySelector('.gallery-filter')) {
-          document.querySelectorAll('.gallery-item').forEach(item => {
-              item.style.display = 'block';
-          });
-      }
-      
-      filterButtons.forEach(button => {
-          button.addEventListener('click', () => {
-              const filter = button.dataset.filter;
-              const galleryItems = document.querySelectorAll('.gallery-item');
-
-              // Filter items
-              galleryItems.forEach(item => {
-                  item.style.display = (filter === 'all' || item.classList.contains(filter)) 
-                      ? 'block' 
-                      : 'none';
-              });
-
-              // Update active state
-              filterButtons.forEach(btn => {
-                  btn.classList.remove('active');
-                  btn.setAttribute('aria-pressed', 'false');
-              });
-              button.classList.add('active');
-              button.setAttribute('aria-pressed', 'true');
-          });
+    // Make all gallery items visible by default
+    if (document.querySelector('.gallery-filter')) {
+      document.querySelectorAll('.gallery-item').forEach(item => {
+        item.style.display = 'block';
       });
-  }
+    }
+    
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+        const galleryItems = document.querySelectorAll('.gallery-item');
 
-  // ======================
+        // Filter items
+        galleryItems.forEach(item => {
+          item.style.display = (filter === 'all' || item.classList.contains(filter)) 
+            ? 'block' 
+            : 'none';
+        });
+
+        // Update active state
+        filterButtons.forEach(btn => {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-pressed', 'false');
+        });
+        button.classList.add('active');
+        button.setAttribute('aria-pressed', 'true');
+        
+        // Update gallery images after filtering
+        updateGalleryImages();
+      });
+    });
+  }
+  
   // Social Media Links
-  // ======================
   document.querySelectorAll('.social-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
           e.preventDefault();
           window.open(btn.href, '_blank');
       });
   });
-
-  // ======================
+  
   // Smooth Scroll
-  // ======================
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
           e.preventDefault();
@@ -137,15 +363,16 @@ document.addEventListener('DOMContentLoaded', () => {
           }
       });
   });
-
+  
+  // Hero image load effect
   const heroImage = document.querySelector('#home img');
   if (heroImage) {
       heroImage.onload = () => {
           heroImage.classList.add('loaded');
       };
   }
-
-  // Fixed hamburger menu functionality
+  
+  // Mobile menu
   const hamburgerBtn = document.querySelector('.hamburger-btn');
   const navLinks = document.querySelector('.nav-links');
   const navLeft = document.querySelector('.nav-left');
@@ -159,13 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
           // Update ARIA attributes
           const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
           hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
-          
-          // Prevent body scrolling when menu is open
-          if (!isExpanded) {
-              document.body.style.overflow = 'hidden';
-          } else {
-              document.body.style.overflow = '';
-          }
       });
 
       // Close menu when clicking outside
@@ -174,7 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
               navLinks.classList.remove('active');
               hamburgerBtn.classList.remove('active');
               hamburgerBtn.setAttribute('aria-expanded', 'false');
-              document.body.style.overflow = '';
           }
       });
 
@@ -184,7 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
               navLinks.classList.remove('active');
               hamburgerBtn.classList.remove('active');
               hamburgerBtn.setAttribute('aria-expanded', 'false');
-              document.body.style.overflow = '';
           });
       });
   }
@@ -222,6 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cookieBanner.style.display = 'none';
       });
   }
+
   // Cookie Policy Modal
   const policyModal = document.getElementById('cookie-policy-modal');
   const policyLink = document.getElementById('open-policy');
@@ -241,134 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.target === policyModal) {
         policyModal.style.display = 'none';
       }
-    });
-  }
-  // Lightbox navigation
-  const prevButton = document.querySelector('.lightbox-nav.prev');
-  const nextButton = document.querySelector('.lightbox-nav.next');
-  let currentIndex = 0;
-  let galleryImages = [];
-  let isChangingImage = false;
-
-  // Function to open lightbox with specific image - UPDATED for immediate response
-  function openLightbox(index) {
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    galleryImages = Array.from(thumbnails);
-    
-    if (index >= 0 && index < galleryImages.length) {
-      currentIndex = index;
-      
-      // Show the lightbox immediately
-      lightbox.style.display = 'flex';
-      
-      // Add loading state
-      lightboxImg.classList.add('loading');
-      
-      // Get image info
-      const img = galleryImages[currentIndex];
-      const compressedPath = img.src;
-      const fileExtension = compressedPath.split('.').pop().toLowerCase();
-      const uncompressedPath = compressedPath
-        .replace('/compressed/', '/uncompressed/')
-        .replace(/\.(jpg|jpeg|png)$/i, `.${fileExtension}`);
-      
-      // Preload the image
-      const preloadImg = new Image();
-      
-      // When the new image is loaded, update the lightbox
-      preloadImg.onload = function() {
-        lightboxImg.src = uncompressedPath;
-        lightboxImg.classList.remove('loading');
-        isChangingImage = false;
-      };
-      
-      // Start loading the image
-      preloadImg.src = uncompressedPath;
-      
-      // If we don't have an initial image or this is the first open, set immediately
-      if (!lightboxImg.src || !isChangingImage) {
-        lightboxImg.src = uncompressedPath;
-      }
-      
-      magnifier.style.display = 'none';
-    }
-  }
-
-  // Update thumbnail click event to use the index
-  document.querySelectorAll('.thumbnail').forEach((img, index) => {
-    img.addEventListener('click', () => {
-      openLightbox(index);
-    });
-  });
-
-  // Navigate to previous image - UPDATED to prevent rapid clicking
-  function prevImage() {
-    if (isChangingImage) return;
-    isChangingImage = true;
-    lightboxImg.classList.add('loading');
-    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-    openLightbox(currentIndex);
-  }
-
-  // Navigate to next image - UPDATED to prevent rapid clicking
-  function nextImage() {
-    if (isChangingImage) return;
-    isChangingImage = true;
-    lightboxImg.classList.add('loading');
-    currentIndex = (currentIndex + 1) % galleryImages.length;
-    openLightbox(currentIndex);
-  }
-
-  // Add click events for navigation buttons
-  if (prevButton && nextButton) {
-    prevButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      prevImage();
-    });
-    
-    nextButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      nextImage();
-    });
-  }
-
-  // Add keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (lightbox.style.display === 'flex') {
-      if (e.key === 'ArrowLeft') {
-        prevImage();
-      } else if (e.key === 'ArrowRight') {
-        nextImage();
-      } else if (e.key === 'Escape') {
-        lightbox.style.display = 'none';
-      }
-    }
-  });
-
-  // Touch swipe functionality for mobile
-  let touchStartX = 0;
-  let touchEndX = 0;
-
-  function checkSwipeDirection() {
-    if (touchEndX < touchStartX - 50) {
-      // Swiped left, go to next image
-      nextImage();
-    }
-    
-    if (touchEndX > touchStartX + 50) {
-      // Swiped right, go to previous image
-      prevImage();
-    }
-  }
-
-  if (lightboxImg) {
-    lightboxImg.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
-    
-    lightboxImg.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      checkSwipeDirection();
     });
   }
 });

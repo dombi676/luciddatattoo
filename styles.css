@@ -323,8 +323,17 @@ nav {
     max-width: 90%;
     max-height: 90%;
     border-radius: 10px;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     cursor: zoom-in;
+    opacity: 0; /* Start hidden */
+}
+
+.lightbox-content.loaded {
+    opacity: 1;
+}
+
+.lightbox-content.loading {
+    opacity: 0.5;
 }
 
 .close {
@@ -334,6 +343,7 @@ nav {
     color: #fff;
     font-size: 40px;
     cursor: pointer;
+    z-index: 1004;
 }
 
 .close:hover {
@@ -399,6 +409,19 @@ nav {
 
 .next {
     right: 20px;
+}
+
+/* Progress bar for lightbox */
+.lightbox-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: #ff4444;
+    width: 0%;
+    transition: width 0.3s ease;
+    z-index: 1003;
+    display: none; /* Hidden by default */
 }
 
 /* About Me Section */
@@ -841,6 +864,13 @@ nav {
 .nav-links li:nth-child(2) { animation-delay: 0.1s; }
 .nav-links li:nth-child(3) { animation-delay: 0.15s; }
 
+/* Improve the loading animation */
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 0.9; }
+    100% { opacity: 0.6; }
+}
+
 /* MEDIA QUERIES */
 /* Large screens (tablets) */
 @media (max-width: 1200px) {
@@ -1121,18 +1151,148 @@ nav {
         padding: 8px 16px;
     }
 }
-/* Add to styles.css */
+/* Add these styles to your styles.css file to fix the lightbox issues */
+
+/* Progress bar for lightbox */
+.lightbox-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: #ff4444;
+    width: 0%;
+    transition: width 0.3s ease;
+    z-index: 1003;
+    display: none; /* Hidden by default */
+}
+
+/* Lightbox content image */
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    cursor: zoom-in;
+    opacity: 0; /* Start hidden */
+}
+
+.lightbox-content.loaded {
+    opacity: 1;
+}
+
 .lightbox-content.loading {
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
-  
-  @keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 0.9; }
-    100% { opacity: 0.6; }
-  }
-  
-  .lightbox-content.loading {
-    animation: pulse 1.5s infinite;
-  }
+    opacity: 0.5;
+}
+
+/* Navigation buttons */
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    font-size: 30px;
+    padding: 15px 20px;
+    cursor: pointer;
+    z-index: 1002;
+    transition: background 0.3s ease, transform 0.3s ease;
+    border-radius: 5px;
+    display: block; /* Ensure they're visible */
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 68, 68, 0.7);
+}
+
+.lightbox-nav:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+.prev {
+    left: 20px;
+}
+
+.next {
+    right: 20px;
+}
+
+/* Lightbox container */
+#lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    cursor: default; /* Only use grab cursor on the image */
+    overflow: hidden;
+}
+
+/* Close button */
+.close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1004;
+}
+
+.close:hover {
+    color: #ff4444;
+}
+
+/* Add this CSS to fix the lightbox image visibility */
+
+/* Reset the lightbox image to visible by default */
+.lightbox-content {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    cursor: zoom-in;
+    opacity: 1 !important; /* Override any other opacity settings */
+}
+
+/* Ensure progress bar is visible */
+.lightbox-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: #ff4444;
+    width: 0%;
+    transition: width 0.3s ease;
+    z-index: 1003;
+}
+
+/* Make sure navigation buttons are visible */
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    font-size: 30px;
+    padding: 15px 20px;
+    cursor: pointer;
+    z-index: 1002;
+    border-radius: 5px;
+    display: block !important; /* Force display */
+}
+
+.prev {
+    left: 20px;
+}
+
+.next {
+    right: 20px;
+}
