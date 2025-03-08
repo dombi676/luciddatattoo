@@ -14,8 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // State
   let currentIndex = 0;
   let galleryImages = [];
-  let isChangingImage = false;
+  let navigationLock = false;
   let isTouchDevice = false;
+  let activeXHRs = {}; // Track active XHRs by index
+  let blobCache = {}; // Cache for created blob URLs
+  let loadingStates = {}; // Track loading states to prevent duplicate loads
   
   try {
     document.createEvent("TouchEvent");
@@ -48,32 +51,34 @@ document.addEventListener('DOMContentLoaded', () => {
       progressBar.style.width = '0%';
       progressBar.style.transition = 'width 0.3s ease';
       progressBar.style.zIndex = '1003';
-      progressBar.style.display = 'block';
+      progressBar.style.display = 'none';
       
       lightbox.appendChild(progressBar);
-    } else {
-      // Reset progress
-      progressBar.style.width = '0%';
-      progressBar.style.display = 'block';
     }
     
     return progressBar;
   }
   
-  // SUPER SIMPLE image opening function
+  // Open lightbox with specific image
   function openLightbox(index) {
-    if (isChangingImage) return;
-    isChangingImage = true;
+    if (navigationLock) return;
+    navigationLock = true;
+    
+    // Cancel any previous image onload handlers
+    lightboxImg.onload = null;
     
     // Update gallery images
     updateGalleryImages();
     
     if (index < 0 || index >= galleryImages.length) {
-      isChangingImage = false;
+      navigationLock = false;
       return;
     }
     
     currentIndex = index;
+    
+    // Mark all other images as not currently viewed
+    markAllXHRsAsNotCurrentlyViewed();
     
     // Get the thumbnail
     const img = galleryImages[currentIndex];
@@ -99,24 +104,69 @@ document.addEventListener('DOMContentLoaded', () => {
     // Display lightbox
     lightbox.style.display = 'flex';
     
-    // IMPORTANT: Force the image to be visible immediately
-    lightboxImg.style.opacity = '1';
+    // Initial state of image
+    lightboxImg.style.opacity = '0.3';
     
-    // Show initial image (WebP if available, otherwise compressed)
-    lightboxImg.src = webpPath || compressedPath;
-    lightboxImg.alt = img.alt || 'Imagen ampliada';
-    
-    // Create progress bar
     const progressBar = getProgressBar();
+    progressBar.style.width = '0%';
+    progressBar.style.display = 'none';
+    
+    // Check if we have a cached blob URL for this image
+    if (blobCache[index]) {
+      // Use cached blob URL
+      lightboxImg.src = blobCache[index];
+      lightboxImg.alt = img.alt || 'Imagen ampliada';
+      
+      // Once the image is loaded from cache, we can unlock navigation
+      lightboxImg.onload = function() {
+        lightboxImg.style.opacity = '1';
+        navigationLock = false;
+      };
+    } else {
+      // First show the compressed/WebP image
+      lightboxImg.src = webpPath || compressedPath;
+      lightboxImg.alt = img.alt || 'Imagen ampliada';
+      
+      // Once the initial compressed image is loaded, unlock navigation
+      lightboxImg.onload = function() {
+        // Clear this handler to prevent multiple calls
+        lightboxImg.onload = null;
+        
+        lightboxImg.style.opacity = '1';
+        navigationLock = false;
+        
+        // Now start downloading the high-res version if not already loading/loaded
+        if (!loadingStates[index]) {
+          loadHighResImage(index, uncompressedPath);
+        }
+      };
+    }
+  }
+  
+  // Function to load high-res image as a separate process
+  function loadHighResImage(index, uncompressedPath) {
+    // Mark this image as currently loading
+    loadingStates[index] = 'loading';
+    
+    // Progress bar should only be visible now, after initial image is loaded
+    const progressBar = getProgressBar();
+    progressBar.style.display = 'block';
     
     // Set up a simple XHR to track loading progress
     const xhr = new XMLHttpRequest();
     xhr.open('GET', uncompressedPath, true);
     xhr.responseType = 'blob';
     
+    // Store this XHR as the active one for this index
+    activeXHRs[index] = {
+      xhr: xhr,
+      isCurrentlyViewed: currentIndex === index // Track if this is still in view
+    };
+    
     // Track progress
     xhr.onprogress = function(e) {
-      if (e.lengthComputable) {
+      // Only update progress bar if this is still the current image
+      if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed && e.lengthComputable) {
         const percentComplete = Math.floor((e.loaded / e.total) * 100);
         progressBar.style.width = `${percentComplete}%`;
       }
@@ -125,53 +175,117 @@ document.addEventListener('DOMContentLoaded', () => {
     // When high-res image loads
     xhr.onload = function() {
       if (xhr.status === 200) {
-        // Switch to uncompressed image
-        lightboxImg.src = uncompressedPath;
-        progressBar.style.display = 'none';
+        // Mark as loaded
+        loadingStates[index] = 'loaded';
         
-        // Reset changing flag when image loads
-        lightboxImg.onload = function() {
-          isChangingImage = false;
-        };
+        // Create a blob URL from the response
+        const blob = xhr.response;
+        const blobUrl = URL.createObjectURL(blob);
         
-        lightboxImg.onerror = function() {
-          // On error, keep the initial image and hide progress
-          progressBar.style.display = 'none';
-          isChangingImage = false;
-        };
+        // Cache the blob URL
+        blobCache[index] = blobUrl;
+        
+        // Only update the display if this is still the current image
+        if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed && currentIndex === index) {
+          // Create a new image to test if the blob loads correctly
+          const testImg = new Image();
+          testImg.onload = function() {
+            // If the test load works, update the actual lightbox image
+            lightboxImg.src = blobUrl;
+            progressBar.style.display = 'none';
+          };
+          testImg.onerror = function() {
+            // If there's a problem with the blob, keep using the current image
+            console.error('Could not load blob URL');
+            progressBar.style.display = 'none';
+          };
+          testImg.src = blobUrl;
+        } else {
+          // Not the current image, just hide progress
+          if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed) {
+            progressBar.style.display = 'none';
+          }
+        }
+        
+        // Clean up
+        delete activeXHRs[index];
       } else {
-        // On error, keep the initial image and hide progress
-        progressBar.style.display = 'none';
-        isChangingImage = false;
+        // On error
+        loadingStates[index] = 'error';
+        
+        // Hide progress
+        if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed) {
+          progressBar.style.display = 'none';
+        }
+        delete activeXHRs[index];
       }
     };
     
     xhr.onerror = function() {
-      // On error, keep the initial image and hide progress
-      progressBar.style.display = 'none';
-      isChangingImage = false;
+      // On error
+      loadingStates[index] = 'error';
+      
+      // Hide progress
+      if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed) {
+        progressBar.style.display = 'none';
+      }
+      delete activeXHRs[index];
     };
     
     xhr.send();
   }
   
+  // Mark all currently loading images as no longer being viewed
+  function markAllXHRsAsNotCurrentlyViewed() {
+    for (const index in activeXHRs) {
+      if (activeXHRs[index]) {
+        activeXHRs[index].isCurrentlyViewed = false;
+      }
+    }
+    
+    // Hide progress bar
+    const progressBar = document.getElementById('lightbox-progress');
+    if (progressBar) {
+      progressBar.style.display = 'none';
+    }
+  }
+  
   // Navigation functions
   function prevImage() {
-    if (isChangingImage) return;
+    // Cancel any onload handlers
+    lightboxImg.onload = null;
+    
+    // Mark all XHRs as not being viewed
+    markAllXHRsAsNotCurrentlyViewed();
+    
+    // Load the previous image
     updateGalleryImages();
-    currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-    openLightbox(currentIndex);
+    const nextIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
+    openLightbox(nextIndex);
   }
   
   function nextImage() {
-    if (isChangingImage) return;
+    // Cancel any onload handlers
+    lightboxImg.onload = null;
+    
+    // Mark all XHRs as not being viewed
+    markAllXHRsAsNotCurrentlyViewed();
+    
+    // Load the next image
     updateGalleryImages();
-    currentIndex = (currentIndex + 1) % galleryImages.length;
-    openLightbox(currentIndex);
+    const nextIndex = (currentIndex + 1) % galleryImages.length;
+    openLightbox(nextIndex);
   }
   
-  // Close lightbox
+  // Close lightbox and cleanup
   function closeLightbox() {
+    // Cancel any onload handlers
+    lightboxImg.onload = null;
+    
+    // Mark all XHRs as not being viewed
+    markAllXHRsAsNotCurrentlyViewed();
+    
+    // Hide lightbox
     lightbox.style.display = 'none';
     
     // Reset/hide progress bar
@@ -180,13 +294,16 @@ document.addEventListener('DOMContentLoaded', () => {
       progressBar.style.display = 'none';
       progressBar.style.width = '0%';
     }
-    
-    // Reset image properties and state
-    setTimeout(() => {
-      lightboxImg.src = '';
-      isChangingImage = false;
-    }, 100);
   }
+  
+  // Properly revoke blob URLs when the page is being unloaded
+  window.addEventListener('beforeunload', function() {
+    for (const index in blobCache) {
+      if (blobCache[index]) {
+        URL.revokeObjectURL(blobCache[index]);
+      }
+    }
+  });
   
   // Set up thumbnail listeners
   function setupThumbnailListeners() {
