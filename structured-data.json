@@ -1,11 +1,87 @@
-
 {
     "@context": "https://schema.org",
     "@type": "TattooParlor",
     "name": "Lucidda Tattoo",
-    "image": "images/logo3.png",
+"image": "https://lucidda.tattoo/images/compressed/logo.png",
+    "url": "https://lucidda.tattoo",
+    "telephone": "+5493884086034",
     "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Jujuy"
-    }
+      "@type": "PostalAddress",
+      "addressLocality": "San Salvador de Jujuy",
+      "addressRegion": "Jujuy",
+      "addressCountry": "AR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-24.1755",
+      "longitude": "-65.3012"
+    },
+"openingHourSpecification": {
+  "@type": "OpeningHoursSpecification",
+  "description": "Atención con turno previo"
+},
+    "priceRange": "$$",
+    "description": "Estudio profesional Lucidda Tattoo en Jujuy - Especializado en tribal, neotribal y línea fina por Lucía Daiana Nuñez.",
+    "makesOffer": {
+  "@type": "Offer",
+  "itemOffered": {
+    "@type": "Service",
+    "name": "Servicios de tatuaje",
+    "description": "Especializado en tribal, neotribal y línea fina"
+  }
+  },
+"review": [
+  {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "5",
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Kevin Ibañez"
+    },
+    "reviewBody": "Excelente atención. Me asesoró para encontrar el diseño que mas se adaptó a mí, es muy amable y trabaja con la mejor calidad de insumos, volvería una y mil veces más"
+  },
+  {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "5",
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Malena U"
+    },
+    "reviewBody": "Excelente atención, lugar super cómodo y limpio. Recomiendo a Lucia como tatuadora"
+  },
+  {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "5",
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Jimena Belén Cáceres"
+    },
+    "reviewBody": "Si estás buscando tatuajes únicos y delicados te recomiendo a Lu 100%, me tatuó en cuatro ocasiones con resultados increíbles. Tiene una habilidad artística y atención al detalle que son incomparables, y cada diseño que ha creado para mí ha superado mis expectativas. Si buscas plasmar arte de calidad en tu piel, ella es, sin duda, la mejor opción."
+  },
+  {
+    "@type": "Review",
+    "reviewRating": {
+      "@type": "Rating",
+      "ratingValue": "5",
+      "bestRating": "5"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Julia Deleu"
+    },
+    "reviewBody": "Es un ambiente super cómodo y Lu te hace sentir super segura, recomendadisimo"
+  }
+]
 }
