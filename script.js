@@ -14,11 +14,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // State
   let currentIndex = 0;
   let galleryImages = [];
+  let visibleImages = []; // NEW: Track visible images based on filter
   let navigationLock = false;
   let isTouchDevice = false;
   let activeXHRs = {}; // Track active XHRs by index
   let blobCache = {}; // Cache for created blob URLs
   let loadingStates = {}; // Track loading states to prevent duplicate loads
+  let activeFilter = 'all'; // NEW: Track the active filter
+  
+  // NEW: Check if we're on the index page
+  const isIndexPage = window.location.pathname === "/" || 
+                      window.location.pathname.includes("index.html") || 
+                      window.location.pathname.endsWith("/");
+  
+  // NEW: Track when we're showing the gallery prompt
+  let showingGalleryPrompt = false;
   
   try {
     document.createEvent("TouchEvent");
@@ -29,7 +39,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize gallery images
   function updateGalleryImages() {
+    // Get all thumbnails
     galleryImages = Array.from(document.querySelectorAll('.thumbnail'));
+    
+    // NEW: Update visible images based on active filter
+    if (activeFilter === 'all') {
+      visibleImages = [...galleryImages];
+    } else {
+      // Only include images that are in a gallery-item with the active filter class
+      visibleImages = galleryImages.filter(img => {
+        const galleryItem = img.closest('.gallery-item');
+        return galleryItem && galleryItem.classList.contains(activeFilter);
+      });
+    }
+    
     return galleryImages;
   }
   
@@ -59,10 +82,110 @@ document.addEventListener('DOMContentLoaded', () => {
     return progressBar;
   }
   
+  // NEW: Create and get gallery prompt
+  function createGalleryPrompt() {
+    let galleryPrompt = document.getElementById('gallery-prompt');
+    
+    if (!galleryPrompt) {
+      galleryPrompt = document.createElement('div');
+      galleryPrompt.id = 'gallery-prompt';
+      galleryPrompt.className = 'gallery-prompt';
+      
+      // Add styles directly to the document
+      if (!document.getElementById('gallery-prompt-styles')) {
+        const style = document.createElement('style');
+        style.id = 'gallery-prompt-styles';
+        style.textContent = `
+          .gallery-prompt {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1005;
+            width: auto;
+            max-width: 90%;
+            user-select: none;
+          }
+          .prompt-content {
+            background-color: rgba(34, 34, 34, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+          }
+          .prompt-content h3 {
+            font-family: 'UnifrakturMaguntia', cursive;
+            color: #ff4444;
+            font-size: 2em;
+            margin-bottom: 20px;
+          }
+          .prompt-content p {
+            margin-bottom: 25px;
+            font-size: 1.2em;
+            color: #e0e0e0;
+          }
+          .prompt-content .gallery-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #ff4444;
+            color: #1a1a1a;
+            border-radius: 5px;
+            font-size: 20px;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            cursor: pointer;
+          }
+          .prompt-content .gallery-btn:hover {
+            background-color: #e03333;
+          }
+        `;
+        document.head.appendChild(style);
+      }
+      
+      galleryPrompt.innerHTML = `
+        <div class="prompt-content">
+          <h3>Explora más diseños</h3>
+          <p>Hay más diseños y trabajos en la galería completa.</p>
+          <a href="gallery.html" class="gallery-btn">Ver Galería Completa</a>
+        </div>
+      `;
+      
+      lightbox.appendChild(galleryPrompt);
+    }
+    
+    return galleryPrompt;
+  }
+  
+  // NEW: Show gallery prompt
+  function showGalleryPrompt() {
+    const galleryPrompt = createGalleryPrompt();
+    galleryPrompt.style.display = 'block';
+    showingGalleryPrompt = true;
+  }
+  
+  // NEW: Hide gallery prompt
+  function hideGalleryPrompt() {
+    const galleryPrompt = document.getElementById('gallery-prompt');
+    if (galleryPrompt) {
+      galleryPrompt.style.display = 'none';
+    }
+    showingGalleryPrompt = false;
+  }
+  
   // Open lightbox with specific image
   function openLightbox(index) {
-    if (navigationLock) return;
+    if (navigationLock) {
+      console.log('Navigation locked, waiting...');
+      return;
+    }
+    
     navigationLock = true;
+    console.log('Setting navigation lock');
+    
+    // NEW: Hide gallery prompt if showing
+    if (showingGalleryPrompt) {
+      hideGalleryPrompt();
+    }
     
     // Cancel any previous image onload handlers
     lightboxImg.onload = null;
@@ -70,18 +193,51 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update gallery images
     updateGalleryImages();
     
-    if (index < 0 || index >= galleryImages.length) {
+    // NEW: Ensure index is valid for visible images
+    if (visibleImages.length === 0) {
+      console.error('No visible images to display');
       navigationLock = false;
       return;
     }
     
-    currentIndex = index;
+    // NEW: Find the index in the full gallery based on the visible index
+    let targetImg;
+    let fullGalleryIndex;
+    
+    if (typeof index === 'number') {
+      // If we're working with visible images array index
+      if (index < 0 || index >= visibleImages.length) {
+        console.error('Invalid visible image index:', index);
+        navigationLock = false;
+        return;
+      }
+      
+      targetImg = visibleImages[index];
+      fullGalleryIndex = galleryImages.indexOf(targetImg);
+      
+      // Update current index to the visible images array index
+      currentIndex = index;
+    } else {
+      // If we're working with an actual image element
+      targetImg = index;
+      fullGalleryIndex = galleryImages.indexOf(targetImg);
+      
+      // Find the index in the visible images array
+      const visibleIndex = visibleImages.indexOf(targetImg);
+      if (visibleIndex !== -1) {
+        currentIndex = visibleIndex;
+      } else {
+        console.error('Image not in visible set');
+        navigationLock = false;
+        return;
+      }
+    }
     
     // Mark all other images as not currently viewed
     markAllXHRsAsNotCurrentlyViewed();
     
     // Get the thumbnail
-    const img = galleryImages[currentIndex];
+    const img = targetImg;
     
     // Get source image paths
     const pictureEl = img.closest('picture');
@@ -103,6 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Display lightbox
     lightbox.style.display = 'flex';
+    lightboxImg.style.display = 'block'; // Ensure image is visible
     
     // Initial state of image
     lightboxImg.style.opacity = '0.3';
@@ -112,14 +269,15 @@ document.addEventListener('DOMContentLoaded', () => {
     progressBar.style.display = 'none';
     
     // Check if we have a cached blob URL for this image
-    if (blobCache[index]) {
+    if (blobCache[fullGalleryIndex]) {
       // Use cached blob URL
-      lightboxImg.src = blobCache[index];
+      lightboxImg.src = blobCache[fullGalleryIndex];
       lightboxImg.alt = img.alt || 'Imagen ampliada';
       
       // Once the image is loaded from cache, we can unlock navigation
       lightboxImg.onload = function() {
         lightboxImg.style.opacity = '1';
+        console.log('Releasing navigation lock (cached image loaded)');
         navigationLock = false;
       };
     } else {
@@ -133,14 +291,23 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxImg.onload = null;
         
         lightboxImg.style.opacity = '1';
+        console.log('Releasing navigation lock (compressed image loaded)');
         navigationLock = false;
         
         // Now start downloading the high-res version if not already loading/loaded
-        if (!loadingStates[index]) {
-          loadHighResImage(index, uncompressedPath);
+        if (!loadingStates[fullGalleryIndex]) {
+          loadHighResImage(fullGalleryIndex, uncompressedPath);
         }
       };
     }
+    
+    // Safety release of navigation lock after a timeout (in case onload never fires)
+    setTimeout(() => {
+      if (navigationLock) {
+        console.log('Safety releasing navigation lock after timeout');
+        navigationLock = false;
+      }
+    }, 3000);
   }
   
   // Function to load high-res image as a separate process
@@ -250,8 +417,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Navigation functions
+  // MODIFIED: Navigation functions
   function prevImage() {
+    // If showing gallery prompt, hide it and go back to the last image
+    if (showingGalleryPrompt) {
+      hideGalleryPrompt();
+      return;
+    }
+    
+    // Check for navigation lock
+    if (navigationLock) {
+      console.log('Navigation locked, cannot go to previous image');
+      return;
+    }
+    
     // Cancel any onload handlers
     lightboxImg.onload = null;
     
@@ -260,11 +439,36 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load the previous image
     updateGalleryImages();
-    const nextIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length;
-    openLightbox(nextIndex);
+    
+    // Get previous index based on visible images
+    const prevIndex = (currentIndex - 1 + visibleImages.length) % visibleImages.length;
+    openLightbox(prevIndex);
   }
   
+  // MODIFIED: Next image function with gallery prompt
   function nextImage() {
+    // Check if we're showing the gallery prompt
+    if (showingGalleryPrompt) {
+      hideGalleryPrompt();
+      
+      // Go to the first visible image
+      updateGalleryImages();
+      openLightbox(0);
+      return;
+    }
+    
+    // Check for navigation lock
+    if (navigationLock) {
+      console.log('Navigation locked, cannot go to next image');
+      return;
+    }
+    
+    // Check if we're on the index page and at the last image
+    if (isIndexPage && currentIndex === visibleImages.length - 1) {
+      showGalleryPrompt();
+      return;
+    }
+    
     // Cancel any onload handlers
     lightboxImg.onload = null;
     
@@ -273,12 +477,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Load the next image
     updateGalleryImages();
-    const nextIndex = (currentIndex + 1) % galleryImages.length;
+    
+    // Get next index based on visible images
+    const nextIndex = (currentIndex + 1) % visibleImages.length;
     openLightbox(nextIndex);
   }
   
-  // Close lightbox and cleanup
+  // MODIFIED: Close lightbox and cleanup
   function closeLightbox() {
+    // Reset gallery prompt state
+    hideGalleryPrompt();
+    
     // Cancel any onload handlers
     lightboxImg.onload = null;
     
@@ -309,7 +518,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function setupThumbnailListeners() {
     document.querySelectorAll('.thumbnail').forEach((img, index) => {
       img.addEventListener('click', function() {
-        openLightbox(index);
+        // When clicking a thumbnail, find its index in the visible images array
+        updateGalleryImages(); // Make sure visible images is up to date
+        const visibleIndex = visibleImages.indexOf(img);
+        
+        if (visibleIndex !== -1) {
+          openLightbox(visibleIndex);
+        } else {
+          console.warn('Clicked on a thumbnail that is not in the visible set');
+        }
       });
     });
   }
@@ -338,7 +555,9 @@ document.addEventListener('DOMContentLoaded', () => {
     closeLightbox();
   });
   
+  // Ensure clicking outside the lightbox content closes it even when gallery prompt is showing
   lightbox.addEventListener('click', (e) => {
+    // Check if user clicked directly on the lightbox background (not on any child elements)
     if (e.target === lightbox) {
       closeLightbox();
     }
@@ -426,32 +645,82 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterButtons = document.querySelectorAll('.filter-btn');
   
   if (filterButtons.length > 0) {
+    // Add fade animation styles if they don't exist
+    if (!document.getElementById('gallery-animation-styles')) {
+      const style = document.createElement('style');
+      style.id = 'gallery-animation-styles';
+      style.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        .gallery-item {
+          transition: opacity 0.3s ease;
+        }
+        
+        .gallery-fade-in {
+          animation: fadeIn 0.7s ease-in;
+        }
+        
+        .gallery-hidden {
+          display: none !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+    
     // Make all gallery items visible by default
     if (document.querySelector('.gallery-filter')) {
       document.querySelectorAll('.gallery-item').forEach(item => {
         item.style.display = 'block';
+        item.classList.add('gallery-fade-in');
       });
     }
     
     filterButtons.forEach(button => {
       button.addEventListener('click', () => {
+        // Skip if the button is already active
+        if (button.classList.contains('active')) {
+          return;
+        }
+        
         const filter = button.dataset.filter;
         const galleryItems = document.querySelectorAll('.gallery-item');
+        
+        // Update active filter
+        activeFilter = filter;
 
-        // Filter items
-        galleryItems.forEach(item => {
-          item.style.display = (filter === 'all' || item.classList.contains(filter)) 
-            ? 'block' 
-            : 'none';
-        });
-
-        // Update active state
+        // Update active state for buttons
         filterButtons.forEach(btn => {
           btn.classList.remove('active');
           btn.setAttribute('aria-pressed', 'false');
         });
         button.classList.add('active');
         button.setAttribute('aria-pressed', 'true');
+        
+        // First, remove animation classes from all items
+        galleryItems.forEach(item => {
+          item.classList.remove('gallery-fade-in');
+        });
+        
+        // Force a reflow to ensure animations restart
+        void document.documentElement.offsetHeight;
+        
+        // Apply filtering with animation
+        galleryItems.forEach(item => {
+          // Reset to handle transitions properly
+          item.classList.add('gallery-hidden');
+          
+          // Force reflow again to ensure CSS changes apply
+          void item.offsetHeight;
+          
+          // Show items that match the filter
+          if (filter === 'all' || item.classList.contains(filter)) {
+            item.classList.remove('gallery-hidden');
+            item.classList.add('gallery-fade-in');
+          }
+        });
         
         // Update gallery images after filtering
         updateGalleryImages();
