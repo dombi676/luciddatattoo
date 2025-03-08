@@ -84,11 +84,22 @@
   SetEnvIf X-Forwarded-Proto "https" HTTPS=on
 </IfModule>
 
-# Fix for Cloudflare redirect loops
+# Fix for Cloudflare redirect loops and URL rewriting
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
   # Check if request is coming through Cloudflare and set HTTPS properly
   RewriteCond %{HTTP:CF-Visitor} '"scheme":"https"'
   RewriteRule .* - [E=HTTPS:on]
+  
+  # Redirect /index.html to / (domain root)
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\ HTTP/
+  RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
+  
+  # Redirect /index.html?query to /?query (preserve query strings)
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\?(.*)\ HTTP/
+  RewriteRule ^(.*)index\.html$ /$1?%1 [R=301,L]
 </IfModule>
+
+# Make index.html the default file
+DirectoryIndex index.html
