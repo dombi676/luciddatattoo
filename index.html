@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=MedievalSharp&display=swap">
-    <meta http-equiv="Content-Security-Policy" 
-         content="default-src 'self'; 
-                  script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com; 
-                  style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
-                  font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;">
+    <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com;
+    style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+    font-src 'self' https://cdnjs.cloudflare.com;
+    img-src 'self' data: https:;
+    connect-src 'self' https://www.google-analytics.com;
+    frame-src 'none';
+    object-src 'none';">
+    <!-- Add preload for critical resources -->
+<link rel="preload" href="styles.css" as="style">
+<!-- Add this to both HTML files -->
+<!-- Preload critical fonts -->
+<link rel="preload" href="fonts/UnifrakturMaguntia.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="fonts/MedievalSharp.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="images/webp/hero-bg.webp" as="image">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Lucidda Tattoo - Descubre diseños exclusivos de tatuajes en Jujuy. Reserva tu turno y haz realidad tu tatuaje soñado.">
@@ -17,23 +26,23 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Favicon Links -->
-    <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
-    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="/apple-icon-precomposed.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="images/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="images/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-icon-180x180.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="images/icons/apple-icon-precomposed.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ff4444">
     <!-- Open Graph Tags -->
     <meta property="og:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
@@ -49,83 +58,137 @@
     <meta name="twitter:image" content="https://328e-170-84-127-105.ngrok-free.app/images/twittercard.jpg">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <div class="nav-left">
-            <ul>
-                <li><a href="#home">Inicio</a></li>
-                <li><a href="#mis-disenos">Mis Diseños</a></li>
-                <li><a href="#mis-trabajos">Mis Trabajos</a></li>
-                <li><a href="#about">Sobre Mí</a></li>
-            </ul>
-        </div>
-        <div class="nav-center">
-            <h1>Lucidda Tattoo</h1>
-        </div>
-        <div class="nav-right">
-            <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp-btn" target="_blank" aria-label="Agendar turno por WhatsApp"><i class="fab fa-whatsapp"></i> Agenda tu Turno</a>
-        </div>
-    </nav>
+<!-- Enhanced navigation with ARIA -->
+<nav role="navigation" aria-label="Main navigation">
+    <div class="nav-left">
+        <button class="hamburger-btn" 
+                aria-label="Menu" 
+                aria-expanded="false" 
+                aria-controls="nav-links">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+        <ul class="nav-links" id="nav-links" role="menu">
+            <li role="none"><a href="#home" role="menuitem">Inicio</a></li>
+            <li role="none"><a href="#about" role="menuitem">Sobre Mí</a></li>
+            <li role="none"><a href="gallery.html" role="menuitem">Galería</a></li>
+        </ul>
+    </div>
+    <div class="nav-center">
+        <h1>Lucidda Tattoo</h1>
+    </div>
+    <div class="nav-right">
+        <a href="https://wa.me/549XXXXXXXXXX" class="whatsapp-btn" target="_blank" aria-label="Agendar turno por WhatsApp">
+            <i class="fab fa-whatsapp"></i> Agenda tu Turno
+        </a>
+    </div>
+</nav>
 
-    <!-- Hero Section -->
-    <section id="home">
-        <div class="hero-content">
-            <img src="images/logo3.png" alt="Lucidda Tattoo Icon" class="hero-icon">
-            <h1 class="hero-title">Lucidda Tattoo</h1>
-            <p>Lorem ipsum dolor sit amet</p>
-            <a href="#mis-disenos">Explorar diseños</a>
-        </div>
-    </section>
+<!-- Hero Section -->
+<section id="home">
+    <picture>
+        <source srcset="images/webp/hero-bg.webp" type="image/webp">
+        <img src="images/compressed/hero-bg.jpg" 
+             class="hero-bg-image"
+             alt="" 
+             aria-hidden="true" >
+    </picture>
+    <div class="hero-content">
+        <picture>
+            <source srcset="images/webp/logo2.webp" type="image/webp">
+            <img src="images/compressed/logo2.png" alt="Lucidda Tattoo Icon" class="hero-icon">
+        </picture>
+        <h1 class="hero-title">Lucidda Tattoo</h1>
+        <a href="#mis-disenos">Explorar diseños</a>
+    </div>
+</section>
 
     <!-- Mis Diseños Section -->
     <section id="mis-disenos">
         <h2>Mis Diseños</h2>
         <div class="gallery-preview-grid">
             <div class="gallery-item">
-                <img src="images/diseno1.png" alt="Diseño 1" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/diseno1.webp" type="image/webp">
+                <img src="images/compressed/diseno1.png" alt="Diseño 1" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/diseno2.png" alt="Diseño 2" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/diseno2.webp" type="image/webp">
+                <img src="images/compressed/diseno2.png" alt="Diseño 2" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/diseno3.png" alt="Diseño 3" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/diseno3.webp" type="image/webp">
+                <img src="images/compressed/diseno3.png" alt="Diseño 3" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/diseno4.png" alt="Diseño 4" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/diseno4.webp" type="image/webp">
+                <img src="images/compressed/diseno4.png" alt="Diseño 4" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/diseno5.png" alt="Diseño 5" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/diseno5.webp" type="image/webp">
+                <img src="images/compressed/diseno5.png" alt="Diseño 5" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/diseno6.png" alt="Diseño 6" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/diseno6.webp" type="image/webp">
+                <img src="images/compressed/diseno6.png" alt="Diseño 6" class="thumbnail" loading="lazy">
+            </picture>
             </div>
         </div>
-    </section>
+        </section>
 
-    <!-- Mis Trabajos Section -->
-    <section id="mis-trabajos">
-        <h2>Mis Trabajos</h2>
-        <div class="gallery-preview-grid">
+        <!-- Mis Trabajos Section -->
+        <section id="mis-trabajos">
+            <h2>Mis Trabajos</h2>
+            <div class="gallery-preview-grid">
             <div class="gallery-item">
-                <img src="images/trabajo1.jpg" alt="Trabajo 1" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/trabajo1.webp" type="image/webp">
+                <img src="images/compressed/trabajo1.jpg" alt="Trabajo 1" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/trabajo2.jpg" alt="Trabajo 2" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/trabajo2.webp" type="image/webp">
+                <img src="images/compressed/trabajo2.jpg" alt="Trabajo 2" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/trabajo3.jpg" alt="Trabajo 3" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/trabajo3.webp" type="image/webp">
+                <img src="images/compressed/trabajo3.jpg" alt="Trabajo 3" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/trabajo4.jpg" alt="Trabajo 4" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/trabajo4.webp" type="image/webp">
+                <img src="images/compressed/trabajo4.jpg" alt="Trabajo 4" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/trabajo5.jpg" alt="Trabajo 5" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/trabajo5.webp" type="image/webp">
+                <img src="images/compressed/trabajo5.jpg" alt="Trabajo 5" class="thumbnail" loading="lazy">
+            </picture>
             </div>
             <div class="gallery-item">
-                <img src="images/trabajo6.jpg" alt="Trabajo 6" class="thumbnail" loading="lazy">
+            <picture>
+                <source srcset="images/webp/trabajo6.webp" type="image/webp">
+                <img src="images/compressed/trabajo6.jpg" alt="Trabajo 6" class="thumbnail" loading="lazy">
+            </picture>
             </div>
         </div>
-    </section>
+        </section>
 
     <!-- Link to Full Gallery -->
     <div class="gallery-link">
@@ -133,16 +196,30 @@
     </div>
 
     <!-- Lightbox Container -->
-    <div id="lightbox" role="dialog" aria-label="Vista ampliada">
-        <span class="close" aria-label="Cerrar vista ampliada">&times;</span>
-        <img class="lightbox-content" id="lightbox-img" alt="Imagen ampliada">
-    </div>
-
+<!-- In both index.html and gallery.html -->
+<div id="lightbox" role="dialog" aria-label="Vista ampliada">
+    <!-- Add to your lightbox HTML -->
+<div id="magnifier"></div>
+    <span class="close" aria-label="Cerrar vista ampliada">&times;</span>
+    <img class="lightbox-content" id="lightbox-img" alt="Imagen ampliada">
+</div>
     <!-- About Me Section -->
     <section id="about">
         <h2>Sobre Mí</h2>
         <div class="about-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mi purus, tempus in efficitur eget, molestie id eros. Cras eget orci quis eros ultricies pulvinar. Integer sed ultrices augue. Sed malesuada pellentesque eros sit amet molestie. Aenean nec lectus non justo sodales molestie non et nibh. Donec ut bibendum quam, condimentum euismod nibh. Ut blandit ullamcorper leo id tempor. Praesent lobortis congue euismod. Fusce luctus eget lorem a euismod. Quisque fringilla eget risus vitae fermentum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Donec quis auctor sem. Sed quis libero tristique, aliquam neque vel, venenatis orci.</p>
+            <h3>Tatuadora Profesional en Jujuy</h3>
+            <p>Soy <strong>Lucía Daiana Nuñez</strong>, tatuadora en Jujuy especializada en <strong>tribal, neotribal y línea fina</strong>, con un enfoque personalizado que se adapta a la idea y personalidad de cada cliente.</p>
+            
+            <h4>Mi Formación</h4>
+            <p>Me formé en la <strong>Escuela SET en Córdoba Capital</strong>, donde completé un curso intensivo de 8 meses y obtuve el mejor promedio de mi promoción. Actualmente, estoy perfeccionando técnicas de <strong>black and grey y estilos ornamentales</strong> para ampliar mi repertorio artístico.</p>
+            
+            <h4>Experiencia y Estudio Propio</h4>
+            <p>En 2024 trabajé en un estudio privado colaborando con otros artistas, experiencia que enriqueció significativamente mi visión del arte del tatuaje. En 2025, inauguré mi propio estudio en <strong>Jujuy</strong>, un espacio diseñado para ofrecer un ambiente profesional, seguro y acogedor.</p>
+            
+            <h4>Mi Compromiso</h4>
+            <p>Me caracterizo por mi honestidad profesional: si considero que un diseño está fuera de mi especialidad, prefiero asesorarte y recomendarte colegas de confianza que puedan realizar tu tatuaje con excelencia.</p>
+            
+            <p>La <strong>bioseguridad</strong> es una prioridad absoluta en mi estudio, garantizando los más altos estándares de higiene y cuidado tanto para mis clientes como para mí.</p>
         </div>
     </section>
 
