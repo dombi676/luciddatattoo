@@ -2,7 +2,7 @@
     "name": "Lucidda Tattoo",
     "short_name": "LuciddaTattoo",
     "start_url": "/index.html",
-    "display": "standalone",
+    "display": "browser",
     "background_color": "#1a1a1a",
     "theme_color": "#ff4444",
     "icons": [
