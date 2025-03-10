@@ -23,9 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeFilter = 'all'; // NEW: Track the active filter
   
   // NEW: Check if we're on the index page
-  const isIndexPage = window.location.pathname === "/" || 
-                      window.location.pathname.includes("index.html") || 
-                      window.location.pathname.endsWith("/");
+  const isIndexPage = document.body.getAttribute('data-page') === 'index';
   
   // NEW: Track when we're showing the gallery prompt
   let showingGalleryPrompt = false;
@@ -612,32 +610,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Touch swipe functionality
-  let touchStartX = 0;
-  let touchEndX = 0;
+  // Touch swipe functionality // removed since it was causing issues with pinch to zoom
+  // let touchStartX = 0;
+  // let touchEndX = 0;
 
-  function checkSwipeDirection() {
-    if (touchEndX < touchStartX - 50) {
-      // Swiped left, go to next image
-      nextImage();
-    }
+  // function checkSwipeDirection() {
+  //   if (touchEndX < touchStartX - 50) {
+  //     // Swiped left, go to next image
+  //     nextImage();
+  //   }
     
-    if (touchEndX > touchStartX + 50) {
-      // Swiped right, go to previous image
-      prevImage();
-    }
-  }
+  //   if (touchEndX > touchStartX + 50) {
+  //     // Swiped right, go to previous image
+  //     prevImage();
+  //   }
+  // }
 
-  if (lightboxImg) {
-    lightboxImg.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    });
+  // if (lightboxImg) {
+  //   lightboxImg.addEventListener('touchstart', (e) => {
+  //     touchStartX = e.changedTouches[0].screenX;
+  //   });
     
-    lightboxImg.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      checkSwipeDirection();
-    });
-  }
+  //   lightboxImg.addEventListener('touchend', (e) => {
+  //     touchEndX = e.changedTouches[0].screenX;
+  //     checkSwipeDirection();
+  //   });
+  // }
   
   // =====================
   // Gallery Filter Functionality

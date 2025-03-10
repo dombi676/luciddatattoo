@@ -13,12 +13,10 @@
     <!-- Add this to the <head> section of gallery.html (after the Content-Security-Policy meta tag) -->
 <!-- Preload critical resources -->
 <link rel="preload" href="styles.css" as="style">
-<!-- Add this to both HTML files -->
-<!-- Preload critical fonts -->
 <!-- Preload critical fonts -->
 <link rel="preload" href="fonts/UnifrakturMaguntia.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="fonts/MedievalSharp.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="preload" href="script.js" as="script">
+<link rel="preload" href="script.js?v=1.1" as="script">
 <!-- Add this to both HTML files -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,7 +66,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
 <script async src="analytics.js"></script>
 </head>
-<body>
+<body data-page="gallery">
 <nav>
     <div class="nav-left">
         <button class="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
@@ -339,7 +337,7 @@
       </div>
     </div>
   </div>
-  <script src="script.js"></script>
+  <script src="script.js?v=1.1"></script>
   <script src="whatsapp-tracking.js"></script>
 </body>
 </html>
