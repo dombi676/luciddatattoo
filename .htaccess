@@ -103,3 +103,19 @@
 
 # Make index.html the default file
 DirectoryIndex index.html
+
+# Block direct access to origin server except Cloudflare and admin access
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Allow access via a secret URL parameter (for admin access with dynamic IP)
+  RewriteCond %{QUERY_STRING} adminkey=$ZkpncJhT@YslCp14%hyhIly [NC]
+  RewriteRule .* - [L]
+  
+  # Allow Cloudflare IPs
+  RewriteCond %{HTTP:CF-Connecting-IP} !^$
+  RewriteRule .* - [L]
+  
+  # Block all other direct access
+  RewriteRule .* - [F,L]
+</IfModule>
