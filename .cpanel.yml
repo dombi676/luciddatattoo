@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export /home/lucilbco/public_html/=/home/lucilbco/public_html/
+    - /bin/cp -R * $/home/lucilbco/public_html/
+    - /bin/cp .htaccess $/home/lucilbco/public_html/
+    - /bin/cp .cpanel.yml $/home/lucilbco/public_html/
