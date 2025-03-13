@@ -1,0 +1,38 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy to cPanel
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.CPANEL_HOST }}
+        username: ${{ secrets.CPANEL_USERNAME }}
+        key: ${{ secrets.CPANEL_SSH_KEY }}
+        port: 22
+        script: |
+          cd ${{ secrets.REPOSITORY_PATH }}
+          git pull origin main
+          # Check if deployment was successful
+          if [ $? -eq 0 ]; then
+            echo "Successfully pulled latest changes"
+            
+            # Check if .cpanel.yml exists and deploy
+            if [ -f .cpanel.yml ]; then
+              echo "Deploying changes..."
+              # The following command triggers cPanel's git deploy hook
+              git checkout -f
+            else
+              echo "Error: No .cpanel.yml file found"
+              exit 1
+            fi
+          else
+            echo "Error: Git pull failed"
+            exit 1
+          fi
