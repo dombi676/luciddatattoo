@@ -1,0 +1,127 @@
+# GitHub to cPanel Automated Deployment Guide
+
+This document outlines the process of setting up automated deployments from GitHub to cPanel for the Lucidda Tattoo website.
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Prerequisites](#prerequisites)
+3. [Creating an FTP Account for Deployment](#creating-an-ftp-account-for-deployment)
+4. [GitHub Actions Configuration](#github-actions-configuration)
+5. [Troubleshooting](#troubleshooting)
+6. [Maintenance and Best Practices](#maintenance-and-best-practices)
+
+## Overview
+
+This setup allows for automatic deployment of website changes whenever code is pushed to the GitHub repository. The workflow uses GitHub Actions and FTPS to securely transfer files from GitHub to the cPanel hosting server.
+
+**Key benefits:**
+- No manual FTP uploads needed
+- Consistent deployment process
+- Version control integrated with website updates
+
+## Prerequisites
+
+- GitHub repository for the website code
+- cPanel hosting account
+- FTP access to cPanel
+
+## Creating an FTP Account for Deployment
+
+1. Log in to cPanel
+2. Navigate to "FTP Accounts"
+3. Create a dedicated FTP account for deployments:
+   - Username: `deploy@lucidda.tattoo`
+   - Directory: `/home/lucilbco/public_html`
+   - Set a strong password
+   - Set quota to "Unlimited"
+
+**Important note from cPanel documentation:**
+> FTP does not support Server Name Indication (SNI). You must use the server's hostname as the FTP server to connect with SSL. You cannot use your domain name.
+
+## GitHub Actions Configuration
+
+### Step 1: Create GitHub Secrets
+
+In your GitHub repository:
+1. Go to Settings → Secrets and variables → Actions
+2. Add the following secrets:
+   - `CPANEL_HOST`: server352.web-hosting.com
+   - `CPANEL_FTP_USERNAME`: deploy@lucidda.tattoo
+   - `CPANEL_FTP_PASSWORD`: [your FTP password]
+
+### Step 2: Create Workflow File
+
+Create a file at `.github/workflows/cpanel-deploy.yml` with the following content:
+
+```yaml
+name: Deploy to cPanel
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Deploy to cPanel via FTPS
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: server352.web-hosting.com
+        username: deploy@lucidda.tattoo
+        password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+        server-dir: /
+        protocol: ftps
+        port: 21
+        timeout: 120000
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+```
+
+## Troubleshooting
+
+### Connection Issues
+
+If you encounter FTP connection problems:
+
+1. **Hostname issues**: Always use the server's direct hostname (e.g., server352.web-hosting.com) rather than your domain for FTPS connections
+2. **Authentication errors**: Verify the FTP username format, which should include the domain (e.g., deploy@lucidda.tattoo)
+3. **Timeout errors**: Increase the timeout value in the GitHub Actions workflow
+
+### Deployment Failures
+
+If files aren't properly deploying:
+
+1. Check the permissions of the FTP account in cPanel
+2. Ensure the `server-dir` parameter is correctly set to the root of your FTP user's home directory
+3. Review GitHub Actions logs for specific error messages
+
+## Maintenance and Best Practices
+
+### Skipping Deployments
+
+To prevent a specific commit from deploying, include `[skip ci]` in your commit message.
+
+### Deployment Status Badge
+
+Add this badge to your README.md to show the deployment status:
+
+```markdown
+![Deployment Status](https://github.com/dombi676/luciddatattoo/actions/workflows/cpanel-deploy.yml/badge.svg)
+```
+
+### Security Considerations
+
+- Regularly update your FTP password
+- Consider limiting the FTP account's access to only necessary directories
+- Review GitHub Actions workflows periodically to ensure they follow current best practices
+
+## Conclusion
+
+With this setup, any changes pushed to the main branch of your GitHub repository will automatically deploy to your website hosted on cPanel. This streamlines the development workflow and reduces the chance of manual deployment errors.
