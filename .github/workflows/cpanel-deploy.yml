@@ -9,37 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Set up SSH key
-      uses: webfactory/ssh-agent@v0.8.0
-      with:
-        ssh-private-key: ${{ secrets.CPANEL_SSH_KEY }}
-        ssh-auth-sock: ${{ github.workspace }}/ssh-auth.sock
-      env:
-        SSH_KEY_PATH: ${{ github.workspace }}/private_key
-        SSH_PASSPHRASE: ${{ secrets.CPANEL_SSH_PASSPHRASE }}
-        
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
     - name: Deploy to cPanel
-      run: |
-        mkdir -p ~/.ssh
-        echo "Host ${{ secrets.CPANEL_HOST }}" > ~/.ssh/config
-        echo "  StrictHostKeyChecking no" >> ~/.ssh/config
-        echo "  User ${{ secrets.CPANEL_USERNAME }}" >> ~/.ssh/config
-        
-        # Run deployment commands
-        ssh -o "StrictHostKeyChecking no" ${{ secrets.CPANEL_USERNAME }}@${{ secrets.CPANEL_HOST }} << 'EOF'
-          cd ${{ secrets.REPOSITORY_PATH }}
-          git pull origin main
-          if [ $? -eq 0 ]; then
-            echo "Successfully pulled latest changes"
-            if [ -f .cpanel.yml ]; then
-              echo "Deploying changes..."
-              git checkout -f
-            else
-              echo "Error: No .cpanel.yml file found"
-              exit 1
-            fi
-          else
-            echo "Error: Git pull failed"
-            exit 1
-          fi
-        EOF
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.CPANEL_HOST }}
+        username: ${{ secrets.CPANEL_FTP_USERNAME }}
+        password: ${{ secrets.CPANEL_FTP_PASSWORD }}
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
