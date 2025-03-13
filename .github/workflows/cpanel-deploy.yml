@@ -12,15 +12,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       
-    - name: Deploy to cPanel via FTPS
+    - name: Deploy to cPanel via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.CPANEL_HOST }}
-        username: ${{ secrets.CPANEL_FTP_USERNAME }}
-        password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-        server-dir: /public_html/
-        protocol: ftps
-        port: 21  # FTPS typically uses port 21
+        server: ftp.lucidda.tattoo  # Use the FTP hostname (usually ftp.yourdomain.com)
+        username: deploy@lucidda.tattoo  # The FTP username you just created
+        password: ${{ secrets.CPANEL_FTP_PASSWORD }}  # Update this secret with your new FTP password
+        server-dir: /  # Since the FTP account is already pointed to public_html
+        protocol: ftps  # Try secure FTP first
         exclude: |
           **/.git*
           **/.git*/**
