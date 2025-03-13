@@ -15,14 +15,14 @@ jobs:
     - name: Deploy to cPanel via FTPS
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: server352.web-hosting.com  # Direct server hostname as required for SSL
-        username: deploy@lucidda.tattoo    # Full FTP username format
+        server: server352.web-hosting.com
+        username: deploy@lucidda.tattoo
         password: ${{ secrets.CPANEL_FTP_PASSWORD }}
-        server-dir: /                     # Directory relative to FTP user's home
-        protocol: ftps                    # Use FTPS for secure connection
-        port: 21                          # Standard FTP/FTPS port
-        timeout: 120000                   # Increased timeout (2 minutes)
-        passive: true                     # Use passive mode for firewall compatibility
+        server-dir: /
+        protocol: ftps
+        port: 21
+        timeout: 120000
+        # Remove the 'passive' parameter - it's not a valid input
         exclude: |
           **/.git*
           **/.git*/**
