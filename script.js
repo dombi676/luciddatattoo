@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="prompt-content">
           <h3>Explora más diseños</h3>
           <p>Hay más diseños y trabajos en la galería completa.</p>
-          <a href="gallery.html" class="gallery-btn">Ver Galería Completa</a>
+          <a href="gallery" class="gallery-btn">Ver Galería Completa</a>
         </div>
       `;
       

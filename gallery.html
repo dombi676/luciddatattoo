@@ -10,19 +10,17 @@
     connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
     frame-src 'none';
     object-src 'none';">
-    <!-- Add this to the <head> section of gallery.html (after the Content-Security-Policy meta tag) -->
 <!-- Preload critical resources -->
 <link rel="preload" href="styles.css" as="style">
 <!-- Preload critical fonts -->
 <link rel="preload" href="fonts/UnifrakturMaguntia.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="fonts/MedievalSharp.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="preload" href="script.js?v=1.1" as="script">
-<!-- Add this to both HTML files -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Explorá la galería de Lucidda Tattoo - Trabajos reales y diseños originales de tatuajes en Jujuy. Especialidad en tribal, neotribal y línea fina. Descubrí el portfolio completo de Lucía y encontrá inspiración para tu próximo tatuaje.">
     <meta name="keywords" content="tatuajes, diseños, Jujuy, Lucidda Tattoo, arte corporal, tatuajes en Jujuy, estudio de tatuajes Jujuy, tatuador profesional Jujuy, tribal, neotribal, línea fina">
-    <title>Lucidda Tattoo</title>
+    <title>Lucidda Tattoo Jujuy</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Favicon Links -->
@@ -46,10 +44,10 @@
     <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ff4444">
     <!-- Open Graph Tags -->
-    <meta property="og:title" content="Galería - Lucidda Tattoo">
+    <meta property="og:title" content="Galería - Lucidda Tattoo Jujuy">
     <meta property="og:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
     <meta property="og:image" content="https://lucidda.tattoo/images/twittercard.jpg">
-    <meta property="og:url" content="https://lucidda.tattoo/gallery.html">
+    <meta property="og:url" content="https://lucidda.tattoo/gallery">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Lucidda Tattoo Jujuy">
     <!-- Twitter Card Tags -->
@@ -58,11 +56,11 @@
     <meta name="twitter:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
     <meta name="twitter:image" content="https://lucidda.tattoo/images/twittercard.jpg">
 <!-- hreflang tags -->
-<link rel="alternate" hreflang="es-ar" href="https://lucidda.tattoo/gallery.html">
-<link rel="alternate" hreflang="es" href="https://lucidda.tattoo/gallery.html">
-<link rel="alternate" hreflang="x-default" href="https://lucidda.tattoo/gallery.html">
+<link rel="alternate" hreflang="es-ar" href="https://lucidda.tattoo/gallery">
+<link rel="alternate" hreflang="es" href="https://lucidda.tattoo/gallery">
+<link rel="alternate" hreflang="x-default" href="https://lucidda.tattoo/gallery">
 <!-- Canonical tag -->
-<link rel="canonical" href="https://lucidda.tattoo/gallery.html">
+<link rel="canonical" href="https://lucidda.tattoo/gallery">
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
 <script async src="analytics.js"></script>
@@ -78,14 +76,14 @@
         <ul class="nav-links" id="nav-links">
             <li><a href="/">Inicio</a></li>
             <li><a href="/#about">Sobre Mí</a></li>
-            <li><a href="gallery.html">Galería</a></li>
+            <li><a href="gallery">Galería</a></li>
         </ul>
     </div>
     <div class="nav-center">
         <h1>Lucidda Tattoo</h1>
     </div>
     <div class="nav-right">
-        <a href="contacto-web.html" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
+        <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
             <i class="fab fa-whatsapp"></i> Agenda tu Turno
         </a>
     </div>
@@ -286,10 +284,8 @@
         </div>
     </section>
 
-    <!-- Lightbox -->
-<!-- In both index.html and gallery.html -->
+<!-- Lightbox -->
 <div id="lightbox" role="dialog" aria-label="Vista ampliada">
-    <!-- Add to your lightbox HTML -->
 <div id="magnifier"></div>
     <span class="close" aria-label="Cerrar vista ampliada">&times;</span>
     <img class="lightbox-content" id="lightbox-img" alt="Imagen ampliada">
@@ -303,6 +299,7 @@
     <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank" rel="noopener" aria-label="Seguir en Instagram"><i class="fab fa-instagram"></i></a>
     <a href="https://tiktok.com/@luciaa.nu" class="social-btn tiktok" target="_blank" rel="noopener" aria-label="Seguir en TikTok"><i class="fab fa-tiktok"></i></a>
 </div>
+
 <!-- Cookie Consent Banner -->
 <div id="cookie-banner" class="cookie-banner">
     <div class="cookie-content">
