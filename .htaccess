@@ -1,72 +1,6 @@
-# Enable GZIP compression
-<IfModule mod_deflate.c>
-  # Compress HTML, CSS, JavaScript, Text, XML and fonts
-  AddOutputFilterByType DEFLATE application/javascript
-  AddOutputFilterByType DEFLATE application/rss+xml
-  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-  AddOutputFilterByType DEFLATE application/x-font
-  AddOutputFilterByType DEFLATE application/x-font-opentype
-  AddOutputFilterByType DEFLATE application/x-font-otf
-  AddOutputFilterByType DEFLATE application/x-font-truetype
-  AddOutputFilterByType DEFLATE application/x-font-ttf
-  AddOutputFilterByType DEFLATE application/x-javascript
-  AddOutputFilterByType DEFLATE application/xhtml+xml
-  AddOutputFilterByType DEFLATE application/xml
-  AddOutputFilterByType DEFLATE font/opentype
-  AddOutputFilterByType DEFLATE font/otf
-  AddOutputFilterByType DEFLATE font/ttf
-  AddOutputFilterByType DEFLATE image/svg+xml
-  AddOutputFilterByType DEFLATE image/x-icon
-  AddOutputFilterByType DEFLATE text/css
-  AddOutputFilterByType DEFLATE text/html
-  AddOutputFilterByType DEFLATE text/javascript
-  AddOutputFilterByType DEFLATE text/plain
-  AddOutputFilterByType DEFLATE text/xml
-
-  # Remove browser bugs (only needed for really old browsers)
-  BrowserMatch ^Mozilla/4 gzip-only-text/html
-  BrowserMatch ^Mozilla/4\.0[678] no-gzip
-  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
-  Header append Vary User-Agent
-</IfModule>
-
-# Set Caching Headers
-<IfModule mod_expires.c>
-  ExpiresActive On
-  
-  # Images
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/gif "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/webp "access plus 1 year"
-  ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType image/x-icon "access plus 1 year"
-  
-  # Video
-  ExpiresByType video/webm "access plus 1 year"
-  ExpiresByType video/mp4 "access plus 1 year"
-  ExpiresByType video/mpeg "access plus 1 year"
-  
-  # Fonts
-  ExpiresByType font/ttf "access plus 1 year"
-  ExpiresByType font/otf "access plus 1 year"
-  ExpiresByType font/woff "access plus 1 year"
-  ExpiresByType font/woff2 "access plus 1 year"
-  ExpiresByType application/font-woff "access plus 1 year"
-  
-  # CSS, JavaScript
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType text/javascript "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  
-  # HTML - revalidate more frequently
-  ExpiresByType text/html "access plus 1 day"
-  
-  # Default
-  ExpiresDefault "access plus 1 month"
-</IfModule>
-
-# Add security headers - Modified for Cloudflare compatibility
+###############################################################################
+# SECURITY HEADERS
+###############################################################################
 <IfModule mod_headers.c>
   # Set XSS Protection
   Header set X-XSS-Protection "1; mode=block"
@@ -77,14 +11,18 @@
   # Referrer Policy
   Header set Referrer-Policy "strict-origin-when-cross-origin"
   
-  # Disable HSTS here since Cloudflare is handling it
-  # Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
-
   # Add header to recognize Cloudflare's HTTPS
   SetEnvIf X-Forwarded-Proto "https" HTTPS=on
 </IfModule>
 
-# Fix for Cloudflare redirect loops and URL rewriting
+###############################################################################
+# DEFAULT DOCUMENT
+###############################################################################
+DirectoryIndex index.html
+
+###############################################################################
+# URL REWRITING
+###############################################################################
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
@@ -92,6 +30,7 @@
   RewriteCond %{HTTP:CF-Visitor} '"scheme":"https"'
   RewriteRule .* - [E=HTTPS:on]
   
+  # 1. Handle index.html redirects
   # Redirect /index.html to / (domain root)
   RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\ HTTP/
   RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
@@ -99,15 +38,18 @@
   # Redirect /index.html?query to /?query (preserve query strings)
   RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\?(.*)\ HTTP/
   RewriteRule ^(.*)index\.html$ /$1?%1 [R=301,L]
-</IfModule>
-
-# Make index.html the default file
-DirectoryIndex index.html
-
-# Block direct access to origin server except Cloudflare and admin access
-<IfModule mod_rewrite.c>
-  RewriteEngine On
   
+  # 2. Handle .html extension removal
+  # Redirect any other .html files to clean URLs
+  RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.html [NC]
+  RewriteRule ^ %1 [R=301,L]
+  
+  # Internally map clean URLs to .html files
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.*)$ $1.html [L]
+  
+  # 3. Origin protection - Allow only Cloudflare and admin access
   # Allow access via a secret URL parameter (for admin access with dynamic IP)
   RewriteCond %{QUERY_STRING} adminkey=$ZkpncJhT@YslCp14%hyhIly [NC]
   RewriteRule .* - [L]
