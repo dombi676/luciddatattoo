@@ -4,15 +4,11 @@ deployment:
     - export DEPLOYPATH=/home/lucilbco/public_html/
     - /bin/cp -R images $DEPLOYPATH
     - /bin/cp -R fonts $DEPLOYPATH
-    - /bin/cp index.html $DEPLOYPATH
-    - /bin/cp gallery.html $DEPLOYPATH
-    - /bin/cp script.js $DEPLOYPATH
-    - /bin/cp styles.css $DEPLOYPATH
-    - /bin/cp manifest.json $DEPLOYPATH
-    - /bin/cp browserconfig.xml $DEPLOYPATH
-    - /bin/cp structured-data.json $DEPLOYPATH
-    - /bin/cp analytics.js $DEPLOYPATH
-    - /bin/cp robots.txt $DEPLOYPATH
-    - /bin/cp sitemap.xml $DEPLOYPATH
-    - /bin/cp favicon.ico $DEPLOYPATH
+    - /bin/cp *.html $DEPLOYPATH
+    - /bin/cp *.css $DEPLOYPATH
+    - /bin/cp *.js $DEPLOYPATH
+    - /bin/cp *.json $DEPLOYPATH
+    - /bin/cp *.txt $DEPLOYPATH
+    - /bin/cp *.xml $DEPLOYPATH
+    - /bin/cp *.ico $DEPLOYPATH
     - /bin/cp .htaccess $DEPLOYPATH
