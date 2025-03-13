@@ -12,15 +12,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
       
-    - name: Deploy to cPanel via SFTP
+    - name: Deploy to cPanel via FTPS
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
         server: ${{ secrets.CPANEL_HOST }}
         username: ${{ secrets.CPANEL_FTP_USERNAME }}
         password: ${{ secrets.CPANEL_FTP_PASSWORD }}
         server-dir: /public_html/
-        protocol: sftp
-        port: 22  # SFTP typically uses port 22
+        protocol: ftps
+        port: 21  # FTPS typically uses port 21
         exclude: |
           **/.git*
           **/.git*/**
