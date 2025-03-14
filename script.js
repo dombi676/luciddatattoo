@@ -549,17 +549,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // Close button events
-  closeButton.addEventListener('click', () => {
-    closeLightbox();
-  });
+  if (closeButton) {
+    closeButton.addEventListener('click', () => {
+      closeLightbox();
+    });
+  }
   
   // Ensure clicking outside the lightbox content closes it even when gallery prompt is showing
-  lightbox.addEventListener('click', (e) => {
-    // Check if user clicked directly on the lightbox background (not on any child elements)
-    if (e.target === lightbox) {
-      closeLightbox();
-    }
-  });
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      // Check if user clicked directly on the lightbox background (not on any child elements)
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+  }
   
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
@@ -575,7 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   
   // Magnifier functionality (for non-touch devices)
-  if (!isTouchDevice) {
+  if (!isTouchDevice && lightboxImg && magnifier) {
     lightboxImg.addEventListener('mousemove', (e) => {
       const imgRect = lightboxImg.getBoundingClientRect();
       const imgWidth = lightboxImg.naturalWidth;
@@ -589,7 +593,6 @@ document.addEventListener('DOMContentLoaded', () => {
         magnifier.style.display = 'none';
         return;
       }
-
       magnifier.style.display = 'block';
       
       // Position magnifier centered on cursor
@@ -604,7 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
       magnifier.style.backgroundSize = `${imgWidth * ZOOM_LEVEL}px ${imgHeight * ZOOM_LEVEL}px`;
       magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
     });
-
+  
     lightboxImg.addEventListener('mouseleave', () => {
       magnifier.style.display = 'none';
     });
@@ -846,4 +849,56 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Select all FAQ questions
+  const faqQuestions = document.querySelectorAll('.faq-question');
+  
+  // Add click event listener to each question
+  faqQuestions.forEach(question => {
+    question.addEventListener('click', () => {
+      // Toggle the 'active' class on the clicked question
+      question.classList.toggle('active');
+      
+      // Find the answer element that directly follows the question
+      const answer = question.nextElementSibling;
+      
+      // Ensure the answer is a faq-answer before toggling
+      if (answer && answer.classList.contains('faq-answer')) {
+        answer.classList.toggle('active');
+      }
+    });
+  });
+ 
+});
+
+// Font Toggle Functionality
+document.addEventListener('DOMContentLoaded', () => {
+  const fontToggleBtn = document.getElementById('font-toggle-btn');
+  
+  // Check if the button exists to prevent errors
+  if (!fontToggleBtn) return;
+
+  // Check for saved font preference in localStorage
+  const savedFont = localStorage.getItem('website-font');
+  
+  // Apply saved font preference if it exists
+  if (savedFont === 'roboto') {
+      document.body.classList.add('roboto-font');
+      fontToggleBtn.textContent = 'Cambiar Fuente';
+  }
+
+  // Add click event listener to the toggle button
+  fontToggleBtn.addEventListener('click', () => {
+      // Toggle the roboto-font class on the body
+      document.body.classList.toggle('roboto-font');
+
+      // Update button text based on current font
+      if (document.body.classList.contains('roboto-font')) {
+          fontToggleBtn.textContent = 'Cambiar Fuente';
+          localStorage.setItem('website-font', 'roboto');
+      } else {
+          fontToggleBtn.textContent = 'Cambiar Fuente';
+          localStorage.removeItem('website-font');
+      }
+  });
 });
