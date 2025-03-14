@@ -901,4 +901,66 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.removeItem('website-font');
       }
   });
+
+  const progressBar = document.getElementById('article-progress');
+  const article = document.querySelector('.article-content');
+
+  window.addEventListener('scroll', function () {
+    if (article) {
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.body.offsetHeight;
+      const scrolled = window.scrollY;
+
+      // Calculate how far down the page the user has scrolled
+      const scrollProgress = (scrolled / (fullHeight - windowHeight)) * 100;
+
+      progressBar.style.width = scrollProgress + '%';
+    }
+  });
+
+  // Back to Top Button
+  const backToTopButton = document.getElementById('back-to-top');
+
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 300) {
+      backToTopButton.classList.add('visible');
+    } else {
+      backToTopButton.classList.remove('visible');
+    }
+  });
+
+  backToTopButton.addEventListener('click', function (e) {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  // Smooth scroll for TOC links
+  document.querySelectorAll('.article-toc-list a').forEach(link => {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute('href');
+      const targetElement = document.querySelector(targetId);
+
+      if (targetElement) {
+        const headerOffset = 100;
+        const elementPosition = targetElement.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Override navbar title to always use gothic font
+  const navTitle = document.querySelector('.nav-center h1');
+  if (navTitle) {
+    navTitle.style.fontFamily = "'UnifrakturMaguntia', cursive";
+  }
 });
+
