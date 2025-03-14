@@ -3,8 +3,8 @@
 @font-face {
     font-family: 'UnifrakturMaguntia';
     src: url('fonts/UnifrakturMaguntia.woff2') format('woff2'),
-         url('fonts/UnifrakturMaguntia.woff') format('woff'),
-         url('fonts/UnifrakturMaguntia.ttf') format('truetype');
+        url('fonts/UnifrakturMaguntia.woff') format('woff'),
+        url('fonts/UnifrakturMaguntia.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -13,8 +13,8 @@
 @font-face {
     font-family: 'MedievalSharp';
     src: url('fonts/MedievalSharp.woff2') format('woff2'),
-         url('fonts/MedievalSharp.woff') format('woff'),
-         url('fonts/MedievalSharp.ttf') format('truetype');
+        url('fonts/MedievalSharp.woff') format('woff'),
+        url('fonts/MedievalSharp.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -23,8 +23,8 @@
 @font-face {
     font-family: 'Fondamento';
     src: url('fonts/Fondamento-Regular.woff2') format('woff2'),
-         url('fonts/Fondamento-Regular.woff') format('woff'),
-         url('fonts/Fondamento-Regular.ttf') format('truetype');
+        url('fonts/Fondamento-Regular.woff') format('woff'),
+        url('fonts/Fondamento-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -34,8 +34,8 @@
 @font-face {
     font-family: 'Roboto';
     src: url('fonts/Roboto-Light.woff2') format('woff2'),
-         url('fonts/Roboto-Light.woff') format('woff'),
-         url('fonts/Roboto-Light.ttf') format('truetype');
+        url('fonts/Roboto-Light.woff') format('woff'),
+        url('fonts/Roboto-Light.ttf') format('truetype');
     font-weight: 300;
     font-style: normal;
     font-display: swap;
@@ -44,8 +44,8 @@
 @font-face {
     font-family: 'Roboto';
     src: url('fonts/Roboto-Regular.woff2') format('woff2'),
-         url('fonts/Roboto-Regular.woff') format('woff'),
-         url('fonts/Roboto-Regular.ttf') format('truetype');
+        url('fonts/Roboto-Regular.woff') format('woff'),
+        url('fonts/Roboto-Regular.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -54,8 +54,8 @@
 @font-face {
     font-family: 'Roboto';
     src: url('fonts/Roboto-Bold.woff2') format('woff2'),
-         url('fonts/Roboto-Bold.woff') format('woff'),
-         url('fonts/Roboto-Bold.ttf') format('truetype');
+        url('fonts/Roboto-Bold.woff') format('woff'),
+        url('fonts/Roboto-Bold.ttf') format('truetype');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -2133,15 +2133,19 @@ nav {
 
 /* Style the TOC for traditional index look */
 .article-toc {
-    width: 100% !important; /* Make it full width */
+    width: 100% !important;
+    /* Make it full width */
     max-width: 100% !important;
-    position: static !important; /* Remove sticky positioning */
-    margin: 30px 0 40px 0 !important; /* Add margin above and below */
+    position: static !important;
+    /* Remove sticky positioning */
+    margin: 30px 0 40px 0 !important;
+    /* Add margin above and below */
     padding: 25px 30px !important;
     background-color: #222 !important;
     border-radius: 10px !important;
     box-sizing: border-box !important;
-    border-left: 4px solid #ff4444 !important; /* Add a left border for style */
+    border-left: 4px solid #ff4444 !important;
+    /* Add a left border for style */
 }
 
 /* Style the TOC title */
@@ -2180,7 +2184,8 @@ nav {
 /* Style each TOC item */
 .article-toc-list li {
     margin: 10px 0 !important;
-    break-inside: avoid !important; /* Keep items from breaking across columns */
+    break-inside: avoid !important;
+    /* Keep items from breaking across columns */
     line-height: 1.4 !important;
 }
 
@@ -2218,8 +2223,10 @@ nav {
 
 /* Adjust subitem styling */
 .article-toc-list .article-toc-subitem {
-    padding-left: 20px !important; /* Indent subitems */
-    font-size: 0.9em !important; /* Slightly smaller font */
+    padding-left: 20px !important;
+    /* Indent subitems */
+    font-size: 0.9em !important;
+    /* Slightly smaller font */
 }
 
 .article-toc-list .article-toc-subitem:before {
@@ -2274,22 +2281,581 @@ nav {
         right: 20px;
         bottom: 20px;
     }
+
     .article-toc-list {
-        column-count: 1 !important; /* Single column on mobile */
+        column-count: 1 !important;
+        /* Single column on mobile */
     }
-    
+
     .article-toc {
         padding: 20px !important;
     }
-    
+
     .article-toc-list li {
         width: 100% !important;
         text-align: center !important;
     }
-    
+
     .article-toc-list a {
         display: block !important;
         width: 100% !important;
         box-sizing: border-box !important;
     }
+}
+
+/* Accessibility Panel Styles */
+.accessibility-panel {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.accessibility-toggle {
+    width: 50px !important;
+    /* Force fixed size */
+    height: 50px !important;
+    /* Force fixed size */
+    border-radius: 50%;
+    background-color: #ff4444;
+    color: #1a1a1a;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem !important;
+    /* Force fixed font size */
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s;
+    /* Remove transform from transition to prevent shrinking */
+}
+
+.accessibility-toggle:hover {
+    background-color: #e03333;
+    /* Remove transform scale to prevent size changes */
+}
+
+.accessibility-options {
+    background-color: #222;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    width: 180px;
+}
+
+.accessibility-options.active {
+    display: flex;
+}
+
+.accessibility-title {
+    font-family: var(--heading-font);
+    color: #ff4444;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 8px;
+    text-align: center;
+}
+
+.font-toggle-btn {
+    background-color: transparent;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.font-toggle-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+}
+
+.font-toggle-btn.active {
+    background-color: #444;
+    border-color: #ff4444;
+}
+
+.font-toggle-btn i {
+    font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .accessibility-panel {
+        bottom: 15px;
+        left: 15px;
+    }
+
+    .accessibility-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .accessibility-options {
+        padding: 12px;
+        width: 160px;
+    }
+}
+
+/* High Contrast Mode Support */
+
+/* Basic high contrast support using forced-colors media feature */
+@media (forced-colors: active) {
+
+    /* Ensure text is visible against backgrounds */
+    body,
+    p,
+    li,
+    a,
+    button,
+    input,
+    textarea,
+    select {
+        forced-color-adjust: none;
+    }
+
+    /* Improve focus indicators */
+    a:focus,
+    button:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: 3px solid !important;
+    }
+
+    /* Ensure buttons have good contrast */
+    button,
+    .whatsapp-btn,
+    .gallery-btn,
+    .filter-btn,
+    .accessibility-toggle,
+    .font-toggle-btn,
+    .high-contrast-btn,
+    .article-cta-button,
+    .blog-read-more {
+        border: 1px solid !important;
+    }
+
+    /* Ensure form controls have visible boundaries */
+    input,
+    textarea,
+    select {
+        border: 1px solid !important;
+    }
+
+    /* Better link visibility */
+    a {
+        text-decoration: underline !important;
+    }
+
+    /* Make sure icons are visible */
+    .fas,
+    .fab,
+    .far {
+        forced-color-adjust: none;
+    }
+}
+
+/* Manual high contrast mode that users can toggle */
+body.high-contrast-mode {
+    /* High contrast color scheme */
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --heading-color: #ffff00;
+    --link-color: #00ffff;
+    --button-bg: #ffffff;
+    --button-text: #000000;
+    --border-color: #ffffff;
+    --focus-color: #00ffff;
+
+    /* Apply high contrast colors */
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+body.high-contrast-mode h1,
+body.high-contrast-mode h2,
+body.high-contrast-mode h3,
+body.high-contrast-mode h4,
+body.high-contrast-mode h5,
+body.high-contrast-mode h6,
+span.accessibility-title {
+    color: var(--heading-color) !important;
+}
+
+body.high-contrast-mode a {
+    color: var(--link-color) !important;
+    text-decoration: underline !important;
+}
+
+body.high-contrast-mode button,
+body.high-contrast-mode .whatsapp-btn,
+body.high-contrast-mode .gallery-btn,
+body.high-contrast-mode .filter-btn,
+body.high-contrast-mode .accessibility-toggle,
+body.high-contrast-mode .font-toggle-btn,
+body.high-contrast-mode .high-contrast-btn,
+body.high-contrast-mode .article-cta-button,
+body.high-contrast-mode .blog-read-more {
+    background-color: var(--button-bg) !important;
+    color: var(--button-text) !important;
+    border: 2px solid var(--border-color) !important;
+    text-decoration: none !important;
+}
+
+/*  body.high-contrast-mode .accessibility-panel,*/
+body.high-contrast-mode .accessibility-options,
+body.high-contrast-mode .article-toc,
+body.high-contrast-mode .article-callout,
+body.high-contrast-mode .custom-reviews-container,
+body.high-contrast-mode .review-item,
+body.high-contrast-mode .blog-post,
+body.high-contrast-mode .policy-content {
+    background-color: var(--bg-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Focus indicators for high contrast mode */
+body.high-contrast-mode a:focus,
+body.high-contrast-mode button:focus,
+body.high-contrast-mode input:focus,
+body.high-contrast-mode textarea:focus,
+body.high-contrast-mode select:focus {
+    outline: 3px solid var(--focus-color) !important;
+}
+
+/* Normal state hamburger lines */
+body.high-contrast-mode .hamburger-btn span {
+    background-color: var(--button-text) !important;
+    /* White in high contrast mode */
+}
+
+/* Active state hamburger lines */
+body.high-contrast-mode .hamburger-btn.active span {
+    background-color: var(--heading-color) !important;
+    /* Yellow in high contrast mode */
+}
+
+/* Fix star ratings in high contrast mode */
+body.high-contrast-mode .star {
+    color: var(--heading-color) !important;
+    /* Yellow in high contrast mode */
+}
+
+/* Fix "Write a review" button */
+body.high-contrast-mode .write-review-btn {
+    background-color: var(--button-bg) !important;
+    color: var(--button-text) !important;
+    border: 2px solid var(--border-color) !important;
+    text-decoration: none !important;
+}
+
+/* Fix the Google icon in the review button */
+body.high-contrast-mode .google-icon-button {
+    background-color: var(--bg-color) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Fix the Google icon SVG paths */
+body.high-contrast-mode .google-icon-button svg path {
+    fill: var(--heading-color) !important;
+    /* Make all paths yellow for visibility */
+}
+
+/* Additional fixes for "powered by" text */
+body.high-contrast-mode .powered-by {
+    color: var(--text-color) !important;
+}
+
+/* Fix for review item elements */
+body.high-contrast-mode .review-header,
+body.high-contrast-mode .reviewer-name,
+body.high-contrast-mode .review-text {
+    color: var(--text-color) !important;
+}
+
+body.high-contrast-mode .review-date {
+    color: var(--text-color) !important;
+    opacity: 0.8;
+}
+
+/* High Contrast Button Styles */
+.high-contrast-btn {
+    background-color: transparent;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.high-contrast-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+}
+
+.high-contrast-btn.active {
+    background-color: #444;
+    border-color: #ff4444;
+}
+
+.high-contrast-btn i {
+    font-size: 1rem;
+}
+
+/* Light/Dark Mode Toggle CSS */
+
+/* Light mode variables */
+body.light-mode {
+    --bg-color: #f5f5f5;
+    --container-bg: #ffffff;
+    --text-color: #333333;
+    --heading-color: #992222; /* Darker red for better contrast */
+    --link-color: #992222; /* Darker red for better contrast */
+    --hover-color: #7a1c1c; /* Even darker for hover */
+    --border-color: #dddddd;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --secondary-bg: #eeeeee;
+    --secondary-text: #666666;
+  }
+  
+  /* Apply light mode styles */
+  body.light-mode {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  /* Headings */
+  body.light-mode h1,
+  body.light-mode h2,
+  body.light-mode h3,
+  body.light-mode h4,
+  body.light-mode h5,
+  body.light-mode h6 {
+    color: var(--heading-color) !important;
+  }
+  
+  /* Links */
+  body.light-mode a {
+    color: var(--link-color);
+  }
+  
+  body.light-mode a:hover {
+    color: var(--hover-color);
+  }
+  
+  /* Navigation */
+  body.light-mode nav {
+    background-color: var(--container-bg);
+    box-shadow: 0 2px 10px var(--shadow-color);
+  }
+  
+  body.light-mode .nav-links li a {
+    color: var(--text-color);
+  }
+  
+  body.light-mode .nav-links li a:hover {
+    background-color: rgba(204, 51, 51, 0.1);
+  }
+  
+  body.light-mode .hamburger-btn span {
+    background-color: var(--text-color);
+  }
+  
+  /* Buttons */
+  body.light-mode .gallery-btn,
+  body.light-mode .filter-btn,
+  body.light-mode .article-cta-button,
+  body.light-mode .blog-read-more,
+  body.light-mode .back-to-top {
+    background-color: var(--heading-color);
+    color: white;
+  }
+  
+  body.light-mode .gallery-btn:hover,
+  body.light-mode .filter-btn:hover,
+  body.light-mode .article-cta-button:hover,
+  body.light-mode .blog-read-more:hover,
+  body.light-mode .back-to-top:hover {
+    background-color: var(--hover-color);
+  }
+  
+  /* WhatsApp button remains green */
+  body.light-mode .whatsapp-btn {
+    background-color: #25d366;
+    color: white;
+  }
+  
+  body.light-mode .whatsapp-btn:hover {
+    background-color: #128c7e;
+  }
+  
+  /* Containers and cards */
+  body.light-mode .article-toc,
+  body.light-mode .article-callout,
+  body.light-mode .custom-reviews-container,
+  body.light-mode .review-item,
+  body.light-mode .blog-post,
+  body.light-mode .article-author-bio,
+  body.light-mode .related-post,
+  body.light-mode .policy-content,
+  body.light-mode .faq-item,
+  body.light-mode .accessibility-options {
+    background-color: var(--container-bg);
+    box-shadow: 0 4px 15px var(--shadow-color);
+    border: 1px solid var(--border-color);
+  }
+  
+  /* Secondary backgrounds */
+  body.light-mode .faq-question {
+    background-color: var(--secondary-bg);
+  }
+  
+  /* Star ratings keep the same color */
+  body.light-mode .star {
+    color: #ff4444;
+  }
+  
+  /* Review metadata */
+  body.light-mode .review-date,
+  body.light-mode .rating-count,
+  body.light-mode .powered-by {
+    color: var(--secondary-text);
+  }
+  
+  /* Footer and social media section */
+  body.light-mode .social-media {
+    background-color: var(--secondary-bg);
+  }
+  
+  /* Social buttons keep their brand colors */
+  
+  /* Cookie banner */
+  body.light-mode .cookie-banner {
+    background-color: rgba(245, 245, 245, 0.95);
+    box-shadow: 0 -5px 10px var(--shadow-color);
+  }
+  
+  /* Cookie buttons */
+  body.light-mode .cookie-accept {
+    background-color: var(--heading-color);
+    color: white;
+  }
+  
+  body.light-mode .cookie-reject {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+  }
+  
+  /* Accessibility Panel Button */
+  body.light-mode .mode-toggle-btn {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+  }
+  
+  body.light-mode .mode-toggle-btn:hover {
+    background-color: var(--secondary-bg);
+  }
+  
+  body.light-mode .mode-toggle-btn.active {
+    background-color: var(--secondary-bg);
+    border-color: var(--heading-color);
+  }
+  
+  /* Hero section - special handling since it has an image background */
+  body.light-mode #home {
+    color: #e0e0e0; /* Keep white text for legibility on background image */
+  }
+  
+  /* Make lightbox still dark in light mode for better image viewing */
+  body.light-mode #lightbox {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+  
+  body.light-mode .close,
+  body.light-mode .lightbox-nav {
+    color: #fff;
+  }
+  
+  /* Keep dark mode accessibility panel in light mode */
+  body.light-mode .accessibility-panel .accessibility-toggle {
+    background-color: #ff4444;
+    color: #1a1a1a;
+  }
+  
+  /* Ensure Light/Dark Mode button is visible in both modes */
+  .mode-toggle-btn {
+    background-color: transparent;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  
+  .mode-toggle-btn:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+  }
+  
+  .mode-toggle-btn.active {
+    background-color: #444;
+    border-color: #ff4444;
+  }
+  
+  .mode-toggle-btn i {
+    font-size: 1rem;
+  }
+
+  /* Fix for Mis Diseños and Mis Trabajos sections in light mode */
+body.light-mode #mis-disenos,
+body.light-mode #mis-trabajos {
+  background-color: var(--bg-color);
+}
+
+/* Fix for the high contrast toggle button in light mode */
+body.light-mode .high-contrast-btn {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+body.light-mode .high-contrast-btn:hover {
+  background-color: var(--secondary-bg);
+}
+
+body.light-mode .high-contrast-btn.active {
+  background-color: var(--secondary-bg);
+  border-color: var(--heading-color);
 }

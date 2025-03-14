@@ -14,18 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // State
   let currentIndex = 0;
   let galleryImages = [];
-  let visibleImages = []; // NEW: Track visible images based on filter
+  let visibleImages = []; // Track visible images based on filter
   let navigationLock = false;
   let isTouchDevice = false;
   let activeXHRs = {}; // Track active XHRs by index
   let blobCache = {}; // Cache for created blob URLs
   let loadingStates = {}; // Track loading states to prevent duplicate loads
-  let activeFilter = 'all'; // NEW: Track the active filter
+  let activeFilter = 'all'; // Track the active filter
   
-  // NEW: Check if we're on the index page
+  // Check if we're on the index page
   const isIndexPage = document.body.getAttribute('data-page') === 'index';
   
-  // NEW: Track when we're showing the gallery prompt
+  // Track when we're showing the gallery prompt
   let showingGalleryPrompt = false;
   
   try {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get all thumbnails
     galleryImages = Array.from(document.querySelectorAll('.thumbnail'));
     
-    // NEW: Update visible images based on active filter
+    // Update visible images based on active filter
     if (activeFilter === 'all') {
       visibleImages = [...galleryImages];
     } else {
@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return progressBar;
   }
   
-  // NEW: Create and get gallery prompt
+  // Create and get gallery prompt
   function createGalleryPrompt() {
     let galleryPrompt = document.getElementById('gallery-prompt');
     
@@ -154,14 +154,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return galleryPrompt;
   }
   
-  // NEW: Show gallery prompt
+  // Show gallery prompt
   function showGalleryPrompt() {
     const galleryPrompt = createGalleryPrompt();
     galleryPrompt.style.display = 'block';
     showingGalleryPrompt = true;
   }
   
-  // NEW: Hide gallery prompt
+  // Hide gallery prompt
   function hideGalleryPrompt() {
     const galleryPrompt = document.getElementById('gallery-prompt');
     if (galleryPrompt) {
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navigationLock = true;
     console.log('Setting navigation lock');
     
-    // NEW: Hide gallery prompt if showing
+    // Hide gallery prompt if showing
     if (showingGalleryPrompt) {
       hideGalleryPrompt();
     }
@@ -191,14 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update gallery images
     updateGalleryImages();
     
-    // NEW: Ensure index is valid for visible images
+    // Ensure index is valid for visible images
     if (visibleImages.length === 0) {
       console.error('No visible images to display');
       navigationLock = false;
       return;
     }
     
-    // NEW: Find the index in the full gallery based on the visible index
+    // Find the index in the full gallery based on the visible index
     let targetImg;
     let fullGalleryIndex;
     
@@ -415,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // MODIFIED: Navigation functions
+  // Navigation functions
   function prevImage() {
     // If showing gallery prompt, hide it and go back to the last image
     if (showingGalleryPrompt) {
@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openLightbox(prevIndex);
   }
   
-  // MODIFIED: Next image function with gallery prompt
+  // Next image function with gallery prompt
   function nextImage() {
     // Check if we're showing the gallery prompt
     if (showingGalleryPrompt) {
@@ -481,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openLightbox(nextIndex);
   }
   
-  // MODIFIED: Close lightbox and cleanup
+  // Close lightbox and cleanup
   function closeLightbox() {
     // Reset gallery prompt state
     hideGalleryPrompt();
@@ -567,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Keyboard controls
   document.addEventListener('keydown', (e) => {
-    if (lightbox.style.display === 'flex') {
+    if (lightbox && lightbox.style.display === 'flex') {
       if (e.key === 'ArrowLeft') {
         prevImage();
       } else if (e.key === 'ArrowRight') {
@@ -613,36 +613,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Touch swipe functionality // removed since it was causing issues with pinch to zoom
-  // let touchStartX = 0;
-  // let touchEndX = 0;
-
-  // function checkSwipeDirection() {
-  //   if (touchEndX < touchStartX - 50) {
-  //     // Swiped left, go to next image
-  //     nextImage();
-  //   }
-    
-  //   if (touchEndX > touchStartX + 50) {
-  //     // Swiped right, go to previous image
-  //     prevImage();
-  //   }
-  // }
-
-  // if (lightboxImg) {
-  //   lightboxImg.addEventListener('touchstart', (e) => {
-  //     touchStartX = e.changedTouches[0].screenX;
-  //   });
-    
-  //   lightboxImg.addEventListener('touchend', (e) => {
-  //     touchEndX = e.changedTouches[0].screenX;
-  //     checkSwipeDirection();
-  //   });
-  // }
-  
-  // =====================
   // Gallery Filter Functionality
-  // =====================
   const filterButtons = document.querySelectorAll('.filter-btn');
   
   if (filterButtons.length > 0) {
@@ -731,32 +702,32 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Social Media Links
   document.querySelectorAll('.social-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.open(btn.href, '_blank');
-      });
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open(btn.href, '_blank');
+    });
   });
   
   // Smooth Scroll
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-          e.preventDefault();
-          const target = document.querySelector(this.getAttribute('href'));
-          if (target) {
-              target.scrollIntoView({
-                  behavior: 'smooth',
-                  block: 'start'
-              });
-          }
-      });
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
   });
   
   // Hero image load effect
   const heroImage = document.querySelector('#home img');
   if (heroImage) {
-      heroImage.onload = () => {
-          heroImage.classList.add('loaded');
-      };
+    heroImage.onload = () => {
+      heroImage.classList.add('loaded');
+    };
   }
   
   // Mobile menu
@@ -765,33 +736,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const navLeft = document.querySelector('.nav-left');
 
   if (hamburgerBtn && navLinks) {
-      hamburgerBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          navLinks.classList.toggle('active');
-          hamburgerBtn.classList.toggle('active');
-          
-          // Update ARIA attributes
-          const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
-          hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
-      });
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navLinks.classList.toggle('active');
+      hamburgerBtn.classList.toggle('active');
+      
+      // Update ARIA attributes
+      const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+      hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
+    });
 
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-          if (!navLeft.contains(e.target) && navLinks.classList.contains('active')) {
-              navLinks.classList.remove('active');
-              hamburgerBtn.classList.remove('active');
-              hamburgerBtn.setAttribute('aria-expanded', 'false');
-          }
-      });
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!navLeft.contains(e.target) && navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
 
-      // Close menu when selecting an item
-      document.querySelectorAll('.nav-links a').forEach(link => {
-          link.addEventListener('click', () => {
-              navLinks.classList.remove('active');
-              hamburgerBtn.classList.remove('active');
-              hamburgerBtn.setAttribute('aria-expanded', 'false');
-          });
+    // Close menu when selecting an item
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
       });
+    });
   }
 
   // Cookie Consent Banner
@@ -800,32 +771,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const rejectButton = document.getElementById('reject-cookies');
   
   if (cookieBanner && acceptButton && rejectButton) {
-      // Check if user has already made a choice
-      const cookieConsent = localStorage.getItem('cookieConsent');
-      
-      if (cookieConsent === null) {
-          // Show banner if no choice has been made
-          cookieBanner.style.display = 'block';
-      } else if (cookieConsent === 'accepted') {
-          // Enable analytics if cookies were accepted
-          // This is already handled by your existing analytics code
-      } else {
-          // Disable analytics if cookies were rejected
-          window['ga-disable-G-FEL31JE33S'] = true;
-      }
-      
-      // Handle accept button click
-      acceptButton.addEventListener('click', function() {
-          localStorage.setItem('cookieConsent', 'accepted');
-          cookieBanner.style.display = 'none';
-      });
-      
-      // Handle reject button click
-      rejectButton.addEventListener('click', function() {
-          localStorage.setItem('cookieConsent', 'rejected');
-          window['ga-disable-G-FEL31JE33S'] = true;
-          cookieBanner.style.display = 'none';
-      });
+    // Check if user has already made a choice
+    const cookieConsent = localStorage.getItem('cookieConsent');
+    
+    if (cookieConsent === null) {
+      // Show banner if no choice has been made
+      cookieBanner.style.display = 'block';
+    } else if (cookieConsent === 'accepted') {
+      // Enable analytics if cookies were accepted
+      // This is already handled by your existing analytics code
+    } else {
+      // Disable analytics if cookies were rejected
+      window['ga-disable-G-FEL31JE33S'] = true;
+    }
+    
+    // Handle accept button click
+    acceptButton.addEventListener('click', function() {
+      localStorage.setItem('cookieConsent', 'accepted');
+      cookieBanner.style.display = 'none';
+    });
+    
+    // Handle reject button click
+    rejectButton.addEventListener('click', function() {
+      localStorage.setItem('cookieConsent', 'rejected');
+      window['ga-disable-G-FEL31JE33S'] = true;
+      cookieBanner.style.display = 'none';
+    });
   }
 
   // Cookie Policy Modal
@@ -868,78 +839,50 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
- 
-});
 
-// Font Toggle Functionality
-document.addEventListener('DOMContentLoaded', () => {
-  const fontToggleBtn = document.getElementById('font-toggle-btn');
-  
-  // Check if the button exists to prevent errors
-  if (!fontToggleBtn) return;
-
-  // Check for saved font preference in localStorage
-  const savedFont = localStorage.getItem('website-font');
-  
-  // Apply saved font preference if it exists
-  if (savedFont === 'roboto') {
-      document.body.classList.add('roboto-font');
-      fontToggleBtn.textContent = 'Cambiar Fuente';
-  }
-
-  // Add click event listener to the toggle button
-  fontToggleBtn.addEventListener('click', () => {
-      // Toggle the roboto-font class on the body
-      document.body.classList.toggle('roboto-font');
-
-      // Update button text based on current font
-      if (document.body.classList.contains('roboto-font')) {
-          fontToggleBtn.textContent = 'Cambiar Fuente';
-          localStorage.setItem('website-font', 'roboto');
-      } else {
-          fontToggleBtn.textContent = 'Cambiar Fuente';
-          localStorage.removeItem('website-font');
-      }
-  });
-
+  // Article progress bar
   const progressBar = document.getElementById('article-progress');
   const article = document.querySelector('.article-content');
 
-  window.addEventListener('scroll', function () {
-    if (article) {
-      const windowHeight = window.innerHeight;
-      const fullHeight = document.body.offsetHeight;
-      const scrolled = window.scrollY;
+  if (progressBar) {
+    window.addEventListener('scroll', function() {
+      if (article) {
+        const windowHeight = window.innerHeight;
+        const fullHeight = document.body.offsetHeight;
+        const scrolled = window.scrollY;
 
-      // Calculate how far down the page the user has scrolled
-      const scrollProgress = (scrolled / (fullHeight - windowHeight)) * 100;
+        // Calculate how far down the page the user has scrolled
+        const scrollProgress = (scrolled / (fullHeight - windowHeight)) * 100;
 
-      progressBar.style.width = scrollProgress + '%';
-    }
-  });
+        progressBar.style.width = scrollProgress + '%';
+      }
+    });
+  }
 
   // Back to Top Button
   const backToTopButton = document.getElementById('back-to-top');
 
-  window.addEventListener('scroll', function () {
-    if (window.scrollY > 300) {
-      backToTopButton.classList.add('visible');
-    } else {
-      backToTopButton.classList.remove('visible');
-    }
-  });
-
-  backToTopButton.addEventListener('click', function (e) {
-    e.preventDefault();
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (backToTopButton) {
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.add('visible');
+      } else {
+        backToTopButton.classList.remove('visible');
+      }
     });
-  });
+
+    backToTopButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
 
   // Smooth scroll for TOC links
   document.querySelectorAll('.article-toc-list a').forEach(link => {
-    link.addEventListener('click', function (e) {
+    link.addEventListener('click', function(e) {
       e.preventDefault();
       const targetId = this.getAttribute('href');
       const targetElement = document.querySelector(targetId);
@@ -957,10 +900,187 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Override navbar title to always use gothic font
+// Override navbar title to always use gothic font
   const navTitle = document.querySelector('.nav-center h1');
   if (navTitle) {
     navTitle.style.fontFamily = "'UnifrakturMaguntia', cursive";
   }
+
+  // ACCESSIBILITY CONTROLS - CONSOLIDATED CODE
+  // Get all required elements for accessibility features
+  const accessibilityToggle = document.querySelector('.accessibility-toggle');
+  const accessibilityOptions = document.querySelector('.accessibility-options');
+  const accessibilityPanel = document.querySelector('.accessibility-panel');
+  const modeToggleBtn = document.getElementById('mode-toggle-btn');
+  const highContrastBtn = document.getElementById('high-contrast-btn');
+  const fontToggleBtn = document.getElementById('font-toggle-btn');
+  
+  // Accessibility Panel Toggle
+  if (accessibilityToggle && accessibilityOptions && accessibilityPanel) {
+    // Initialize panel based on saved state
+    const savedPanelState = localStorage.getItem('accessibilityPanelOpen');
+    if (savedPanelState === 'true') {
+      accessibilityOptions.classList.add('active');
+      accessibilityToggle.setAttribute('aria-expanded', 'true');
+    }
+    
+    // Toggle panel visibility
+    accessibilityToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      accessibilityOptions.classList.toggle('active');
+      
+      // Update ARIA states
+      const isExpanded = accessibilityOptions.classList.contains('active');
+      accessibilityToggle.setAttribute('aria-expanded', isExpanded);
+      
+      // Save state to localStorage
+      localStorage.setItem('accessibilityPanelOpen', isExpanded);
+    });
+    
+    // Close panel when clicking outside
+    document.addEventListener('click', function(e) {
+      if (accessibilityPanel && !accessibilityPanel.contains(e.target) && 
+          accessibilityOptions.classList.contains('active')) {
+        accessibilityOptions.classList.remove('active');
+        accessibilityToggle.setAttribute('aria-expanded', 'false');
+        localStorage.setItem('accessibilityPanelOpen', 'false');
+      }
+    });
+  }
+  
+  // FONT TOGGLE
+  if (fontToggleBtn) {
+    // Initialize based on saved preference
+    const savedFont = localStorage.getItem('website-font');
+    if (savedFont === 'roboto') {
+      document.body.classList.add('roboto-font');
+      fontToggleBtn.classList.add('active');
+    }
+
+    // Add click event listener to the toggle button
+    fontToggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      // Toggle the roboto-font class on the body
+      document.body.classList.toggle('roboto-font');
+      
+      // Toggle active class on button
+      fontToggleBtn.classList.toggle('active');
+
+      // Save preference to localStorage
+      if (document.body.classList.contains('roboto-font')) {
+        localStorage.setItem('website-font', 'roboto');
+      } else {
+        localStorage.removeItem('website-font');
+      }
+    });
+  }
+  
+  // MODE TOGGLES (LIGHT/DARK AND HIGH CONTRAST)
+  if (modeToggleBtn && highContrastBtn) {
+    // Initialize based on saved preferences
+    const savedLightMode = localStorage.getItem('color-mode');
+    const savedHighContrast = localStorage.getItem('high-contrast-mode');
+    
+    // Apply saved preferences (high contrast takes precedence)
+    if (savedHighContrast === 'enabled') {
+      document.body.classList.add('high-contrast-mode');
+      highContrastBtn.classList.add('active');
+      // Ensure light mode is off
+      document.body.classList.remove('light-mode');
+      modeToggleBtn.classList.remove('active');
+      modeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
+    } else if (savedLightMode === 'light') {
+      document.body.classList.add('light-mode');
+      modeToggleBtn.classList.add('active');
+      modeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
+    }
+    
+    // Light/Dark mode toggle handler
+    modeToggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      // If high contrast is active, turn it off first
+      if (document.body.classList.contains('high-contrast-mode')) {
+        document.body.classList.remove('high-contrast-mode');
+        highContrastBtn.classList.remove('active');
+        localStorage.removeItem('high-contrast-mode');
+      }
+      
+      // Then toggle light mode
+      document.body.classList.toggle('light-mode');
+      
+      // Update button state and storage
+      if (document.body.classList.contains('light-mode')) {
+        modeToggleBtn.classList.add('active');
+        modeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
+        localStorage.setItem('color-mode', 'light');
+      } else {
+        modeToggleBtn.classList.remove('active');
+        modeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
+        localStorage.removeItem('color-mode');
+      }
+    });
+    
+    // High contrast toggle handler
+    highContrastBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      // If in light mode, switch to dark mode first
+      if (document.body.classList.contains('light-mode')) {
+        document.body.classList.remove('light-mode');
+        modeToggleBtn.classList.remove('active');
+        modeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
+        localStorage.removeItem('color-mode');
+      }
+      
+      // Then toggle high contrast
+      document.body.classList.toggle('high-contrast-mode');
+      
+      // Update button state and storage
+      if (document.body.classList.contains('high-contrast-mode')) {
+        highContrastBtn.classList.add('active');
+        localStorage.setItem('high-contrast-mode', 'enabled');
+      } else {
+        highContrastBtn.classList.remove('active');
+        localStorage.removeItem('high-contrast-mode');
+      }
+    });
+  }
 });
 
+// Set up intersection observer to highlight the current section
+// Only initialize if needed
+if (document.querySelector('.article-toc-list') && document.querySelector('.article-content')) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      // When a section is visible
+      if (entry.isIntersecting) {
+        // Get its ID
+        const id = entry.target.getAttribute('id');
+        
+        // Remove .active class from all TOC links
+        document.querySelectorAll('.article-toc-list a').forEach(link => {
+          link.classList.remove('active');
+        });
+        
+        // Add .active class to the corresponding TOC link
+        const correspondingLink = document.querySelector(`.article-toc-list a[href="#${id}"]`);
+        if (correspondingLink) {
+          correspondingLink.classList.add('active');
+        }
+      }
+    });
+  }, {
+    rootMargin: '-100px 0px -50% 0px', // Adjust these values to control when a section is considered "active"
+    threshold: 0
+  });
+
+  // Observe all headings in the article content
+  document.querySelectorAll('.article-content h2, .article-content h3').forEach(heading => {
+    if (heading.id) {
+      observer.observe(heading);
+    }
+  });
+}

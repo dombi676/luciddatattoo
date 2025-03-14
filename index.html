@@ -92,9 +92,6 @@
       <h1>Lucidda Tattoo</h1>
     </div>
     <div class="nav-right">
-      <button id="font-toggle-btn" class="font-toggle-btn" aria-label="Cambiar Letra">
-        Cambiar Fuente
-      </button>
       <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp"
         data-source="website_nav">
         <i class="fab fa-whatsapp"></i> Agenda tu Turno
@@ -471,6 +468,24 @@
       </div>
     </div>
   </div>
+<div class="accessibility-panel">
+  <button class="accessibility-toggle" aria-label="Opciones de accesibilidad" aria-expanded="false" aria-controls="accessibility-options">
+    <i class="fas fa-universal-access"></i>
+  </button>
+  <div class="accessibility-options" id="accessibility-options">
+    <span class="accessibility-title">Accesibilidad</span>
+    <button id="font-toggle-btn" class="font-toggle-btn" aria-label="Cambiar Letra">
+      <i class="fas fa-font"></i> Cambiar Fuente
+    </button>
+    <!-- You can add more accessibility options here in the future -->
+    <button id="high-contrast-btn" class="high-contrast-btn" aria-label="Activar modo de alto contraste">
+      <i class="fas fa-adjust"></i> Alto Contraste
+    </button>
+<button id="mode-toggle-btn" class="mode-toggle-btn" aria-label="Cambiar a modo claro">
+  <i class="fas fa-sun"></i> Modo Claro
+</button>
+  </div>
+</div>
   <script src="script.js?v=1.1"></script>
   <script src="whatsapp-tracking.js"></script>
 </body>
