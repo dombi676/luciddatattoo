@@ -722,6 +722,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Update gallery images after filtering
         updateGalleryImages();
+        
+        // Re-setup thumbnail listeners after DOM changes from filtering
+        setupThumbnailListeners();
       });
     });
   }
