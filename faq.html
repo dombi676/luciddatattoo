@@ -17,10 +17,10 @@
     <link rel="preload" href="styles.css" as="style">
     <!-- Only keep UnifrakturMaguntia and Roboto for this page -->
     <link rel="preload" href="fonts/UnifrakturMaguntia.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/MedievalSharp.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/Roboto-Light.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="fonts/Fondamento-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="script.js?v=1.1" as="script">
 
     <!-- =======================
@@ -106,8 +106,14 @@
             <ul class="nav-links" id="nav-links" role="menu">
                 <li role="none"><a href="index#home" role="menuitem">Inicio</a></li>
                 <li role="none"><a href="gallery" role="menuitem">Galería</a></li>
-                <li role="none"><a href="blog/guia-completa-cuidado-tatuajes" role="menuitem">Cuidados</a></li>
+                <li role="none"><a href="tatuajes-preparacion-y-cuidados" role="menuitem">Preparación y Cuidados</a></li>
                 <li role="none"><a href="faq" role="menuitem">Preguntas Frecuentes</a></li>
+                <!-- WhatsApp button inside mobile menu -->
+                <li role="none" class="mobile-menu-whatsapp">
+                    <a href="contacto-web" class="whatsapp-btn mobile-menu-whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="mobile_menu" role="menuitem">
+                        <i class="fab fa-whatsapp"></i> Agendá tu Turno
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="nav-center">
@@ -119,6 +125,7 @@
                 Cambiar Fuente
             </button>
             -->
+            <!-- Desktop WhatsApp button -->
             <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
                 <i class="fab fa-whatsapp"></i> Agendá tu Turno
             </a>
@@ -305,6 +312,13 @@
             </div>
         </div>
     </div>
+
+    <!-- =======================
+         FLOATING WHATSAPP BUTTON
+    ======================== -->
+    <a href="contacto-web" class="floating-whatsapp" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" data-source="floating_button">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <!-- =======================
          SCRIPTS

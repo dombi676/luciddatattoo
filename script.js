@@ -1,1159 +1,539 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // DOM Elements
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const magnifier = document.getElementById('magnifier');
-  const closeButton = document.querySelector('.close');
-  const prevButton = document.querySelector('.lightbox-nav.prev');
-  const nextButton = document.querySelector('.lightbox-nav.next');
-  
-  // Constants
-  const ZOOM_LEVEL = 1.2;
-  const MAGNIFIER_SIZE = 400;
-  
-  // State
-  let currentIndex = 0;
-  let galleryImages = [];
-  let visibleImages = []; // Track visible images based on filter
-  let navigationLock = false;
-  let isTouchDevice = false;
-  let activeXHRs = {}; // Track active XHRs by index
-  let blobCache = {}; // Cache for created blob URLs
-  let loadingStates = {}; // Track loading states to prevent duplicate loads
-  let activeFilter = 'all'; // Track the active filter
-  
 
-  // Performance optimization: Cache frequently accessed DOM elements
-  let cachedThumbnails = null;
-  let cachedGalleryItems = null;
-  let cachedFilterButtons = null;
-  let lastThumbnailCount = 0;
-  let filterDebounceTimer = null;
-  
-  // Performance monitoring (for debugging/optimization purposes)
-  const performance = {
-    filterOperationCount: 0,
-    domQueryCount: 0,
-    log: function(operation, time) {
-      if (window.location.hash === '#debug') {
-        console.log(`Performance: ${operation} took ${time}ms`);
-      }
-    },
-    trackDOMQuery: function() {
-      this.domQueryCount++;
-      if (window.location.hash === '#debug') {
-        console.log(`DOM queries: ${this.domQueryCount}`);
-      }
-    }
-  };
-  
-  // NEW: Check if we're on the index page
-  const isIndexPage = document.body.getAttribute('data-page') === 'index';
-  
-  // Track when we're showing the gallery prompt
-  let showingGalleryPrompt = false;
-  
-  try {
-    document.createEvent("TouchEvent");
-    isTouchDevice = true;
-  } catch (e) {
-    isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
-  }
+  // ===================================
+  // ===== GALLERY & LIGHTBOX MODULE ====
+  // ===================================
+  const galleryModule = (() => {
+    // --- DOM Elements ---
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeButton = document.querySelector('.close');
+    const prevButton = document.querySelector('.lightbox-nav.prev');
+    const nextButton = document.querySelector('.lightbox-nav.next');
+    const mobilePrevButton = document.querySelector('.mobile-nav-btn.mobile-prev');
+    const mobileNextButton = document.querySelector('.mobile-nav-btn.mobile-next');
+    const galleryGrid = document.querySelector('.gallery-grid');
+    const galleryPreviewGrids = document.querySelectorAll('.gallery-preview-grid'); // Get ALL preview grids
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const magnifier = document.getElementById('magnifier');
 
-  // Initialize gallery images with caching
-  function updateGalleryImages() {
-    const startTime = performance.now ? performance.now() : Date.now();
-    
-    // Check if we need to refresh the cache
-    const currentThumbnailCount = document.querySelectorAll('.thumbnail').length;
-    if (!cachedThumbnails || currentThumbnailCount !== lastThumbnailCount) {
-      performance.trackDOMQuery();
-      cachedThumbnails = Array.from(document.querySelectorAll('.thumbnail'));
-      lastThumbnailCount = currentThumbnailCount;
-    }
-    
-    galleryImages = cachedThumbnails;
-    
-    // Update visible images based on active filter
-    if (activeFilter === 'all') {
-      visibleImages = [...galleryImages];
-    } else {
-      // Only include images that are in a gallery-item with the active filter class
-      visibleImages = galleryImages.filter(img => {
-        const galleryItem = img.closest('.gallery-item');
-        return galleryItem && galleryItem.classList.contains(activeFilter);
+    // Check if we're on a page with gallery functionality
+    if (!lightbox || (!galleryGrid && galleryPreviewGrids.length === 0)) return;
+
+    // --- State ---
+    let currentIndex = 0;
+    let visibleImages = [];
+    let activeFilter = 'all';
+    const isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+
+    /**
+     * Updates the gallery view based on the active filter.
+     */
+    function updateGalleryView() {
+      const allItems = document.querySelectorAll('.gallery-item');
+      visibleImages = [];
+
+      allItems.forEach(item => {
+        const isVisible = activeFilter === 'all' || item.classList.contains(activeFilter);
+        item.style.display = isVisible ? 'block' : 'none';
+
+        if (isVisible) {
+          const thumbnail = item.querySelector('.thumbnail');
+          if (thumbnail) {
+            visibleImages.push(thumbnail);
+          }
+        }
       });
     }
-    
-    const endTime = performance.now ? performance.now() : Date.now();
-    window.performance && window.performance.log('updateGalleryImages', endTime - startTime);
-    
-    return galleryImages;
-  }
-  
-  // Create or get progress bar
-  function getProgressBar() {
-    let progressBar = document.getElementById('lightbox-progress');
-    
-    if (!progressBar) {
-      progressBar = document.createElement('div');
-      progressBar.id = 'lightbox-progress';
-      progressBar.className = 'lightbox-progress';
-      
-      // Force styles to ensure visibility
-      progressBar.style.position = 'absolute';
-      progressBar.style.bottom = '0';
-      progressBar.style.left = '0';
-      progressBar.style.height = '4px';
-      progressBar.style.backgroundColor = '#ff4444';
-      progressBar.style.width = '0%';
-      progressBar.style.transition = 'width 0.3s ease';
-      progressBar.style.zIndex = '1003';
-      progressBar.style.display = 'none';
-      
-      lightbox.appendChild(progressBar);
+
+    /**
+     * Initialize visible images for index page (no filtering).
+     */
+    function initializeVisibleImages() {
+      visibleImages = [];
+      const allThumbnails = document.querySelectorAll('.thumbnail');
+      allThumbnails.forEach(thumbnail => {
+        visibleImages.push(thumbnail);
+      });
     }
-    
-    return progressBar;
-  }
-  
-  // Create and get gallery prompt
-  function createGalleryPrompt() {
-    let galleryPrompt = document.getElementById('gallery-prompt');
-    
-    if (!galleryPrompt) {
-      galleryPrompt = document.createElement('div');
-      galleryPrompt.id = 'gallery-prompt';
-      galleryPrompt.className = 'gallery-prompt';
-      
-      // Add styles directly to the document
-      if (!document.getElementById('gallery-prompt-styles')) {
-        const style = document.createElement('style');
-        style.id = 'gallery-prompt-styles';
-        style.textContent = `
-          .gallery-prompt {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1005;
-            width: auto;
-            max-width: 90%;
-            user-select: none;
-          }
-          .prompt-content {
-            background-color: rgba(34, 34, 34, 0.95);
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-          }
-          .prompt-content h3 {
-            font-family: 'UnifrakturMaguntia', cursive;
-            color: #ff4444;
-            font-size: 2em;
-            margin-bottom: 20px;
-          }
-          .prompt-content p {
-            margin-bottom: 25px;
-            font-size: 1.2em;
-            color: #e0e0e0;
-          }
-          .prompt-content .gallery-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #ff4444;
-            color: #1a1a1a;
-            border-radius: 5px;
-            font-size: 20px;
-            transition: background-color 0.3s ease;
-            text-decoration: none;
-            cursor: pointer;
-          }
-          .prompt-content .gallery-btn:hover {
-            background-color: #e03333;
-          }
-        `;
-        document.head.appendChild(style);
-      }
-      
-      galleryPrompt.innerHTML = `
-        <div class="prompt-content">
-          <h3>Explora más diseños</h3>
-          <p>Hay más diseños y trabajos en la galería completa.</p>
-          <a href="gallery" class="gallery-btn">Ver Galería Completa</a>
-        </div>
-      `;
-      
-      lightbox.appendChild(galleryPrompt);
-    }
-    
-    return galleryPrompt;
-  }
-  
-  // Show gallery prompt
-  function showGalleryPrompt() {
-    const galleryPrompt = createGalleryPrompt();
-    galleryPrompt.style.display = 'block';
-    showingGalleryPrompt = true;
-  }
-  
-  // Hide gallery prompt
-  function hideGalleryPrompt() {
-    const galleryPrompt = document.getElementById('gallery-prompt');
-    if (galleryPrompt) {
-      galleryPrompt.style.display = 'none';
-    }
-    showingGalleryPrompt = false;
-  }
-  
-  // Open lightbox with specific image - Optimized
-  function openLightbox(index) {
-    if (navigationLock) {
-      console.log('Navigation locked, waiting...');
-      return;
-    }
-    
-    navigationLock = true;
-    console.log('Setting navigation lock');
-    
-    // Hide gallery prompt if showing
-    if (showingGalleryPrompt) {
-      hideGalleryPrompt();
-    }
-    
-    // Cancel any previous image onload handlers
-    lightboxImg.onload = null;
-    
-    // Update gallery images only if necessary
-    if (galleryImages.length === 0 || visibleImages.length === 0) {
-      updateGalleryImages();
-    }
-    
-    // Ensure index is valid for visible images
-    if (visibleImages.length === 0) {
-      console.error('No visible images to display');
-      navigationLock = false;
-      return;
-    }
-    
-    // Find the index in the full gallery based on the visible index
-    let targetImg;
-    let fullGalleryIndex;
-    
-    if (typeof index === 'number') {
-      // If we're working with visible images array index
+
+    /**
+     * Opens the lightbox to a specific image index.
+     * @param {number} index - The index of the image to show.
+     */
+    function openLightbox(index) {
       if (index < 0 || index >= visibleImages.length) {
-        console.error('Invalid visible image index:', index);
-        navigationLock = false;
         return;
       }
-      
-      targetImg = visibleImages[index];
-      fullGalleryIndex = galleryImages.indexOf(targetImg);
-      
-      // Update current index to the visible images array index
+
       currentIndex = index;
-    } else {
-      // If we're working with an actual image element
-      targetImg = index;
-      fullGalleryIndex = galleryImages.indexOf(targetImg);
+      const img = visibleImages[currentIndex];
+      const pictureEl = img.closest('picture');
+      const webpSource = pictureEl ? pictureEl.querySelector('source[type="image/webp"]') : null;
       
-      // Find the index in the visible images array
-      const visibleIndex = visibleImages.indexOf(targetImg);
-      if (visibleIndex !== -1) {
-        currentIndex = visibleIndex;
-      } else {
-        console.error('Image not in visible set');
-        navigationLock = false;
-        return;
-      }
-    }
-    
-    // Mark all other images as not currently viewed
-    markAllXHRsAsNotCurrentlyViewed();
-    
-    // Get the thumbnail
-    const img = targetImg;
-    
-    // Get source image paths
-    const pictureEl = img.closest('picture');
-    let webpPath = '';
-    let compressedPath = img.src;
-    
-    // Try to get WebP path
-    if (pictureEl) {
-      const sourceEl = pictureEl.querySelector('source[type="image/webp"]');
-      if (sourceEl && sourceEl.srcset) {
-        webpPath = sourceEl.srcset;
-      }
-    }
-    
-    // Get uncompressed path
-    const uncompressedPath = compressedPath
-      .replace('/compressed/', '/uncompressed/')
-      .replace(/\.(jpg|jpeg|png)$/i, `.${compressedPath.split('.').pop()}`);
-    
-    // Display lightbox
-    lightbox.style.display = 'flex';
-    lightboxImg.style.display = 'block'; // Ensure image is visible
-    
-    // Initial state of image
-    lightboxImg.style.opacity = '0.3';
-    
-    const progressBar = getProgressBar();
-    progressBar.style.width = '0%';
-    progressBar.style.display = 'none';
-    
-    // Check if we have a cached blob URL for this image
-    if (blobCache[fullGalleryIndex]) {
-      // Use cached blob URL
-      lightboxImg.src = blobCache[fullGalleryIndex];
+      // Stage 1: Load compressed/WebP version immediately for fast display
+      const initialSrc = webpSource ? webpSource.srcset : img.src;
+      lightboxImg.src = initialSrc;
       lightboxImg.alt = img.alt || 'Imagen ampliada';
-      
-      // Once the image is loaded from cache, we can unlock navigation
-      lightboxImg.onload = function() {
-        lightboxImg.style.opacity = '1';
-        console.log('Releasing navigation lock (cached image loaded)');
-        navigationLock = false;
-      };
-    } else {
-      // First show the compressed/WebP image
-      lightboxImg.src = webpPath || compressedPath;
-      lightboxImg.alt = img.alt || 'Imagen ampliada';
-      
-      // Once the initial compressed image is loaded, unlock navigation
-      lightboxImg.onload = function() {
-        // Clear this handler to prevent multiple calls
-        lightboxImg.onload = null;
-        
-        lightboxImg.style.opacity = '1';
-        console.log('Releasing navigation lock (compressed image loaded)');
-        navigationLock = false;
-        
-        // Now start downloading the high-res version if not already loading/loaded
-        if (!loadingStates[fullGalleryIndex]) {
-          loadHighResImage(fullGalleryIndex, uncompressedPath);
-        }
-      };
+      lightbox.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+      // Stage 2: Progressive enhancement - load high-res version in background
+      loadHighResVersion(img, lightboxImg);
     }
-    
-    // Safety release of navigation lock after a timeout (in case onload never fires)
-    setTimeout(() => {
-      if (navigationLock) {
-        console.log('Safety releasing navigation lock after timeout');
-        navigationLock = false;
-      }
-    }, 3000);
-  }
-  
-  // Function to load high-res image as a separate process
-  function loadHighResImage(index, uncompressedPath) {
-    // Mark this image as currently loading
-    loadingStates[index] = 'loading';
-    
-    // Progress bar should only be visible now, after initial image is loaded
-    const progressBar = getProgressBar();
-    progressBar.style.display = 'block';
-    
-    // Set up a simple XHR to track loading progress
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', uncompressedPath, true);
-    xhr.responseType = 'blob';
-    
-    // Store this XHR as the active one for this index
-    activeXHRs[index] = {
-      xhr: xhr,
-      isCurrentlyViewed: currentIndex === index // Track if this is still in view
-    };
-    
-    // Track progress
-    xhr.onprogress = function(e) {
-      // Only update progress bar if this is still the current image
-      if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed && e.lengthComputable) {
-        const percentComplete = Math.floor((e.loaded / e.total) * 100);
-        progressBar.style.width = `${percentComplete}%`;
-      }
-    };
-    
-    // When high-res image loads
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        // Mark as loaded
-        loadingStates[index] = 'loaded';
-        
-        // Create a blob URL from the response
-        const blob = xhr.response;
-        const blobUrl = URL.createObjectURL(blob);
-        
-        // Cache the blob URL
-        blobCache[index] = blobUrl;
-        
-        // Only update the display if this is still the current image
-        if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed && currentIndex === index) {
-          // Create a new image to test if the blob loads correctly
-          const testImg = new Image();
-          testImg.onload = function() {
-            // If the test load works, update the actual lightbox image
-            lightboxImg.src = blobUrl;
-            progressBar.style.display = 'none';
-          };
-          testImg.onerror = function() {
-            // If there's a problem with the blob, keep using the current image
-            console.error('Could not load blob URL');
-            progressBar.style.display = 'none';
-          };
-          testImg.src = blobUrl;
-        } else {
-          // Not the current image, just hide progress
-          if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed) {
-            progressBar.style.display = 'none';
+
+    /**
+     * Loads high-resolution version of image for better zoom quality.
+     * @param {HTMLImageElement} thumbnail - The thumbnail image element
+     * @param {HTMLImageElement} lightboxImage - The lightbox image element
+     */
+    function loadHighResVersion(thumbnail, lightboxImage) {
+      // Extract filename from thumbnail src
+      const thumbnailSrc = thumbnail.src;
+      const filename = thumbnailSrc.split('/').pop();
+      
+      // Construct uncompressed image path
+      const highResSrc = thumbnailSrc.replace('/compressed/', '/uncompressed/');
+      
+      // Add loading indicator
+      lightboxImage.style.opacity = '0.8';
+      lightboxImage.dataset.highRes = 'loading';
+      
+      // Preload high-res image
+      const highResImg = new Image();
+      highResImg.onload = function() {
+        // Only update if this is still the current lightbox image
+        if (lightboxImage.src.includes(filename.split('.')[0])) {
+          lightboxImage.src = highResSrc;
+          lightboxImage.dataset.highRes = 'true';
+          lightboxImage.style.opacity = '1';
+          
+          // Update magnifier background if it's being used
+          if (magnifier && magnifier.style.display !== 'none') {
+            magnifier.style.backgroundImage = `url('${highResSrc}')`;
           }
         }
-        
-        // Clean up
-        delete activeXHRs[index];
-      } else {
-        // On error
-        loadingStates[index] = 'error';
-        
-        // Hide progress
-        if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed) {
-          progressBar.style.display = 'none';
-        }
-        delete activeXHRs[index];
-      }
-    };
-    
-    xhr.onerror = function() {
-      // On error
-      loadingStates[index] = 'error';
+      };
       
-      // Hide progress
-      if (activeXHRs[index] && activeXHRs[index].isCurrentlyViewed) {
-        progressBar.style.display = 'none';
-      }
-      delete activeXHRs[index];
-    };
-    
-    xhr.send();
-  }
-  
-  // Mark all currently loading images as no longer being viewed
-  function markAllXHRsAsNotCurrentlyViewed() {
-    for (const index in activeXHRs) {
-      if (activeXHRs[index]) {
-        activeXHRs[index].isCurrentlyViewed = false;
-      }
-    }
-    
-    // Hide progress bar
-    const progressBar = document.getElementById('lightbox-progress');
-    if (progressBar) {
-      progressBar.style.display = 'none';
-    }
-  }
-  
-  function prevImage() {
-    // If showing gallery prompt, hide it and go back to the last image
-    if (showingGalleryPrompt) {
-      hideGalleryPrompt();
-      return;
-    }
-    
-    // Check for navigation lock
-    if (navigationLock) {
-      console.log('Navigation locked, cannot go to previous image');
-      return;
-    }
-    
-    // Cancel any onload handlers
-    lightboxImg.onload = null;
-    
-    // Mark all XHRs as not being viewed
-    markAllXHRsAsNotCurrentlyViewed();
-    
-    // Get previous index based on visible images (avoid redundant updateGalleryImages call)
-    const prevIndex = (currentIndex - 1 + visibleImages.length) % visibleImages.length;
-    openLightbox(prevIndex);
-  }
-  
-  function nextImage() {
-    // Check if we're showing the gallery prompt
-    if (showingGalleryPrompt) {
-      hideGalleryPrompt();
+      highResImg.onerror = function() {
+        // If high-res version fails, keep the compressed version
+        lightboxImage.style.opacity = '1';
+        lightboxImage.dataset.highRes = 'failed';
+        console.log('High-res version not available for:', filename);
+      };
       
-      // Go to the first visible image (update gallery images only if needed)
-      if (visibleImages.length === 0) {
-        updateGalleryImages();
-      }
-      openLightbox(0);
-      return;
+      // Start loading high-res version
+      highResImg.src = highResSrc;
     }
-    
-    // Check for navigation lock
-    if (navigationLock) {
-      console.log('Navigation locked, cannot go to next image');
-      return;
+
+    /**
+     * Closes the lightbox.
+     */
+    function closeLightbox() {
+      lightbox.style.display = 'none';
+      if (magnifier) magnifier.style.display = 'none';
+      document.body.style.overflow = ''; // Restore scrolling
     }
-    
-    // Check if we're on the index page and at the last image
-    if (isIndexPage && currentIndex === visibleImages.length - 1) {
-      showGalleryPrompt();
-      return;
+
+    /**
+     * Navigates to the previous or next image.
+     * @param {number} direction - -1 for previous, 1 for next.
+     */
+    function navigateLightbox(direction) {
+      currentIndex = (currentIndex + direction + visibleImages.length) % visibleImages.length;
+      openLightbox(currentIndex);
     }
-    
-    // Cancel any onload handlers
-    lightboxImg.onload = null;
-    
-    // Mark all XHRs as not being viewed
-    markAllXHRsAsNotCurrentlyViewed();
-    
-    // Get next index based on visible images (avoid redundant updateGalleryImages call)
-    const nextIndex = (currentIndex + 1) % visibleImages.length;
-    openLightbox(nextIndex);
-  }
-  
-  // Close lightbox and cleanup
-  function closeLightbox() {
-    // Reset gallery prompt state
-    hideGalleryPrompt();
-    
-    // Cancel any onload handlers
-    lightboxImg.onload = null;
-    
-    // Mark all XHRs as not being viewed
-    markAllXHRsAsNotCurrentlyViewed();
-    
-    // Hide lightbox
-    lightbox.style.display = 'none';
-    
-    // Reset/hide progress bar
-    const progressBar = document.getElementById('lightbox-progress');
-    if (progressBar) {
-      progressBar.style.display = 'none';
-      progressBar.style.width = '0%';
-    }
-  }
-  
-  // Properly revoke blob URLs when the page is being unloaded
-  window.addEventListener('beforeunload', function() {
-    for (const index in blobCache) {
-      if (blobCache[index]) {
-        URL.revokeObjectURL(blobCache[index]);
-      }
-    }
-  });
-  
-  // Set up thumbnail listeners with better performance
-  function setupThumbnailListeners() {
-    // Use cached thumbnails and avoid duplicate listeners
-    if (!cachedThumbnails) {
-      updateGalleryImages(); // This will populate cachedThumbnails
-    }
-    
-    cachedThumbnails.forEach((img) => {
-      // Check if listener is already attached to avoid duplicates
-      if (img.dataset.listenerAttached === 'true') {
-        return;
-      }
-      
-      img.dataset.listenerAttached = 'true';
-      img.addEventListener('click', function() {
-        // When clicking a thumbnail, find its index in the visible images array
-        // Only update if visibleImages is empty (optimization)
-        if (visibleImages.length === 0) {
-          updateGalleryImages();
+
+    /**
+     * Handles magnifier movement on the lightbox image.
+     */
+    function handleMagnifier(e) {
+        const imgRect = lightboxImg.getBoundingClientRect();
+        const mouseX = e.clientX - imgRect.left;
+        const mouseY = e.clientY - imgRect.top;
+
+        if (mouseX < 0 || mouseX > imgRect.width || mouseY < 0 || mouseY > imgRect.height) {
+            magnifier.style.display = 'none';
+            return;
         }
-        const visibleIndex = visibleImages.indexOf(img);
-        
-        if (visibleIndex !== -1) {
-          openLightbox(visibleIndex);
-        } else {
-          console.warn('Clicked on a thumbnail that is not in the visible set');
-        }
-      });
-    });
-  }
-  
-  // Initialize
-  updateGalleryImages();
-  setupThumbnailListeners();
-  
-  // Navigation events
-  if (prevButton) {
-    prevButton.addEventListener('click', function(e) {
-      e.stopPropagation();
-      prevImage();
-    });
-  }
-  
-  if (nextButton) {
-    nextButton.addEventListener('click', function(e) {
-      e.stopPropagation();
-      nextImage();
-    });
-  }
-  
-  // Close button events
-  if (closeButton) {
-    closeButton.addEventListener('click', () => {
-      closeLightbox();
-    });
-  }
-  
-  // Ensure clicking outside the lightbox content closes it even when gallery prompt is showing
-  if (lightbox) {
-    lightbox.addEventListener('click', (e) => {
-      // Check if user clicked directly on the lightbox background (not on any child elements)
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-  }
-  
-  // Keyboard controls
-  document.addEventListener('keydown', (e) => {
-    if (lightbox && lightbox.style.display === 'flex') {
-      if (e.key === 'ArrowLeft') {
-        prevImage();
-      } else if (e.key === 'ArrowRight') {
-        nextImage();
-      } else if (e.key === 'Escape') {
-        closeLightbox();
-      }
+
+        magnifier.style.display = 'block';
+        const ZOOM_LEVEL = 1.2;
+        const MAGNIFIER_SIZE = 400;
+
+        magnifier.style.left = `${e.clientX - MAGNIFIER_SIZE / 2}px`;
+        magnifier.style.top = `${e.clientY - MAGNIFIER_SIZE / 2}px`;
+
+        const bgX = (mouseX / imgRect.width) * lightboxImg.naturalWidth * ZOOM_LEVEL - MAGNIFIER_SIZE / 2;
+        const bgY = (mouseY / imgRect.height) * lightboxImg.naturalHeight * ZOOM_LEVEL - MAGNIFIER_SIZE / 2;
+
+        magnifier.style.backgroundImage = `url('${lightboxImg.src}')`;
+        magnifier.style.backgroundSize = `${lightboxImg.naturalWidth * ZOOM_LEVEL}px ${lightboxImg.naturalHeight * ZOOM_LEVEL}px`;
+        magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
     }
-  });
-  
-  // Magnifier functionality (for non-touch devices)
-  if (!isTouchDevice && lightboxImg && magnifier) {
-    lightboxImg.addEventListener('mousemove', (e) => {
-      const imgRect = lightboxImg.getBoundingClientRect();
-      const imgWidth = lightboxImg.naturalWidth;
-      const imgHeight = lightboxImg.naturalHeight;
-      
-      const mouseX = e.clientX - imgRect.left;
-      const mouseY = e.clientY - imgRect.top;
-      
-      if (mouseX < 0 || mouseX > imgRect.width || 
-          mouseY < 0 || mouseY > imgRect.height) {
-        magnifier.style.display = 'none';
-        return;
-      }
-      magnifier.style.display = 'block';
-      
-      // Position magnifier centered on cursor
-      magnifier.style.left = `${e.clientX - MAGNIFIER_SIZE/2}px`;
-      magnifier.style.top = `${e.clientY - MAGNIFIER_SIZE/2}px`;
-      
-      // Calculate background position for zoom
-      const bgX = (mouseX / imgRect.width) * imgWidth * ZOOM_LEVEL - MAGNIFIER_SIZE/2;
-      const bgY = (mouseY / imgRect.height) * imgHeight * ZOOM_LEVEL - MAGNIFIER_SIZE/2;
-      
-      magnifier.style.backgroundImage = `url('${lightboxImg.src}')`;
-      magnifier.style.backgroundSize = `${imgWidth * ZOOM_LEVEL}px ${imgHeight * ZOOM_LEVEL}px`;
-      magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
-    });
-  
-    lightboxImg.addEventListener('mouseleave', () => {
-      magnifier.style.display = 'none';
-    });
-  }
-  
-  // Cache filter buttons
-  cachedFilterButtons = document.querySelectorAll('.filter-btn');
-  
-  if (cachedFilterButtons.length > 0) {
-    // Add fade animation styles if they don't exist
-    if (!document.getElementById('gallery-animation-styles')) {
-      const style = document.createElement('style');
-      style.id = 'gallery-animation-styles';
-      style.textContent = `
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .gallery-item {
-          transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        
-        .gallery-fade-in {
-          animation: fadeIn 0.7s ease-out;
-        }
-        
-        .gallery-hidden {
-          display: none !important;
-        }
-      `;
-      document.head.appendChild(style);
-    }
-    
-    // Make all gallery items visible by default (cached)
-    if (document.querySelector('.gallery-filter')) {
-      if (!cachedGalleryItems) {
-        cachedGalleryItems = document.querySelectorAll('.gallery-item');
-      }
-      cachedGalleryItems.forEach(item => {
-        item.style.display = 'block';
-        item.classList.add('gallery-fade-in');
-      });
-    }
-    
-    cachedFilterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        // Skip if the button is already active
-        if (button.classList.contains('active')) {
-          return;
-        }
-        
-        // Clear any existing debounce timer
-        if (filterDebounceTimer) {
-          clearTimeout(filterDebounceTimer);
-        }
-        
-        const filter = button.dataset.filter;
-        
-        // Update active state for buttons immediately (visual feedback)
-        cachedFilterButtons.forEach(btn => {
-          btn.classList.remove('active');
-          btn.setAttribute('aria-pressed', 'false');
-        });
-        button.classList.add('active');
-        button.setAttribute('aria-pressed', 'true');
-        
-        // Update active filter
-        activeFilter = filter;
-        
-        // Debounce the actual filtering to prevent rapid successive calls
-        filterDebounceTimer = setTimeout(() => {
-          const startTime = window.performance && window.performance.now ? window.performance.now() : Date.now();
-          window.performance && window.performance.filterOperationCount++;
-          
-          // Cache gallery items if not already cached
-          if (!cachedGalleryItems) {
-            window.performance && window.performance.trackDOMQuery();
-            cachedGalleryItems = document.querySelectorAll('.gallery-item');
-          }
-          
-          // Optimized filtering with batch DOM updates
-          const itemsToShow = [];
-          const itemsToHide = [];
-          
-          // First pass: determine which items to show/hide
-          cachedGalleryItems.forEach(item => {
-            item.classList.remove('gallery-fade-in');
-            if (filter === 'all' || item.classList.contains(filter)) {
-              itemsToShow.push(item);
-            } else {
-              itemsToHide.push(item);
-            }
-          });
-          
-          // Hide items first (batched)
-          itemsToHide.forEach(item => {
-            item.classList.add('gallery-hidden');
-          });
-          
-          // Show items with animation (batched) - use requestAnimationFrame for smooth animation
-          requestAnimationFrame(() => {
-            itemsToShow.forEach(item => {
-              item.classList.remove('gallery-hidden');
-              item.classList.add('gallery-fade-in');
-            });
+
+    /**
+     * Initializes all event listeners for the gallery and lightbox.
+     */
+    function init() {
+      // Initialize filter buttons only if they exist (gallery page)
+      if (filterButtons.length > 0) {
+        filterButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            if (button.classList.contains('active')) return;
             
-            const endTime = window.performance && window.performance.now ? window.performance.now() : Date.now();
-            window.performance && window.performance.log(`filter-${filter}`, endTime - startTime);
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            activeFilter = button.dataset.filter;
+            updateGalleryView();
           });
-          
-          // Update gallery images after filtering
-          updateGalleryImages();
-        }, 50); // 50ms debounce
-      });
-    });
-  }
-  
-  // Social Media Links
-  document.querySelectorAll('.social-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      window.open(btn.href, '_blank');
-    });
-  });
-  
-  // Smooth Scroll
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
         });
       }
-    });
-  });
-  
-  // Hero image load effect
-  const heroImage = document.querySelector('#home img');
-  if (heroImage) {
-    heroImage.onload = () => {
-      heroImage.classList.add('loaded');
-    };
-  }
-  
-  // Mobile menu
-  const hamburgerBtn = document.querySelector('.hamburger-btn');
-  const navLinks = document.querySelector('.nav-links');
-  const navLeft = document.querySelector('.nav-left');
 
-  if (hamburgerBtn && navLinks) {
-    hamburgerBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      navLinks.classList.toggle('active');
-      hamburgerBtn.classList.toggle('active');
-      
-      // Update ARIA attributes
-      const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
-      hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
-    });
-
-    // Close menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!navLeft.contains(e.target) && navLinks.classList.contains('active')) {
-        navLinks.classList.remove('active');
-        hamburgerBtn.classList.remove('active');
-        hamburgerBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    // Close menu when selecting an item
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        hamburgerBtn.classList.remove('active');
-        hamburgerBtn.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
-  // Cookie Consent Banner
-  const cookieBanner = document.getElementById('cookie-banner');
-  const acceptButton = document.getElementById('accept-cookies');
-  const rejectButton = document.getElementById('reject-cookies');
-  
-  if (cookieBanner && acceptButton && rejectButton) {
-    // Check if user has already made a choice
-    const cookieConsent = localStorage.getItem('cookieConsent');
-    
-    if (cookieConsent === null) {
-      // Show banner if no choice has been made
-      cookieBanner.style.display = 'block';
-    } else if (cookieConsent === 'accepted') {
-      // Enable analytics if cookies were accepted
-      // This is already handled by your existing analytics code
-    } else {
-      // Disable analytics if cookies were rejected
-      window['ga-disable-G-FEL31JE33S'] = true;
-    }
-    
-    // Handle accept button click
-    acceptButton.addEventListener('click', function() {
-      localStorage.setItem('cookieConsent', 'accepted');
-      cookieBanner.style.display = 'none';
-    });
-    
-    // Handle reject button click
-    rejectButton.addEventListener('click', function() {
-      localStorage.setItem('cookieConsent', 'rejected');
-      window['ga-disable-G-FEL31JE33S'] = true;
-      cookieBanner.style.display = 'none';
-    });
-  }
-
-  // Cookie Policy Modal
-  const policyModal = document.getElementById('cookie-policy-modal');
-  const policyLink = document.getElementById('open-policy');
-  const policyClose = document.querySelector('.policy-close');
-
-  if (policyLink && policyModal && policyClose) {
-    policyLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      policyModal.style.display = 'block';
-    });
-
-    policyClose.addEventListener('click', () => {
-      policyModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-      if (e.target === policyModal) {
-        policyModal.style.display = 'none';
-      }
-    });
-  }
-
-  // Select all FAQ questions
-  const faqQuestions = document.querySelectorAll('.faq-question');
-  
-  // Add click event listener to each question
-  faqQuestions.forEach(question => {
-    question.addEventListener('click', () => {
-      // Toggle the 'active' class on the clicked question
-      question.classList.toggle('active');
-      
-      // Find the answer element that directly follows the question
-      const answer = question.nextElementSibling;
-      
-      // Ensure the answer is a faq-answer before toggling
-      if (answer && answer.classList.contains('faq-answer')) {
-        answer.classList.toggle('active');
-      }
-    });
-  });
-
-  // Article progress bar
-  const progressBar = document.getElementById('article-progress');
-  const article = document.querySelector('.article-content');
-
-  if (progressBar) {
-    window.addEventListener('scroll', function() {
-      if (article) {
-        const windowHeight = window.innerHeight;
-        const fullHeight = document.body.offsetHeight;
-        const scrolled = window.scrollY;
-
-        // Calculate how far down the page the user has scrolled
-        const scrollProgress = (scrolled / (fullHeight - windowHeight)) * 100;
-
-        progressBar.style.width = scrollProgress + '%';
-      }
-    });
-  }
-
-  // Back to Top Button
-  const backToTopButton = document.getElementById('back-to-top');
-
-  if (backToTopButton) {
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 300) {
-        backToTopButton.classList.add('visible');
-      } else {
-        backToTopButton.classList.remove('visible');
-      }
-    });
-
-    backToTopButton.addEventListener('click', function(e) {
-      e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-  }
-
-  // Smooth scroll for TOC links
-  document.querySelectorAll('.article-toc-list a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('href');
-      const targetElement = document.querySelector(targetId);
-
-      if (targetElement) {
-        const headerOffset = 100;
-        const elementPosition = targetElement.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
+      // Set up click listeners for gallery grid and all preview grids
+      const clickableContainers = [galleryGrid, ...galleryPreviewGrids].filter(Boolean);
+      clickableContainers.forEach(container => {
+        container.addEventListener('click', (e) => {
+          const clickedThumbnail = e.target.closest('.thumbnail');
+          if (clickedThumbnail) {
+            const index = visibleImages.indexOf(clickedThumbnail);
+            if (index > -1) openLightbox(index);
+          }
         });
-      }
-    });
-  });
+      });
 
-// Override navbar title to always use gothic font
-  const navTitle = document.querySelector('.nav-center h1');
-  if (navTitle) {
-    navTitle.style.fontFamily = "'UnifrakturMaguntia', cursive";
-  }
+      // Lightbox navigation and controls
+      if (closeButton) closeButton.addEventListener('click', closeLightbox);
+      if (prevButton) prevButton.addEventListener('click', () => navigateLightbox(-1));
+      if (nextButton) nextButton.addEventListener('click', () => navigateLightbox(1));
+      
+      // Mobile navigation buttons
+      if (mobilePrevButton) mobilePrevButton.addEventListener('click', () => navigateLightbox(-1));
+      if (mobileNextButton) mobileNextButton.addEventListener('click', () => navigateLightbox(1));
 
-  // ACCESSIBILITY CONTROLS - CONSOLIDATED CODE
-  // Get all required elements for accessibility features
-  const accessibilityToggle = document.querySelector('.accessibility-toggle');
-  const accessibilityOptions = document.querySelector('.accessibility-options');
-  const accessibilityPanel = document.querySelector('.accessibility-panel');
-  const modeToggleBtn = document.getElementById('mode-toggle-btn');
-  const highContrastBtn = document.getElementById('high-contrast-btn');
-  const fontToggleBtn = document.getElementById('font-toggle-btn');
-  
-  // Accessibility Panel Toggle
-  if (accessibilityToggle && accessibilityOptions && accessibilityPanel) {
-    // Initialize panel based on saved state
-    const savedPanelState = localStorage.getItem('accessibilityPanelOpen');
-    if (savedPanelState === 'true') {
-      accessibilityOptions.classList.add('active');
-      accessibilityToggle.setAttribute('aria-expanded', 'true');
-    }
-    
-    // Toggle panel visibility
-    accessibilityToggle.addEventListener('click', function(e) {
-      e.stopPropagation();
-      
-      accessibilityOptions.classList.toggle('active');
-      
-      // Update ARIA states
-      const isExpanded = accessibilityOptions.classList.contains('active');
-      accessibilityToggle.setAttribute('aria-expanded', isExpanded);
-      
-      // Save state to localStorage
-      localStorage.setItem('accessibilityPanelOpen', isExpanded);
-    });
-    
-    // Close panel when clicking outside
-    document.addEventListener('click', function(e) {
-      if (accessibilityPanel && !accessibilityPanel.contains(e.target) && 
-          accessibilityOptions.classList.contains('active')) {
-        accessibilityOptions.classList.remove('active');
-        accessibilityToggle.setAttribute('aria-expanded', 'false');
-        localStorage.setItem('accessibilityPanelOpen', 'false');
-      }
-    });
-  }
-  
-  // FONT TOGGLE
-  if (fontToggleBtn) {
-    // Initialize based on saved preference
-    const savedFont = localStorage.getItem('website-font');
-    if (savedFont === 'roboto') {
-      document.body.classList.add('roboto-font');
-      fontToggleBtn.classList.add('active');
-    }
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
 
-    // Add click event listener to the toggle button
-    fontToggleBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      
-      // Toggle the roboto-font class on the body
-      document.body.classList.toggle('roboto-font');
-      
-      // Toggle active class on button
-      fontToggleBtn.classList.toggle('active');
-
-      // Save preference to localStorage
-      if (document.body.classList.contains('roboto-font')) {
-        localStorage.setItem('website-font', 'roboto');
-      } else {
-        localStorage.removeItem('website-font');
-      }
-    });
-  }
-  
-  // MODE TOGGLES (LIGHT/DARK AND HIGH CONTRAST)
-  if (modeToggleBtn && highContrastBtn) {
-    // Initialize based on saved preferences
-    const savedLightMode = localStorage.getItem('color-mode');
-    const savedHighContrast = localStorage.getItem('high-contrast-mode');
-    
-    // Apply saved preferences (high contrast takes precedence)
-    if (savedHighContrast === 'enabled') {
-      document.body.classList.add('high-contrast-mode');
-      highContrastBtn.classList.add('active');
-      // Ensure light mode is off
-      document.body.classList.remove('light-mode');
-      modeToggleBtn.classList.remove('active');
-      modeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
-    } else if (savedLightMode === 'light') {
-      document.body.classList.add('light-mode');
-      modeToggleBtn.classList.add('active');
-      modeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
-    }
-    
-    // Light/Dark mode toggle handler
-    modeToggleBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      
-      // If high contrast is active, turn it off first
-      if (document.body.classList.contains('high-contrast-mode')) {
-        document.body.classList.remove('high-contrast-mode');
-        highContrastBtn.classList.remove('active');
-        localStorage.removeItem('high-contrast-mode');
-      }
-      
-      // Then toggle light mode
-      document.body.classList.toggle('light-mode');
-      
-      // Update button state and storage
-      if (document.body.classList.contains('light-mode')) {
-        modeToggleBtn.classList.add('active');
-        modeToggleBtn.innerHTML = '<i class="fas fa-moon"></i> Modo Oscuro';
-        localStorage.setItem('color-mode', 'light');
-      } else {
-        modeToggleBtn.classList.remove('active');
-        modeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
-        localStorage.removeItem('color-mode');
-      }
-    });
-    
-    // High contrast toggle handler
-    highContrastBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      
-      // If in light mode, switch to dark mode first
-      if (document.body.classList.contains('light-mode')) {
-        document.body.classList.remove('light-mode');
-        modeToggleBtn.classList.remove('active');
-        modeToggleBtn.innerHTML = '<i class="fas fa-sun"></i> Modo Claro';
-        localStorage.removeItem('color-mode');
-      }
-      
-      // Then toggle high contrast
-      document.body.classList.toggle('high-contrast-mode');
-      
-      // Update button state and storage
-      if (document.body.classList.contains('high-contrast-mode')) {
-        highContrastBtn.classList.add('active');
-        localStorage.setItem('high-contrast-mode', 'enabled');
-      } else {
-        highContrastBtn.classList.remove('active');
-        localStorage.removeItem('high-contrast-mode');
-      }
-    });
-  }
-});
-
-// Set up intersection observer to highlight the current section
-// Only initialize if needed
-if (document.querySelector('.article-toc-list') && document.querySelector('.article-content')) {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      // When a section is visible
-      if (entry.isIntersecting) {
-        // Get its ID
-        const id = entry.target.getAttribute('id');
-        
-        // Remove .active class from all TOC links
-        document.querySelectorAll('.article-toc-list a').forEach(link => {
-          link.classList.remove('active');
-        });
-        
-        // Add .active class to the corresponding TOC link
-        const correspondingLink = document.querySelector(`.article-toc-list a[href="#${id}"]`);
-        if (correspondingLink) {
-          correspondingLink.classList.add('active');
+      document.addEventListener('keydown', (e) => {
+        if (lightbox.style.display === 'flex') {
+          if (e.key === 'Escape') closeLightbox();
+          if (e.key === 'ArrowLeft') navigateLightbox(-1);
+          if (e.key === 'ArrowRight') navigateLightbox(1);
         }
-      }
-    });
-  }, {
-    rootMargin: '-100px 0px -50% 0px', // Adjust these values to control when a section is considered "active"
-    threshold: 0
-  });
+      });
 
-  // Observe all headings in the article content
-  document.querySelectorAll('.article-content h2, .article-content h3').forEach(heading => {
-    if (heading.id) {
-      observer.observe(heading);
+      if (!isTouchDevice && lightboxImg && magnifier) {
+        lightboxImg.addEventListener('mousemove', handleMagnifier);
+        lightboxImg.addEventListener('mouseleave', () => {
+            magnifier.style.display = 'none';
+        });
+      }
+      
+      // Initialize images based on page type
+      if (galleryGrid) {
+        updateGalleryView(); // Gallery page with filtering
+      } else {
+        initializeVisibleImages(); // Index page without filtering
+      }
     }
-  });
-}
+
+    init();
+  })();
+
+  // ===================================
+  // ===== MOBILE NAVIGATION MODULE ===
+  // ===================================
+  const mobileNavModule = (() => {
+    const hamburgerBtn = document.querySelector('.hamburger-btn');
+    const navLinks = document.querySelector('.nav-links');
+    const navContainer = document.querySelector('.nav-left'); // Container for the menu
+
+    if (!hamburgerBtn || !navLinks || !navContainer) return;
+
+    function toggleMenu(forceClose = false) {
+      const isActive = navLinks.classList.contains('active') && !forceClose;
+      navLinks.classList.toggle('active', !isActive);
+      hamburgerBtn.classList.toggle('active', !isActive);
+      hamburgerBtn.setAttribute('aria-expanded', !isActive);
+    }
+
+    function init() {
+      hamburgerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!navContainer.contains(e.target) && navLinks.classList.contains('active')) {
+          toggleMenu(true); // Force close
+        }
+      });
+
+      navLinks.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          toggleMenu(true); // Force close on link click
+        }
+      });
+    }
+    
+    init();
+  })();
+
+  // ===================================
+  // ===== ACCESSIBILITY MODULE ========
+  // ===================================
+  const accessibilityModule = (() => {
+    const accessibilityToggle = document.querySelector('.accessibility-toggle');
+    const accessibilityOptions = document.querySelector('.accessibility-options');
+    const accessibilityPanel = document.querySelector('.accessibility-panel');
+    const fontToggleBtn = document.getElementById('font-toggle-btn');
+    const highContrastBtn = document.getElementById('high-contrast-btn');
+    const modeToggleBtn = document.getElementById('mode-toggle-btn'); // Assuming this is for light/dark mode
+
+    if (!accessibilityPanel) return;
+
+    function applyPreference(key, className, element = document.body) {
+      if (localStorage.getItem(key) === 'true') {
+        element.classList.add(className);
+        // Also update button state if a button is associated with it
+        if (key === 'website-font' && fontToggleBtn) fontToggleBtn.classList.add('active');
+        if (key === 'high-contrast-mode' && highContrastBtn) highContrastBtn.classList.add('active');
+      }
+    }
+
+    function togglePreference(key, className, button, element = document.body) {
+        const isEnabled = element.classList.toggle(className);
+        localStorage.setItem(key, isEnabled);
+        if (button) button.classList.toggle('active', isEnabled);
+    }
+
+    function init() {
+      // Apply saved preferences on page load
+      applyPreference('website-font', 'roboto-font');
+      applyPreference('high-contrast-mode', 'high-contrast-mode');
+      // Add dark mode if it exists
+      // applyPreference('dark-mode', 'dark-mode'); 
+
+      if (localStorage.getItem('accessibilityPanelOpen') === 'true') {
+        accessibilityOptions.classList.add('active');
+        accessibilityToggle.setAttribute('aria-expanded', 'true');
+      }
+
+      accessibilityToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = accessibilityOptions.classList.toggle('active');
+        accessibilityToggle.setAttribute('aria-expanded', isExpanded);
+        localStorage.setItem('accessibilityPanelOpen', isExpanded);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!accessibilityPanel.contains(e.target) && accessibilityOptions.classList.contains('active')) {
+          accessibilityOptions.classList.remove('active');
+          accessibilityToggle.setAttribute('aria-expanded', 'false');
+          localStorage.setItem('accessibilityPanelOpen', 'false');
+        }
+      });
+
+      if (fontToggleBtn) {
+        fontToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePreference('website-font', 'roboto-font', fontToggleBtn);
+        });
+      }
+
+      if (highContrastBtn) {
+        highContrastBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          togglePreference('high-contrast-mode', 'high-contrast-mode', highContrastBtn);
+        });
+      }
+      
+      // Add listener for dark/light mode toggle if it exists
+      // if (modeToggleBtn) { ... }
+    }
+
+    init();
+  })();
+
+  // ===================================
+  // ===== COOKIE CONSENT MODULE =======
+  // ===================================
+  const cookieConsentModule = (() => {
+    const cookieBanner = document.getElementById('cookie-banner');
+    const acceptButton = document.getElementById('accept-cookies');
+    const rejectButton = document.getElementById('reject-cookies');
+    const policyModal = document.getElementById('cookie-policy-modal');
+    const policyLink = document.getElementById('open-policy');
+    const policyClose = document.querySelector('.policy-close');
+
+    if (!cookieBanner) return;
+
+    function handleConsent(consent) {
+      localStorage.setItem('cookieConsent', consent);
+      cookieBanner.style.display = 'none';
+      if (consent === 'rejected') {
+        window['ga-disable-G-FEL31JE33S'] = true;
+      }
+    }
+
+    function init() {
+      const consent = localStorage.getItem('cookieConsent');
+      if (consent === null) {
+        cookieBanner.style.display = 'block';
+      } else if (consent === 'rejected') {
+        window['ga-disable-G-FEL31JE33S'] = true;
+      }
+
+      acceptButton.addEventListener('click', () => handleConsent('accepted'));
+      rejectButton.addEventListener('click', () => handleConsent('rejected'));
+
+      if (policyLink && policyModal) {
+        policyLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          policyModal.style.display = 'block';
+        });
+
+        policyClose.addEventListener('click', () => {
+          policyModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+          if (e.target === policyModal) {
+            policyModal.style.display = 'none';
+          }
+        });
+      }
+    }
+
+    init();
+  })();
+
+  // ===================================
+  // ===== UI & GENERAL UTILITIES ======
+  // ===================================
+  const uiUtilsModule = (() => {
+    
+    /**
+     * Smooth scrolling for anchor links.
+     */
+    function smoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          // Do not scroll for placeholder hrefs
+          if (targetId === '#') return;
+          
+          const target = document.querySelector(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    }
+
+    /**
+     * FAQ Accordion functionality.
+     */
+    function faqAccordion() {
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      
+      faqQuestions.forEach((question, index) => {
+        // Open the first FAQ item by default
+        if (index === 0) {
+          const answer = question.nextElementSibling;
+          if (answer && answer.classList.contains('faq-answer')) {
+            question.classList.add('active');
+            answer.classList.add('active');
+            question.setAttribute('aria-expanded', 'true');
+          }
+        }
+        
+        question.addEventListener('click', () => {
+          const answer = question.nextElementSibling;
+          if (answer && answer.classList.contains('faq-answer')) {
+            // Toggle active classes for question and answer
+            question.classList.toggle('active');
+            answer.classList.toggle('active');
+            // Update ARIA attribute
+            const isExpanded = question.classList.contains('active');
+            question.setAttribute('aria-expanded', isExpanded);
+          }
+        });
+      });
+    }
+
+    /**
+     * Article-specific features: progress bar and TOC smooth scroll.
+     */
+    function articleFeatures() {
+      const progressBar = document.getElementById('article-progress');
+      const articleContent = document.querySelector('.article-content');
+
+      if (progressBar && articleContent) {
+        window.addEventListener('scroll', () => {
+          const windowHeight = window.innerHeight;
+          const fullHeight = document.body.scrollHeight;
+          const scrolled = window.scrollY;
+          const scrollProgress = (scrolled / (fullHeight - windowHeight)) * 100;
+          progressBar.style.width = `${scrollProgress}%`;
+        });
+      }
+
+      document.querySelectorAll('.article-toc-list a').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetElement = document.querySelector(this.getAttribute('href'));
+          if (targetElement) {
+            const headerOffset = 100; // Adjust for fixed header
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+          }
+        });
+      });
+    }
+
+    /**
+     * "Back to Top" button visibility and functionality.
+     */
+    function backToTop() {
+      const button = document.getElementById('back-to-top');
+      if (!button) return;
+
+      window.addEventListener('scroll', () => {
+        button.classList.toggle('visible', window.scrollY > 300);
+      });
+
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+    
+    /**
+     * Force specific font on navbar title.
+     */
+    function forceNavTitleFont() {
+        const navTitle = document.querySelector('.nav-center h1');
+        if (navTitle) {
+            navTitle.style.fontFamily = "'UnifrakturMaguntia', cursive";
+        }
+    }
+
+    /**
+     * Initialize all UI utilities.
+     */
+    function init() {
+      smoothScroll();
+      faqAccordion();
+      articleFeatures();
+      backToTop();
+      forceNavTitleFont();
+    }
+
+    init();
+  })();
+
+});

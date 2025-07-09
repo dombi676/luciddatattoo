@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- =======================
+         SECURITY & PRELOADS
+    ======================== -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
+        style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
+        frame-src 'none';
+        object-src 'none';">
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="fonts/UnifrakturMaguntia.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="fonts/MedievalSharp.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Roboto-Light.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="script.js?v=1.1" as="script">
+
+    <!-- =======================
+         META & SEO
+    ======================== -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guía completa de cuidados para tatuajes: antes, durante y después de la sesión. Consejos profesionales para una óptima cicatrización y durabilidad de tu tattoo.">
+    <meta name="keywords" content="cuidado tatuajes, aftercare tattoo, preparación tatuaje, cicatrización tatuaje, mantener tatuaje, curar tatuaje, Lucidda Tattoo">
+    <title>Tatuajes: Preparación previa y cuidados posteriores - Guía completa | Lucidda Tattoo</title>
+
+    <!-- =======================
+         STYLES & ICONS
+    ======================== -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Roboto for article readability -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- =======================
+         FAVICONS
+    ======================== -->
+    <link rel="icon" href="favicon96.ico?v=2">
+    <link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="images/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="images/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="images/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="images/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-icon-180x180.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="images/icons/apple-icon-precomposed.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="images/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="images/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ff4444">
+
+    <!-- =======================
+         SOCIAL & SEO META TAGS
+    ======================== -->
+    <meta property="og:title" content="Guía completa para el cuidado de tatuajes | Lucidda Tattoo">
+    <meta property="og:description" content="Todo lo que necesitás saber sobre los cuidados de tu tatuaje: antes, durante y después de la sesión. Guía profesional para una correcta cicatrización.">
+    <meta property="og:image" content="https://lucidda.tattoo/images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg">
+    <meta property="og:url" content="https://lucidda.tattoo/blog/guia-completa-cuidado-tatuajes">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="Lucidda Tattoo Jujuy">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Guía completa para el cuidado de tatuajes | Lucidda Tattoo">
+    <meta name="twitter:description" content="Todo lo que necesitás saber sobre los cuidados de tu tatuaje: antes, durante y después de la sesión. Guía profesional para una correcta cicatrización.">
+    <meta name="twitter:image" content="https://lucidda.tattoo/images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg">
+
+    <!-- =======================
+         CANONICAL
+    ======================== -->
+    <link rel="canonical" href="https://lucidda.tattoo/blog/guia-completa-cuidado-tatuajes">
+
+    <!-- =======================
+         GOOGLE ANALYTICS
+    ======================== -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
+    <script async src="analytics.js"></script>
+</head>
+
+<body data-page="blog-article">
+    <!-- =======================
+         NAVIGATION BAR
+    ======================== -->
+    <nav role="navigation" aria-label="Main navigation">
+        <div class="nav-left">
+            <!-- Hamburger menu for mobile -->
+            <button class="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+            <!-- Main navigation links (unified with other pages) -->
+            <ul class="nav-links" id="nav-links" role="menu">
+                <li role="none"><a href="index#home" role="menuitem">Inicio</a></li>
+                <li role="none"><a href="gallery" role="menuitem">Galería</a></li>
+                <li role="none"><a href="tatuajes-preparacion-y-cuidados" role="menuitem">Preparación y Cuidados</a></li>
+                <!-- WhatsApp button inside mobile menu -->
+                <li role="none" class="mobile-menu-whatsapp">
+                    <a href="contacto-web" class="whatsapp-btn mobile-menu-whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="mobile_menu" role="menuitem">
+                        <i class="fab fa-whatsapp"></i> Agendá tu Turno
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="nav-center">
+            <h1>Lucidda Tattoo</h1>
+        </div>
+        <div class="nav-right">
+            <!--
+            <button id="font-toggle-btn" class="font-toggle-btn" aria-label="Cambiar Letra">
+                Cambiar Fuente
+            </button>
+            -->
+            <!-- Desktop WhatsApp button -->
+            <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
+                <i class="fab fa-whatsapp"></i> Agendá tu Turno
+            </a>
+        </div>
+    </nav>
+
+    <!-- =======================
+         MAIN ARTICLE CONTENT
+    ======================== -->
+    <main class="article-container">
+        <article>
+            <header class="article-header">
+                <!-- <span class="article-category">Cuidados</span> -->
+                <h1 class="article-title">Tatuajes: Preparación previa y cuidados posteriores</h1>
+                <!-- 
+                <div class="article-meta">
+                    <div class="article-author">
+                        <img src="/images/compressed/logo4.png" alt="Lucía Daiana Nuñez" class="author-avatar">
+                        <span>Por Lucía Nuñez</span>
+                    </div>
+                    <div class="article-date">
+                        <i class="far fa-calendar"></i>
+                        <span>10 de marzo de 2025</span>
+                    </div>
+                </div>
+                -->
+            </header>
+
+            <picture>
+                <source srcset="images/webp/tatuaje-alas-espalda-neotribal-puntillismo.webp" type="image/webp">
+                <img src="images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg"
+                    alt="Tatuaje de alas con estilo neotribal en la espalda - Cuidado de tatuajes"
+                    class="article-featured-image" loading="lazy">
+            </picture>
+            <div class="article-toc">
+                <h3 class="article-toc-title">Contenido del artículo</h3>
+                <ul class="article-toc-list">
+                    <li><a href="#introduccion">Introducción</a></li>
+                    <li><a href="#antes">Antes del tatuaje</a></li>
+                    <li class="article-toc-subitem"><a href="#preparacion-piel">Preparación de la piel</a></li>
+                    <li class="article-toc-subitem"><a href="#alimentacion-hidratacion">Alimentación e hidratación</a>
+                    </li>
+                    <li class="article-toc-subitem"><a href="#recomendaciones-previas">Recomendaciones previas</a></li>
+                    <li><a href="#durante">Durante la sesión</a></li>
+                    <li class="article-toc-subitem"><a href="#comodidad">Consejos para mayor comodidad</a></li>
+                    <li class="article-toc-subitem"><a href="#comunicacion">Comunicación con tu tatuador</a></li>
+                    <li><a href="#despues">Después del tatuaje</a></li>
+                    <li class="article-toc-subitem"><a href="#primeras-horas">Las primeras 24-48 horas</a></li>
+                    <li class="article-toc-subitem"><a href="#limpieza">Limpieza adecuada</a></li>
+                    <li class="article-toc-subitem"><a href="#hidratacion">Hidratación del tatuaje</a></li>
+                    <li class="article-toc-subitem"><a href="#cicatrizacion">El proceso de cicatrización</a></li>
+                    <li><a href="#largo-plazo">Cuidados a largo plazo</a></li>
+                    <li><a href="#complicaciones">Complicaciones y cuándo consultar</a></li>
+                    <li><a href="#conclusion">Conclusión</a></li>
+                </ul>
+            </div>
+            <div class="article-content-wrapper">
+                <div class="article-content">
+                    <h2 id="introduccion">Introducción</h2>
+                    <p>Después de años tatuando, algo que me sorprende es la cantidad de gente que no sabe cómo cuidar 
+                        sus tatuajes. Lo entiendo: cuando estás emocionado con tu nueva pieza, querés que se vea perfecta 
+                        para siempre. Y la verdad es que con los cuidados correctos, puede ser así.</p>
+
+                    <p>Cada vez que termino un tatuaje, dedico tiempo a explicar exactamente qué hacer en casa. Pero sé 
+                        que con los nervios y la adrenalina del momento, a veces se olvidan detalles importantes. Por eso 
+                        armé esta guía: para que tengas todo claro, paso a paso, desde el momento que salís del estudio 
+                        hasta que tu tatuaje esté completamente sanado.</p>
+
+                    <div class="article-callout">
+                        <p>Algo importante: esto es lo que funciona en mi experiencia y con mis clientes. Cada tatuador 
+                            puede tener variaciones en sus recomendaciones, así que siempre seguí primero lo que te diga 
+                            quien hizo tu trabajo.</p>
+                    </div>
+
+                    <h2 id="antes">Antes del tatuaje: Preparándote para la sesión</h2>
+
+                    <h3 id="preparacion-piel">Cuidá tu piel los días previos</h3>
+                    <p>La piel está en contacto directo con la aguja, así que tiene sentido que su estado afecte 
+                        tanto el proceso como el resultado. Te cuento qué podés hacer:</p>
+
+                    <ul>
+                        <li><strong>Hidratá bien la zona:</strong> Empezá una semana antes a usar crema en el área 
+                            que vas a tatuar. Una piel hidratada "toma" mejor la tinta y sana más rápido.</li>
+                        <li><strong>Nada de sol:</strong> Por favor, no te quemes o broncees la zona las dos semanas 
+                            anteriores. La piel irritada o muy bronceada es un problema para trabajar.</li>
+                        <li><strong>Suspendé exfoliantes:</strong> Si usás productos con ácidos o exfoliantes, dejá 
+                            de aplicarlos en la zona una semana antes.</li>
+                        <li><strong>Sobre el afeitado:</strong> Yo me encargo de afeitar en el estudio, pero si tenés 
+                            mucho pelo podés hacerlo suavemente el día anterior. Ojo con no lastimarte.</li>
+                    </ul>
+
+                    <figure>
+                        <picture>
+                            <source srcset="images/webp/tatuaje-luna-sol-brazo-fineline.webp" type="image/webp">
+                            <img src="images/compressed/tatuaje-luna-sol-brazo-fineline.jpg"
+                                alt="Tatuaje de luna y sol en línea fina, ejemplo de piel bien preparada" loading="lazy">
+                        </picture>
+                        <figcaption>Tatuaje de luna y sol en línea fina - La piel bien preparada e hidratada permite trabajar con mayor precisión</figcaption>
+                    </figure>
+
+                    <h3 id="alimentacion-hidratacion">Comé bien y tomá agua</h3>
+
+                    <ul>
+                        <li><strong>Tomá mucha agua:</strong> El día anterior y el mismo día de la sesión. Cuando estás 
+                            bien hidratado, la piel es más elástica y toma mejor la tinta.</li>
+                        <li><strong>Comé algo antes:</strong> Unas dos horas antes está perfecto.</li>
+                        <li><strong>Evitar el alcohol:</strong> Si es posible, evitá tomar alcohol y drogas el día anterior. El alcohol diluye la 
+                            sangre, y eso puede hacerte sangrar más durante el tatuaje.</li>
+                    </ul>
+
+                    <h3 id="recomendaciones-previas">Otras cosas que van a ayudar</h3>
+                    <p>Son detalles, pero marcan diferencia:</p>
+
+                    <ul>
+                        <li><strong>Dormí bien:</strong> Una noche de sueño te va a ayudar a aguantar mejor 
+                            el dolor y a estar más relajado durante la sesión.</li>
+                        <li><strong>Ropa cómoda:</strong> Ponete algo que me permita acceder fácil a la zona y que no te importe 
+                            si se mancha. Preferiblemente oscuro.</li>
+                        <li><strong>Cuidado con los medicamentos:</strong> Si tomás aspirinas o ibuprofeno regularmente, 
+                            consultá con tu médico si podés suspenderlos un día antes. Hacen que sangres más.</li>
+                    </ul>
+
+                    <div class="article-callout">
+                        <p><strong>Importante:</strong> Si tomás medicación recetada, no la suspendas sin consultar 
+                            con tu médico. Y avisame siempre si tenés alguna condición médica o alergias.</p>
+                    </div>
+
+                    <h2 id="durante">Durante la sesión: Cómo hacer que sea más llevadero</h2>
+
+                    <h3 id="comodidad">Para que duela menos</h3>
+                    <p>El dolor es parte del proceso. Pero hay formas de que sea más tolerable:</p>
+
+                    <ul>
+                        <li><strong>Respirá tranquilo:</strong> Mantené la respiración normal y profunda. Cuando te 
+                            tensás y contenés la respiración, todo duele más.</li>
+                        <li><strong>Seguí tomando agua:</strong> Especialmente en sesiones largas. Te mantiene hidratado 
+                            y evita que te marees.</li>
+                        <li><strong>Pedí descansos:</strong> No seas héroe. Si necesitás una pausa, pedila. Es mejor 
+                            eso que moverte mientras trabajo.</li>
+                        <li><strong>Encontrá una posición cómoda:</strong> Acomodate desde el principio. Si estás 
+                            incómodo, te vas a tensar y va a ser peor. No tengas miedo de pedirme cambiar posicion las veces que sea hasta que estés comodo.</li>
+                    </ul>
+
+                    <h3 id="comunicacion">Hablame</h3>
+                    <p>La comunicación es clave para que todo salga bien:</p>
+
+                    <ul>
+                        <li><strong>Decime si algo no va bien:</strong> Si el dolor es demasiado o te sentís mal, 
+                            avisame. Puedo ajustar la técnica o hacer una pausa.</li>
+                        <li><strong>Sé honesto:</strong> No trates de aguantar si no podés. Es mejor tomarse un respiro 
+                            que moverte mientras trabajo.</li>
+                        <li><strong>Preguntá:</strong> Si tenés curiosidad sobre lo que estoy haciendo o por qué uso 
+                            cierta técnica, preguntá nomás. Me gusta explicar mi trabajo.</li>
+                        <li><strong>Recordá que es un proceso:</strong> El tatuaje recién hecho no se ve igual que 
+                            cuando esté cicatrizado. Los colores se ven más intensos y la piel está irritada.</li>
+                    </ul>
+
+                    <figure>
+                        <picture>
+                            <source srcset="images/webp/tatuaje-corazon-ojo-cristales-fuego-pierna.webp" type="image/webp">
+                            <img src="images/compressed/tatuaje-corazon-ojo-cristales-fuego-pierna.jpg"
+                                alt="Tatuaje en proceso mostrando la comunicación entre tatuador y cliente" loading="lazy">
+                        </picture>
+                        <figcaption>Trabajo complejo de corazón con ojo y elementos en la pierna - La buena comunicación durante la sesión es clave para resultados detallados</figcaption>
+                    </figure>
+
+                    <h2 id="despues">Después del tatuaje: Lo más importante</h2>
+
+                    <h3 id="primeras-horas">Los primeros días</h3>
+                    <p>Los primeros días son críticos para que tu tatuaje cure bien:</p>
+
+                    <ul>
+                        <li><strong>El parche dérmico:</strong> Uso una película transparente que es como una segunda 
+                            piel. Dejatelo puesto hasta 4 días después del tatuaje. Si te molesta o se empieza a salir te lo podés sacar antes pero no es ideal</li>
+                        <li><strong>Sacarse el parche:</strong> Lo mejor es bajo la ducha, desde arriba hacia abajo te despegas suavemente el parche.</li>
+                        <li><strong>Primera lavada:</strong> Agua tibia y jabón neutro (de glicerina sin perfume es ideal). Lavate suavemente con las yemas de 
+                            los dedos, sin frotar.</li>
+                        <li><strong>Secá bien:</strong> Con papel higienico o servilleta, haciendo toques suaves. Nunca frotes.</li>
+                        <li><strong>Nada de inmersión:</strong> Por dos semanas mínimo, nada de pileta, mar o baños 
+                            largos. Ducha rápida está bien.</li>
+                    </ul>
+
+                    <div class="article-callout">
+                        <p>En las primeras 48 horas va a salir un poco de plasma y tinta. Es totalmente normal. 
+                            Si estás usando parche dérmico, vas a ver un líquido amarillento debajo, y eso está bien.</p>
+                    </div>
+
+                    <h3 id="limpieza">Cómo lavarlo bien</h3>
+                    <p>La limpieza correcta previene infecciones y ayuda a la cicatrización:</p>
+
+                    <ul>
+                        <li><strong>Cada cuánto:</strong> 2-3 veces por día durante las primeras dos semanas.</li>
+                        <li><strong>Cómo hacerlo:</strong> Con las yemas de los dedos, en movimientos circulares suaves.</li>
+                        <li><strong>Qué usar:</strong> Jabón neutro sin perfume. El jabón de glicerina funciona perfecto.</li>
+                        <li><strong>Enjuagá bien:</strong> Asegurate de sacar todo el jabón.</li>
+                        <li><strong>Secá sin frotar:</strong> Siempre toques suaves con papel.</li>
+                    </ul>
+
+                    <h3 id="hidratacion">Mantenerlo hidratado</h3>
+                    <p>La hidratación es fundamental para que cicatrice bien:</p>
+
+                    <ul>
+                        <li><strong>Qué crema usar:</strong> Yo recomiendo Dermaglós Crema Terapéutica, Bepanthen Baby o Bagovit A. Sin perfumes.</li>
+                        <li><strong>Cómo aplicarla:</strong> Una capa finita. La piel tiene que 
+                            quedar hidratada, no grasosa.</li>
+                        <li><strong>Por cuánto tiempo:</strong> Seguí hidratando 3-4 semanas mínimo, aunque ya se vea 
+                            bien.</li>
+                        <li><strong>Qué evitar:</strong> Nada de vaselina después de los primeros días, ni productos 
+                            con alcohol o perfumes.</li>
+                    </ul>
+
+                    <h3 id="cicatrizacion">Cómo va a cicatrizar</h3>
+                    <p>Conocer las etapas te ayuda a no asustarte con lo que es normal:</p>
+
+                    <ul>
+                        <li><strong>Días 1-3:</strong> Va a estar rojo, un poco hinchado, y puede que salga plasma y 
+                            tinta. Se ve súper intenso y brillante.</li>
+                        <li><strong>Días 3-7:</strong> Empieza a descamarse y pica. Puede verse medio opaco. Por favor, 
+                            no rasques ni tires la piel.</li>
+                        <li><strong>Días 7-14:</strong> Se descama más. Va a verse irregular en algunas partes, es normal.</li>
+                        <li><strong>Días 14-30:</strong> La piel de arriba ya se renovó, pero por adentro sigue sanando.</li>
+                        <li><strong>3-6 meses:</strong> Recién acá está completamente cicatrizado. Los colores se 
+                            asientan y se ve como va a quedar para siempre.</li>
+                    </ul>
+
+                    <figure>
+                        <picture>
+                            <source srcset="images/webp/tatuaje-freehand-hombro-neotribal.webp" type="image/webp">
+                            <img src="images/compressed/tatuaje-freehand-hombro-neotribal.jpg"
+                                alt="Tatuaje neotribal completamente cicatrizado" loading="lazy">
+                        </picture>
+                        <figcaption>Tatuaje neotribal freehand en el hombro completamente cicatrizado - Resultado después de seguir correctamente el proceso de cuidados</figcaption>
+                    </figure>
+
+                    <h2 id="largo-plazo">Cuidados a largo plazo: Para que dure toda la vida</h2>
+                    <p>Una vez que cicatrizó, tu tatuaje todavía necesita algunos cuidados básicos:</p>
+
+                    <ul>
+                        <li><strong>Protección solar:</strong> Este es el punto más importante. El sol es lo que más 
+                            arruina los tatuajes. Siempre protector FPS 50+ cuando te exponés, incluso años después.</li>
+                        <li><strong>Seguí hidratando:</strong> Mantené la piel humectada siempre. Una piel seca hace 
+                            que los tatuajes se vean opacos y viejos.</li>
+                        <li><strong>Retoques:</strong> Con los años es normal que pierdan un poco de definición. 
+                            Un retoque cada tanto los mantiene como nuevos. Sobre todo en zonas como la cara, y las manos.</li>
+                    </ul>
+
+                    <h2 id="complicaciones">Cuándo preocuparse</h2>
+                    <p>Las complicaciones son raras, pero es importante reconocer las señales de alarma:</p>
+
+                    <ul>
+                        <li><strong>Enrojecimiento que aumenta:</strong> Un poco de rojo es normal los primeros días, 
+                            pero si aumenta después del tercer día o se extiende, puede ser infección.</li>
+                        <li><strong>Mucho calor:</strong> Si la zona está muy caliente al tacto.</li>
+                        <li><strong>Pus:</strong> Cualquier secreción amarillenta, espesa o que huele mal.</li>
+                        <li><strong>Fiebre:</strong> Si te sentís como engripado después del tatuaje.</li>
+                        <li><strong>Dolor que empeora:</strong> Es normal que duela, pero si el dolor aumenta después 
+                            de 3 días, no es buena señal.</li>
+                        <li><strong>Hinchazón excesiva:</strong> Un poco está bien, pero si es mucha o dura más de 5 días, 
+                            consultá.</li>
+                    </ul>
+
+                    <div class="article-callout">
+                        <p>Si tenés cualquiera de estos síntomas, escribime inmediatamente. En casos graves, no dudes 
+                            en consultar a un médico. Tu salud es lo más importante.</p>
+                    </div>
+
+                    <h2 id="conclusion">Para cerrar</h2>
+                    <p>Cuidar un tatuaje no es complicado, pero sí requiere constancia. Después de años haciendo esto, 
+                        puedo decirte que la diferencia entre un tatuaje que se ve increíble y uno que se ve descuidado 
+                        está 100% en los cuidados que le das.</p>
+
+                    <p>Cada tatuaje es único, y cada persona cicatriza diferente, así que si tenés dudas específicas, siempre podés escribirme.</p>
+
+                    <!--
+                    <div class="article-author-bio">
+                        <img src="/images/compressed/logo4.png" alt="Lucía Daiana Nuñez" class="author-bio-avatar">
+                        <div class="author-bio-content">
+                            <h3 class="author-bio-name">Lucía Daiana Nuñez</h3>
+                            <p class="author-bio-text">Tatuadora profesional especializada en tribal, neotribal y línea
+                                fina. Con formación en la Escuela SET en Córdoba Capital, Lucía combina su pasión por el
+                                arte con un enfoque personalizado para cada cliente. Actualmente dirige su propio
+                                estudio en Jujuy, donde prioriza la calidad artística y la bioseguridad.</p>
+                            <div class="author-bio-social">
+                                <a href="https://instagram.com/lucidda.tattoo" target="_blank" rel="noopener"
+                                    aria-label="Instagram de Lucía"><i class="fab fa-instagram"></i></a>
+                                <a href="https://tiktok.com/@luciaa.nu" target="_blank" rel="noopener"
+                                    aria-label="TikTok de Lucía"><i class="fab fa-tiktok"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+                </div>
+            </div>
+
+            <div class="article-cta">
+                <h3>¿Listo para tu próximo tatuaje?</h3>
+                <p>Agendá una consulta para discutir tu idea y recibir asesoramiento personalizado sobre diseño y
+                    estilo.</p>
+                <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Reservar turno por WhatsApp" data-source="article_cta">
+                    <i class="fab fa-whatsapp"></i> Reservá tu turno ahora
+                </a>
+            </div>
+
+            <!--
+            <section class="article-related">
+                <h3>Artículos relacionados</h3>
+                <div class="related-posts">
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <picture>
+                                <source srcset="/images/webp/tatuaje-neotribal-muslo-pierna.webp" type="image/webp">
+                                <img src="/images/compressed/tatuaje-neotribal-muslo-pierna.jpg"
+                                    alt="Explorando el estilo neotribal" loading="lazy">
+                            </picture>
+                        </div>
+                        <div class="related-post-content">
+                            <h4 class="related-post-title">Explorando el estilo neotribal: Historia, características y
+                                popularidad</h4>
+                            <p class="related-post-excerpt">El estilo neotribal es una evolución moderna del tatuaje
+                                tribal tradicional, incorporando elementos contemporáneos mientras mantiene sus raíces.
+                            </p>
+                            <a href="/blog/explorando-estilo-neotribal" class="related-post-link">Leer artículo</a>
+                        </div>
+                    </div>
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <picture>
+                                <source srcset="/images/webp/tatuaje-corazon-ojo-cristales-fuego-pierna.webp"
+                                    type="image/webp">
+                                <img src="/images/compressed/tatuaje-corazon-ojo-cristales-fuego-pierna.jpg"
+                                    alt="Primera vez que te tatúas" loading="lazy">
+                            </picture>
+                        </div>
+                        <div class="related-post-content">
+                            <h4 class="related-post-title">¿Primera vez que te tatuás? Todo lo que necesitás saber</h4>
+                            <p class="related-post-excerpt">Si estás pensando en hacerte tu primer tatuaje, es normal
+                                sentir una mezcla de emoción y nervios. Aprende cómo prepararte mental y físicamente.
+                            </p>
+                            <a href="/blog/primera-vez-tatuaje-consejos" class="related-post-link">Leer artículo</a>
+                        </div>
+                    </div>
+                    <div class="related-post">
+                        <div class="related-post-image">
+                            <picture>
+                                <source srcset="/images/webp/tatuaje-arana-pierna-neotribal.webp" type="image/webp">
+                                <img src="/images/compressed/tatuaje-arana-pierna-neotribal.jpg"
+                                    alt="Mitos y realidades del dolor en tatuajes" loading="lazy">
+                            </picture>
+                        </div>
+                        <div class="related-post-content">
+                            <h4 class="related-post-title">Mitos y realidades sobre el dolor en los tatuajes</h4>
+                            <p class="related-post-excerpt">Desmitificamos creencias comunes sobre el dolor, explicamos
+                                qué zonas son realmente más sensibles y compartimos técnicas para manejar la
+                                incomodidad.</p>
+                            <a href="/blog/mitos-realidades-dolor-tatuajes" class="related-post-link">Leer artículo</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            -->
+        </article>
+    </main>
+
+    <!-- =======================
+         BACK TO TOP BUTTON
+    ======================== -->
+    <a href="#" class="back-to-top" id="back-to-top" aria-label="Volver arriba">
+        <i class="fas fa-chevron-up"></i>
+    </a>
+
+    <!-- =======================
+         SOCIAL MEDIA BUTTONS
+    ======================== -->
+    <div class="social-media">
+        <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank" rel="noopener" aria-label="Seguir en Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@luciaa.nu" class="social-btn tiktok" target="_blank" rel="noopener" aria-label="Seguir en TikTok"><i class="fab fa-tiktok"></i></a>
+    </div>
+
+    <!-- =======================
+         COOKIE CONSENT BANNER
+    ======================== -->
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-content">
+            <p>Este sitio utiliza cookies para mejorar tu experiencia y ofrecer servicios personalizados. Al continuar navegando, aceptás nuestra <a href="#" id="open-policy">política de cookies</a>.</p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="cookie-accept">Aceptar</button>
+                <button id="reject-cookies" class="cookie-reject">Rechazar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =======================
+         COOKIE POLICY MODAL
+    ======================== -->
+    <div id="cookie-policy-modal" class="policy-modal">
+        <div class="policy-content">
+            <span class="policy-close">&times;</span>
+            <h2>Política de Cookies</h2>
+            <div class="policy-text">
+                <p><strong>¿Qué son las cookies?</strong><br>
+                    Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.</p>
+                <p><strong>¿Qué cookies utilizamos?</strong></p>
+                <ul>
+                    <li><strong>Cookies analíticas:</strong> Utilizamos Google Analytics para recopilar información sobre cómo utilizas nuestro sitio web. Esto nos ayuda a mejorar su funcionamiento.</li>
+                </ul>
+                <p><strong>Control de cookies</strong><br>
+                    Puedes aceptar o rechazar las cookies no esenciales. También puedes configurar tu navegador para rechazar todas las cookies, aunque esto podría afectar el funcionamiento de algunos sitios web.</p>
+                <p><strong>Duración de las cookies</strong><br>
+                    Las cookies analíticas permanecen activas durante 2 años desde tu última visita.</p>
+                <p><strong>Más información</strong><br>
+                    Para más información sobre cómo utilizamos las cookies, puedes contactarnos a través de nuestras redes sociales.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =======================
+         FLOATING WHATSAPP BUTTON
+    ======================== -->
+    <a href="contacto-web" class="floating-whatsapp" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" data-source="floating_button">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- =======================
+         SCRIPTS
+    ======================== -->
+    <script src="script.js?v=1.1"></script>
+    <script src="whatsapp-tracking.js"></script>
+</body>
+</html>

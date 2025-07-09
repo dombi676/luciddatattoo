@@ -16,7 +16,7 @@
     <link rel="preload" href="styles.css" as="style">
     <link rel="preload" href="fonts/UnifrakturMaguntia.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/MedievalSharp.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="fonts/Fondamento-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="script.js?v=1.1" as="script">
 
     <!-- =======================
@@ -101,8 +101,13 @@
             <ul class="nav-links" id="nav-links" role="menu">
                 <li role="none"><a href="index#home" role="menuitem">Inicio</a></li>
                 <li role="none"><a href="gallery" role="menuitem">Galería</a></li>
-                <li role="none"><a href="blog/guia-completa-cuidado-tatuajes" role="menuitem">Cuidados</a></li>
-                <li role="none"><a href="faq" role="menuitem">Preguntas Frecuentes</a></li>
+                <li role="none"><a href="tatuajes-preparacion-y-cuidados" role="menuitem">Preparación y Cuidados</a></li>
+                <!-- WhatsApp button inside mobile menu -->
+                <li role="none" class="mobile-menu-whatsapp">
+                    <a href="contacto-web" class="whatsapp-btn mobile-menu-whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="mobile_menu" role="menuitem">
+                        <i class="fab fa-whatsapp"></i> Agenda tu Turno
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="nav-center">
@@ -114,6 +119,7 @@
                 Cambiar Fuente
             </button>
             -->
+            <!-- Desktop WhatsApp button -->
             <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
                 <i class="fab fa-whatsapp"></i> Agenda tu Turno
             </a>
@@ -124,7 +130,7 @@
          FULL GALLERY SECTION
     ======================== -->
     <section id="full-gallery">
-        <h2>Galería Completa</h2>
+        <h2>Galería</h2>
         <div class="gallery-filter">
             <button class="filter-btn" data-filter="trabajos" aria-pressed="false" aria-label="Filtrar por mis trabajos">Mis Trabajos</button>
             <button class="filter-btn" data-filter="disenos" aria-pressed="false" aria-label="Filtrar por mis diseños">Mis Diseños</button>
@@ -325,6 +331,11 @@
         <img class="lightbox-content" id="lightbox-img" alt="Imagen ampliada">
         <button class="lightbox-nav prev" aria-label="Imagen anterior">&#10094;</button>
         <button class="lightbox-nav next" aria-label="Imagen siguiente">&#10095;</button>
+        <!-- Mobile navigation buttons -->
+        <div class="mobile-lightbox-nav">
+            <button class="mobile-nav-btn mobile-prev" aria-label="Imagen anterior">&#10094;</button>
+            <button class="mobile-nav-btn mobile-next" aria-label="Imagen siguiente">&#10095;</button>
+        </div>
     </div>
 
     <!-- =======================
@@ -371,6 +382,13 @@
             </div>
         </div>
     </div>
+
+    <!-- =======================
+         FLOATING WHATSAPP BUTTON
+    ======================== -->
+    <a href="contacto-web" class="floating-whatsapp" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" data-source="floating_button">
+        <i class="fab fa-whatsapp"></i>
+    </a>
 
     <!-- =======================
          SCRIPTS
