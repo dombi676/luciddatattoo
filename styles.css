@@ -62,8 +62,8 @@
 }
 
 body {
-    --primary-font: 'Fondamento', serif;
-    --heading-font: 'MedievalSharp', sans-serif;
+    --primary-font: 'Roboto', sans-serif;
+    --heading-font: 'Roboto', sans-serif;
     font-family: var(--primary-font);
     font-size: 18px;
     background-color: #1a1a1a;

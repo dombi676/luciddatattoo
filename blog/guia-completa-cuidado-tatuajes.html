@@ -2,32 +2,49 @@
 <html lang="es">
 
 <head>
+    <!-- =======================
+         SECURITY & PRELOADS
+    ======================== -->
     <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-    style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-    font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
-    img-src 'self' data: https: blob:;
-    connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
-    frame-src 'none';
-    object-src 'none';">
+        default-src 'self';
+        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
+        style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        img-src 'self' data: https: blob:;
+        connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
+        frame-src 'none';
+        object-src 'none';">
     <!-- Preload critical resources -->
     <link rel="preload" href="/styles.css" as="style">
     <!-- Preload critical fonts -->
     <link rel="preload" href="/fonts/UnifrakturMaguntia.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="/fonts/MedievalSharp.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/fonts/Fondamento-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/Roboto-Light.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="/script.js?v=1.1" as="script">
+
+    <!-- =======================
+         META & SEO
+    ======================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="Guía completa de cuidados para tatuajes: antes, durante y después de la sesión. Consejos profesionales para una óptima cicatrización y durabilidad de tu tattoo.">
-    <meta name="keywords"
-        content="cuidado tatuajes, aftercare tattoo, preparación tatuaje, cicatrización tatuaje, mantener tatuaje, curar tatuaje, Lucidda Tattoo">
+    <meta name="description" content="Guía completa de cuidados para tatuajes: antes, durante y después de la sesión. Consejos profesionales para una óptima cicatrización y durabilidad de tu tattoo.">
+    <meta name="keywords" content="cuidado tatuajes, aftercare tattoo, preparación tatuaje, cicatrización tatuaje, mantener tatuaje, curar tatuaje, Lucidda Tattoo">
     <title>Guía completa para el cuidado de tatuajes | Lucidda Tattoo</title>
+
+    <!-- =======================
+         STYLES & ICONS
+    ======================== -->
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Roboto for article readability -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <!-- Favicon Links -->
+
+    <!-- =======================
+         FAVICONS
+    ======================== -->
     <link rel="icon" href="/favicon96.ico?v=2">
     <link rel="apple-touch-icon" sizes="57x57" href="/images/icons/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/icons/apple-icon-60x60.png">
@@ -47,63 +64,76 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/images/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ff4444">
-    <!-- Open Graph Tags -->
+
+    <!-- =======================
+         SOCIAL & SEO META TAGS
+    ======================== -->
     <meta property="og:title" content="Guía completa para el cuidado de tatuajes | Lucidda Tattoo">
-    <meta property="og:description"
-        content="Todo lo que necesitás saber sobre los cuidados de tu tatuaje: antes, durante y después de la sesión. Guía profesional para una correcta cicatrización.">
-    <meta property="og:image"
-        content="https://lucidda.tattoo/images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg">
+    <meta property="og:description" content="Todo lo que necesitás saber sobre los cuidados de tu tatuaje: antes, durante y después de la sesión. Guía profesional para una correcta cicatrización.">
+    <meta property="og:image" content="https://lucidda.tattoo/images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg">
     <meta property="og:url" content="https://lucidda.tattoo/blog/guia-completa-cuidado-tatuajes">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Lucidda Tattoo Jujuy">
-    <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Guía completa para el cuidado de tatuajes | Lucidda Tattoo">
-    <meta name="twitter:description"
-        content="Todo lo que necesitás saber sobre los cuidados de tu tatuaje: antes, durante y después de la sesión. Guía profesional para una correcta cicatrización.">
-    <meta name="twitter:image"
-        content="https://lucidda.tattoo/images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg">
-    <!-- Canonical tag -->
+    <meta name="twitter:description" content="Todo lo que necesitás saber sobre los cuidados de tu tatuaje: antes, durante y después de la sesión. Guía profesional para una correcta cicatrización.">
+    <meta name="twitter:image" content="https://lucidda.tattoo/images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg">
+
+    <!-- =======================
+         CANONICAL
+    ======================== -->
     <link rel="canonical" href="https://lucidda.tattoo/blog/guia-completa-cuidado-tatuajes">
-    <!-- Google Analytics -->
+
+    <!-- =======================
+         GOOGLE ANALYTICS
+    ======================== -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
     <script async src="/analytics.js"></script>
-
 </head>
 
 <body data-page="blog-article">
-    <!-- Progress Bar -->
+    <!-- =======================
+         PROGRESS BAR
+    ======================== -->
     <div class="article-progress" id="article-progress"></div>
 
-    <!-- Enhanced navigation with ARIA -->
+    <!-- =======================
+         NAVIGATION BAR
+    ======================== -->
     <nav role="navigation" aria-label="Main navigation">
         <div class="nav-left">
+            <!-- Hamburger menu for mobile -->
             <button class="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
             </button>
+            <!-- Main navigation links (unified with other pages) -->
             <ul class="nav-links" id="nav-links" role="menu">
-                <li role="none"><a href="/" role="menuitem">Inicio</a></li>
-                <li role="none"><a href="/gallery" role="menuitem">Galería</a></li>
-                <li role="none"><a href="/faq" role="menuitem">Preguntas Frecuentes</a></li>
-                <li role="none"><a href="/blog" role="menuitem">Blog</a></li>
+                <li role="none"><a href="index#home" role="menuitem">Inicio</a></li>
+                <li role="none"><a href="gallery" role="menuitem">Galería</a></li>
+                <li role="none"><a href="blog/guia-completa-cuidado-tatuajes" role="menuitem">Cuidados</a></li>
+                <li role="none"><a href="faq" role="menuitem">Preguntas Frecuentes</a></li>
             </ul>
         </div>
         <div class="nav-center">
             <h1>Lucidda Tattoo</h1>
         </div>
         <div class="nav-right">
+            <!--
             <button id="font-toggle-btn" class="font-toggle-btn" aria-label="Cambiar Letra">
                 Cambiar Fuente
             </button>
-            <a href="/contacto-web" class="whatsapp-btn" target="_blank" rel="noopener"
-                aria-label="Agendar turno por WhatsApp" data-source="website_nav">
+            -->
+            <a href="/contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
                 <i class="fab fa-whatsapp"></i> Agendá tu Turno
             </a>
         </div>
     </nav>
 
+    <!-- =======================
+         MAIN ARTICLE CONTENT
+    ======================== -->
     <main class="article-container">
         <article>
             <header class="article-header">
@@ -117,10 +147,6 @@
                     <div class="article-date">
                         <i class="far fa-calendar"></i>
                         <span>10 de marzo de 2025</span>
-                    </div>
-                    <div class="article-time">
-                        <i class="far fa-clock"></i>
-                        <span>Tiempo de lectura: 9 min</span>
                     </div>
                 </div>
             </header>
@@ -366,7 +392,7 @@
                     <h2 id="largo-plazo">Cuidados a largo plazo: Mantené tu tatuaje vibrante por años</h2>
                     <p>Una vez cicatrizado, tu tatuaje seguirá necesitando cuidados para mantener su calidad:</p>
 
-                    <ul>
+                    <ul></ul>
                         <li><strong>Protección solar:</strong> El sol es el mayor enemigo de los tatuajes. Usá siempre
                             protector solar FPS 50+ sobre tu tatuaje cuando te expongas al sol, incluso años después de
                             habértelo hecho.</li>
@@ -463,7 +489,7 @@
 
                     <div class="article-share">
                         <span class="article-share-text">Compartir:</span>
-                        <div class="article-share-links">
+                        <div class="article-share-links"></div>
                             <a href="#" class="article-share-link facebook" aria-label="Compartir en Facebook"><i
                                     class="fab fa-facebook-f"></i></a>
                             <a href="#" class="article-share-link twitter" aria-label="Compartir en Twitter"><i
@@ -560,24 +586,27 @@
         </article>
     </main>
 
-    <!-- Back to Top Button -->
+    <!-- =======================
+         BACK TO TOP BUTTON
+    ======================== -->
     <a href="#" class="back-to-top" id="back-to-top" aria-label="Volver arriba">
         <i class="fas fa-chevron-up"></i>
     </a>
 
-    <!-- Social Media Buttons -->
-    <div class="social-media">
-        <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank" rel="noopener"
-            aria-label="Seguir en Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://tiktok.com/@luciaa.nu" class="social-btn tiktok" target="_blank" rel="noopener"
-            aria-label="Seguir en TikTok"><i class="fab fa-tiktok"></i></a>
+    <!-- =======================
+         SOCIAL MEDIA BUTTONS
+    ======================== -->
+    <div class="social-media"></div>
+        <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank" rel="noopener" aria-label="Seguir en Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://tiktok.com/@luciaa.nu" class="social-btn tiktok" target="_blank" rel="noopener" aria-label="Seguir en TikTok"><i class="fab fa-tiktok"></i></a>
     </div>
 
-    <!-- Cookie Consent Banner -->
+    <!-- =======================
+         COOKIE CONSENT BANNER
+    ======================== -->
     <div id="cookie-banner" class="cookie-banner">
         <div class="cookie-content">
-            <p>Este sitio utiliza cookies para mejorar tu experiencia y ofrecer servicios personalizados. Al continuar
-                navegando, aceptás nuestra <a href="#" id="open-policy">política de cookies</a>.</p>
+            <p>Este sitio utiliza cookies para mejorar tu experiencia y ofrecer servicios personalizados. Al continuar navegando, aceptás nuestra <a href="#" id="open-policy">política de cookies</a>.</p>
             <div class="cookie-buttons">
                 <button id="accept-cookies" class="cookie-accept">Aceptar</button>
                 <button id="reject-cookies" class="cookie-reject">Rechazar</button>
@@ -585,38 +614,34 @@
         </div>
     </div>
 
-    <!-- Cookie Policy Modal -->
+    <!-- =======================
+         COOKIE POLICY MODAL
+    ======================== -->
     <div id="cookie-policy-modal" class="policy-modal">
         <div class="policy-content">
             <span class="policy-close">&times;</span>
             <h2>Política de Cookies</h2>
             <div class="policy-text">
                 <p><strong>¿Qué son las cookies?</strong><br>
-                    Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un
-                    sitio web.</p>
-
+                    Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.</p>
                 <p><strong>¿Qué cookies utilizamos?</strong></p>
                 <ul>
-                    <li><strong>Cookies analíticas:</strong> Utilizamos Google Analytics para recopilar información
-                        sobre cómo utilizas nuestro sitio web. Esto nos ayuda a mejorar su funcionamiento.</li>
+                    <li><strong>Cookies analíticas:</strong> Utilizamos Google Analytics para recopilar información sobre cómo utilizas nuestro sitio web. Esto nos ayuda a mejorar su funcionamiento.</li>
                 </ul>
-
                 <p><strong>Control de cookies</strong><br>
-                    Puedes aceptar o rechazar las cookies no esenciales. También puedes configurar tu navegador para
-                    rechazar todas las cookies, aunque esto podría afectar el funcionamiento de algunos sitios web.</p>
-
+                    Puedes aceptar o rechazar las cookies no esenciales. También puedes configurar tu navegador para rechazar todas las cookies, aunque esto podría afectar el funcionamiento de algunos sitios web.</p>
                 <p><strong>Duración de las cookies</strong><br>
                     Las cookies analíticas permanecen activas durante 2 años desde tu última visita.</p>
-
                 <p><strong>Más información</strong><br>
-                    Para más información sobre cómo utilizamos las cookies, puedes contactarnos a través de nuestras
-                    redes sociales.</p>
+                    Para más información sobre cómo utilizamos las cookies, puedes contactarnos a través de nuestras redes sociales.</p>
             </div>
         </div>
     </div>
 
+    <!-- =======================
+         SCRIPTS
+    ======================== -->
     <script src="/script.js?v=1.1"></script>
     <script src="/whatsapp-tracking.js"></script>
 </body>
-
 </html>
