@@ -22,7 +22,32 @@ document.addEventListener('DOMContentLoaded', () => {
   let loadingStates = {}; // Track loading states to prevent duplicate loads
   let activeFilter = 'all'; // Track the active filter
   
-  // Check if we're on the index page
+
+  // Performance optimization: Cache frequently accessed DOM elements
+  let cachedThumbnails = null;
+  let cachedGalleryItems = null;
+  let cachedFilterButtons = null;
+  let lastThumbnailCount = 0;
+  let filterDebounceTimer = null;
+  
+  // Performance monitoring (for debugging/optimization purposes)
+  const performance = {
+    filterOperationCount: 0,
+    domQueryCount: 0,
+    log: function(operation, time) {
+      if (window.location.hash === '#debug') {
+        console.log(`Performance: ${operation} took ${time}ms`);
+      }
+    },
+    trackDOMQuery: function() {
+      this.domQueryCount++;
+      if (window.location.hash === '#debug') {
+        console.log(`DOM queries: ${this.domQueryCount}`);
+      }
+    }
+  };
+  
+  // NEW: Check if we're on the index page
   const isIndexPage = document.body.getAttribute('data-page') === 'index';
   
   // Track when we're showing the gallery prompt
@@ -35,10 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
     isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
   }
 
-  // Initialize gallery images
+  // Initialize gallery images with caching
   function updateGalleryImages() {
-    // Get all thumbnails
-    galleryImages = Array.from(document.querySelectorAll('.thumbnail'));
+    const startTime = performance.now ? performance.now() : Date.now();
+    
+    // Check if we need to refresh the cache
+    const currentThumbnailCount = document.querySelectorAll('.thumbnail').length;
+    if (!cachedThumbnails || currentThumbnailCount !== lastThumbnailCount) {
+      performance.trackDOMQuery();
+      cachedThumbnails = Array.from(document.querySelectorAll('.thumbnail'));
+      lastThumbnailCount = currentThumbnailCount;
+    }
+    
+    galleryImages = cachedThumbnails;
     
     // Update visible images based on active filter
     if (activeFilter === 'all') {
@@ -50,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return galleryItem && galleryItem.classList.contains(activeFilter);
       });
     }
+    
+    const endTime = performance.now ? performance.now() : Date.now();
+    window.performance && window.performance.log('updateGalleryImages', endTime - startTime);
     
     return galleryImages;
   }
@@ -170,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showingGalleryPrompt = false;
   }
   
-  // Open lightbox with specific image
+  // Open lightbox with specific image - Optimized
   function openLightbox(index) {
     if (navigationLock) {
       console.log('Navigation locked, waiting...');
@@ -188,8 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Cancel any previous image onload handlers
     lightboxImg.onload = null;
     
-    // Update gallery images
-    updateGalleryImages();
+    // Update gallery images only if necessary
+    if (galleryImages.length === 0 || visibleImages.length === 0) {
+      updateGalleryImages();
+    }
     
     // Ensure index is valid for visible images
     if (visibleImages.length === 0) {
@@ -415,7 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   
-  // Navigation functions
   function prevImage() {
     // If showing gallery prompt, hide it and go back to the last image
     if (showingGalleryPrompt) {
@@ -435,22 +473,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mark all XHRs as not being viewed
     markAllXHRsAsNotCurrentlyViewed();
     
-    // Load the previous image
-    updateGalleryImages();
-    
-    // Get previous index based on visible images
+    // Get previous index based on visible images (avoid redundant updateGalleryImages call)
     const prevIndex = (currentIndex - 1 + visibleImages.length) % visibleImages.length;
     openLightbox(prevIndex);
   }
   
-  // Next image function with gallery prompt
   function nextImage() {
     // Check if we're showing the gallery prompt
     if (showingGalleryPrompt) {
       hideGalleryPrompt();
       
-      // Go to the first visible image
-      updateGalleryImages();
+      // Go to the first visible image (update gallery images only if needed)
+      if (visibleImages.length === 0) {
+        updateGalleryImages();
+      }
       openLightbox(0);
       return;
     }
@@ -473,10 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mark all XHRs as not being viewed
     markAllXHRsAsNotCurrentlyViewed();
     
-    // Load the next image
-    updateGalleryImages();
-    
-    // Get next index based on visible images
+    // Get next index based on visible images (avoid redundant updateGalleryImages call)
     const nextIndex = (currentIndex + 1) % visibleImages.length;
     openLightbox(nextIndex);
   }
@@ -512,12 +545,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
-  // Set up thumbnail listeners
+  // Set up thumbnail listeners with better performance
   function setupThumbnailListeners() {
-    document.querySelectorAll('.thumbnail').forEach((img, index) => {
+    // Use cached thumbnails and avoid duplicate listeners
+    if (!cachedThumbnails) {
+      updateGalleryImages(); // This will populate cachedThumbnails
+    }
+    
+    cachedThumbnails.forEach((img) => {
+      // Check if listener is already attached to avoid duplicates
+      if (img.dataset.listenerAttached === 'true') {
+        return;
+      }
+      
+      img.dataset.listenerAttached = 'true';
       img.addEventListener('click', function() {
         // When clicking a thumbnail, find its index in the visible images array
-        updateGalleryImages(); // Make sure visible images is up to date
+        // Only update if visibleImages is empty (optimization)
+        if (visibleImages.length === 0) {
+          updateGalleryImages();
+        }
         const visibleIndex = visibleImages.indexOf(img);
         
         if (visibleIndex !== -1) {
@@ -613,26 +660,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Gallery Filter Functionality
-  const filterButtons = document.querySelectorAll('.filter-btn');
+  // Cache filter buttons
+  cachedFilterButtons = document.querySelectorAll('.filter-btn');
   
-  if (filterButtons.length > 0) {
+  if (cachedFilterButtons.length > 0) {
     // Add fade animation styles if they don't exist
     if (!document.getElementById('gallery-animation-styles')) {
       const style = document.createElement('style');
       style.id = 'gallery-animation-styles';
       style.textContent = `
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         
         .gallery-item {
-          transition: opacity 0.3s ease;
+          transition: opacity 0.3s ease, transform 0.3s ease;
         }
         
         .gallery-fade-in {
-          animation: fadeIn 0.7s ease-in;
+          animation: fadeIn 0.7s ease-out;
         }
         
         .gallery-hidden {
@@ -642,60 +689,86 @@ document.addEventListener('DOMContentLoaded', () => {
       document.head.appendChild(style);
     }
     
-    // Make all gallery items visible by default
+    // Make all gallery items visible by default (cached)
     if (document.querySelector('.gallery-filter')) {
-      document.querySelectorAll('.gallery-item').forEach(item => {
+      if (!cachedGalleryItems) {
+        cachedGalleryItems = document.querySelectorAll('.gallery-item');
+      }
+      cachedGalleryItems.forEach(item => {
         item.style.display = 'block';
         item.classList.add('gallery-fade-in');
       });
     }
     
-    filterButtons.forEach(button => {
+    cachedFilterButtons.forEach(button => {
       button.addEventListener('click', () => {
         // Skip if the button is already active
         if (button.classList.contains('active')) {
           return;
         }
         
-        const filter = button.dataset.filter;
-        const galleryItems = document.querySelectorAll('.gallery-item');
+        // Clear any existing debounce timer
+        if (filterDebounceTimer) {
+          clearTimeout(filterDebounceTimer);
+        }
         
-        // Update active filter
-        activeFilter = filter;
-
-        // Update active state for buttons
-        filterButtons.forEach(btn => {
+        const filter = button.dataset.filter;
+        
+        // Update active state for buttons immediately (visual feedback)
+        cachedFilterButtons.forEach(btn => {
           btn.classList.remove('active');
           btn.setAttribute('aria-pressed', 'false');
         });
         button.classList.add('active');
         button.setAttribute('aria-pressed', 'true');
         
-        // First, remove animation classes from all items
-        galleryItems.forEach(item => {
-          item.classList.remove('gallery-fade-in');
-        });
+        // Update active filter
+        activeFilter = filter;
         
-        // Force a reflow to ensure animations restart
-        void document.documentElement.offsetHeight;
-        
-        // Apply filtering with animation
-        galleryItems.forEach(item => {
-          // Reset to handle transitions properly
-          item.classList.add('gallery-hidden');
+        // Debounce the actual filtering to prevent rapid successive calls
+        filterDebounceTimer = setTimeout(() => {
+          const startTime = window.performance && window.performance.now ? window.performance.now() : Date.now();
+          window.performance && window.performance.filterOperationCount++;
           
-          // Force reflow again to ensure CSS changes apply
-          void item.offsetHeight;
-          
-          // Show items that match the filter
-          if (filter === 'all' || item.classList.contains(filter)) {
-            item.classList.remove('gallery-hidden');
-            item.classList.add('gallery-fade-in');
+          // Cache gallery items if not already cached
+          if (!cachedGalleryItems) {
+            window.performance && window.performance.trackDOMQuery();
+            cachedGalleryItems = document.querySelectorAll('.gallery-item');
           }
-        });
-        
-        // Update gallery images after filtering
-        updateGalleryImages();
+          
+          // Optimized filtering with batch DOM updates
+          const itemsToShow = [];
+          const itemsToHide = [];
+          
+          // First pass: determine which items to show/hide
+          cachedGalleryItems.forEach(item => {
+            item.classList.remove('gallery-fade-in');
+            if (filter === 'all' || item.classList.contains(filter)) {
+              itemsToShow.push(item);
+            } else {
+              itemsToHide.push(item);
+            }
+          });
+          
+          // Hide items first (batched)
+          itemsToHide.forEach(item => {
+            item.classList.add('gallery-hidden');
+          });
+          
+          // Show items with animation (batched) - use requestAnimationFrame for smooth animation
+          requestAnimationFrame(() => {
+            itemsToShow.forEach(item => {
+              item.classList.remove('gallery-hidden');
+              item.classList.add('gallery-fade-in');
+            });
+            
+            const endTime = window.performance && window.performance.now ? window.performance.now() : Date.now();
+            window.performance && window.performance.log(`filter-${filter}`, endTime - startTime);
+          });
+          
+          // Update gallery images after filtering
+          updateGalleryImages();
+        }, 50); // 50ms debounce
       });
     });
   }
