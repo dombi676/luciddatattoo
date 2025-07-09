@@ -1,248 +1,268 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+  <!-- Content Security Policy for security -->
   <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-  style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-  font-src 'self' https://cdnjs.cloudflare.com;
-  img-src 'self' data: https: blob:;
-  connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
-  frame-src 'none';
-  object-src 'none';">
-    <!-- Add preload for critical resources -->
-<link rel="preload" href="styles.css" as="style">
-<!-- Add this to both HTML files -->
-<!-- Preload critical fonts -->
-<link rel="preload" href="fonts/UnifrakturMaguntia.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="preload" href="fonts/MedievalSharp.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="preload" href="images/webp/hero-bg.webp" as="image">
-<link rel="preload" href="script.js?v=1.1" as="script">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Estudio profesional Lucidda Tattoo en Jujuy - Especializado en tribal, neotribal y línea fina. Diseños exclusivos personalizados por Lucía Daiana Nuñez. Reserva tu turno hoy y transforma tus ideas en arte.">
-    <meta name="keywords" content="tatuajes, diseños, Jujuy, Lucidda Tattoo, arte corporal, tatuajes en Jujuy, estudio de tatuajes Jujuy, tatuador profesional Jujuy, tribal, neotribal, línea fina">
-    <title>Lucidda Tattoo</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Favicon Links -->
-    <link rel="icon" href="/favicon96.ico?v=2">
-    <link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="images/icons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="images/icons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="images/icons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="images/icons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-icon-180x180.png">
-    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="images/icons/apple-icon-precomposed.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="images/icons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="images/icons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ff4444">
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
-    <meta property="og:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
-    <meta property="og:image" content="https://lucidda.tattoo/images/compressed/twittercard.jpg">
-    <meta property="og:url" content="lucidda.tattoo">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Lucidda Tattoo Jujuy">
-    <!-- Twitter Card Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
-    <meta name="twitter:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
-    <meta name="twitter:image" content="https://lucidda.tattoo/images/compressed/twittercard.jpg">
-<!-- hreflang tags -->
-<link rel="alternate" hreflang="es-ar" href="https://lucidda.tattoo">
-<link rel="alternate" hreflang="es" href="https://lucidda.tattoo">
-<link rel="alternate" hreflang="x-default" href="https://lucidda.tattoo">
-<!-- Canonical tag -->
-<link rel="canonical" href="https://lucidda.tattoo">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
-<script async src="analytics.js"></script>
+    default-src 'self';
+    script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
+    style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
+    font-src 'self' https://cdnjs.cloudflare.com;
+    img-src 'self' data: https: blob:;
+    connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
+    frame-src 'none';
+    object-src 'none';">
+
+  <!-- Preload for critical resources -->
+  <link rel="preload" href="styles.css" as="style">
+  <link rel="preload" href="fonts/UnifrakturMaguntia.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/MedievalSharp.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/Fondamento-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="images/webp/hero-bg.webp" as="image">
+  <link rel="preload" href="script.js?v=1.1" as="script">
+
+  <!-- Meta tags -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estudio profesional Lucidda Tattoo en Jujuy - Especializado en tribal, neotribal y línea fina. Diseños exclusivos personalizados por Lucía Daiana Nuñez. Reserva tu turno hoy y transforma tus ideas en arte.">
+  <meta name="keywords" content="tatuajes, diseños, Jujuy, Lucidda Tattoo, arte corporal, tatuajes en Jujuy, estudio de tatuajes Jujuy, tatuador profesional Jujuy, tribal, neotribal, línea fina">
+  <title>Lucidda Tattoo Jujuy</title>
+
+  <!-- Stylesheets and icons -->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <!-- Favicon and Apple Touch Icons -->
+  <link rel="icon" href="/favicon96.ico?v=2">
+  <link rel="apple-touch-icon" sizes="57x57" href="images/icons/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="images/icons/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="images/icons/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="images/icons/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="images/icons/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="images/icons/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="images/icons/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="images/icons/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/icons/apple-icon-180x180.png">
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="images/icons/apple-icon-precomposed.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/icons/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="images/icons/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/icons/favicon-16x16.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ff4444">
+
+  <!-- Social and SEO meta tags -->
+  <meta property="og:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
+  <meta property="og:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
+  <meta property="og:image" content="https://lucidda.tattoo/images/twittercard.jpg">
+  <meta property="og:url" content="lucidda.tattoo">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Lucidda Tattoo Jujuy">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lucidda Tattoo - Tatuadora en Jujuy">
+  <meta name="twitter:description" content="Explora mis diseños y trabajos realizados. Agenda tu turno hoy.">
+  <meta name="twitter:image" content="https://lucidda.tattoo/images/twittercard.jpg">
+
+  <!-- hreflang and canonical -->
+  <link rel="alternate" hreflang="es-ar" href="https://lucidda.tattoo">
+  <link rel="alternate" hreflang="es" href="https://lucidda.tattoo">
+  <link rel="alternate" hreflang="x-default" href="https://lucidda.tattoo">
+  <link rel="canonical" href="https://lucidda.tattoo">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
+  <script async src="analytics.js"></script>
 </head>
+
 <body data-page="index">
-<!-- Enhanced navigation with ARIA -->
-<nav role="navigation" aria-label="Main navigation">
+  <!-- =======================
+       NAVIGATION BAR
+  ======================== -->
+  <nav role="navigation" aria-label="Main navigation">
     <div class="nav-left">
-        <button class="hamburger-btn" 
-                aria-label="Menu" 
-                aria-expanded="false" 
-                aria-controls="nav-links">
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
-        </button>
-        <ul class="nav-links" id="nav-links" role="menu">
-            <li role="none"><a href="#home" role="menuitem">Inicio</a></li>
-            <li role="none"><a href="#about" role="menuitem">Sobre Mí</a></li>
-            <li role="none"><a href="gallery" role="menuitem">Galería</a></li>
-        </ul>
+      <!-- Hamburger menu for mobile -->
+      <button class="hamburger-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-links">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+      <!-- Main navigation links -->
+      <ul class="nav-links" id="nav-links" role="menu">
+                <li role="none"><a href="#home" role="menuitem">Inicio</a></li>
+                <li role="none"><a href="gallery" role="menuitem">Galería</a></li>
+                <li role="none"><a href="blog/guia-completa-cuidado-tatuajes" role="menuitem">Cuidados</a></li>
+                <li role="none"><a href="faq" role="menuitem">Preguntas Frecuentes</a></li>
+      </ul>
     </div>
     <div class="nav-center">
-        <h1>Lucidda Tattoo</h1>
+      <h1>Lucidda Tattoo</h1>
     </div>
     <div class="nav-right">
       <a href="contacto-web" class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Agendar turno por WhatsApp" data-source="website_nav">
         <i class="fab fa-whatsapp"></i> Agenda tu Turno
-    </a>
+      </a>
     </div>
-</nav>
+  </nav>
 
-<!-- Hero Section -->
-<section id="home">
+  <!-- =======================
+       HERO SECTION
+  ======================== -->
+  <section id="home">
     <picture>
-        <source srcset="images/webp/hero-bg.webp" type="image/webp">
-        <img src="images/compressed/hero-bg.jpg" 
-             class="hero-bg-image"
-             alt="" 
-             aria-hidden="true" >
+      <source srcset="images/webp/hero-bg.webp" type="image/webp">
+      <img src="images/compressed/hero-bg.jpg" class="hero-bg-image" alt="" aria-hidden="true">
     </picture>
     <div class="hero-content">
-        <picture>
-            <source srcset="images/webp/logo2.webp" type="image/webp">
-            <img src="images/compressed/logo2.png" alt="Lucidda Tattoo - Logo de estudio de tatuajes en Jujuy" class="hero-icon">
-        </picture>
-        <h1 class="hero-title">Lucidda Tattoo</h1>
-        <a href="#mis-trabajos">Explorar diseños</a>
+      <picture>
+        <source srcset="images/webp/logo2.webp" type="image/webp">
+        <img src="images/compressed/logo2.png" alt="Lucidda Tattoo - Logo de estudio de tatuajes en Jujuy" class="hero-icon">
+      </picture>
+      <h1 class="hero-title">Lucidda Tattoo</h1>
+      <a href="#mis-trabajos">Explorar diseños</a>
     </div>
-</section>
+  </section>
 
-    
-<!-- Mis Trabajos Section -->
-<section id="mis-trabajos">
+  <!-- =======================
+       MIS TRABAJOS SECTION
+  ======================== -->
+  <section id="mis-trabajos">
     <h2>Mis Trabajos</h2>
     <div class="gallery-preview-grid">
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/tatuaje-arana-muslo-neotribal.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-arana-muslo-neotribal.jpg" alt="Tatuaje de araña con estilo neotribal en la pierna" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/tatuaje-corazon-pierna-neotribal-negro.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-corazon-pierna-neotribal-negro.jpg" alt="Tatuaje de corazon con estilo neotribal y relleno negro en la pierna" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/tatuaje-alas-espalda-neotribal-puntillismo.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg" alt="Tatuaje de alas con estilo neotribal en la espalda" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/tatuaje-corazon-brazo-neotribal.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-corazon-brazo-neotribal.jpg" alt="Tatuaje de corazon con estilo neotribal en el brazo" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/tatuaje-freehand-hombro-neotribal.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-freehand-hombro-neotribal.jpg" alt="Tatuaje neotribal en el hombro" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/tatuaje-arana-pierna-neotribal.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-arana-pierna-neotribal.jpg" alt="Tatuaje de araña con estilo neotribal en una pierna" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
+      <!-- Repeat for each trabajo -->
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/tatuaje-arana-muslo-neotribal.webp" type="image/webp">
+          <img src="images/compressed/tatuaje-arana-muslo-neotribal.jpg" alt="Tatuaje de araña con estilo neotribal en la pierna" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/tatuaje-corazon-pierna-neotribal-negro.webp" type="image/webp">
+          <img src="images/compressed/tatuaje-corazon-pierna-neotribal-negro.jpg" alt="Tatuaje de corazon con estilo neotribal y relleno negro en la pierna" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/tatuaje-alas-espalda-neotribal-puntillismo.webp" type="image/webp">
+          <img src="images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg" alt="Tatuaje de alas con estilo neotribal en la espalda" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/tatuaje-corazon-brazo-neotribal.webp" type="image/webp">
+          <img src="images/compressed/tatuaje-corazon-brazo-neotribal.jpg" alt="Tatuaje de corazon con estilo neotribal en el brazo" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/tatuaje-freehand-hombro-neotribal.webp" type="image/webp">
+          <img src="images/compressed/tatuaje-freehand-hombro-neotribal.jpg" alt="Tatuaje neotribal en el hombro" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/tatuaje-arana-pierna-neotribal.webp" type="image/webp">
+          <img src="images/compressed/tatuaje-arana-pierna-neotribal.jpg" alt="Tatuaje de araña con estilo neotribal en una pierna" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
     </div>
-</section>
+  </section>
 
-<!-- Mis Diseños Section -->
-<section id="mis-disenos">
+  <!-- =======================
+       MIS DISEÑOS SECTION
+  ======================== -->
+  <section id="mis-disenos">
     <h2>Mis Diseños</h2>
     <div class="gallery-preview-grid">
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/diseno-neotribal.webp" type="image/webp">
-                <img src="images/compressed/diseno-neotribal.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/diseno-alas-neotribal.webp" type="image/webp">
-                <img src="images/compressed/diseno-alas-neotribal.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/diseno-neotribal2.webp" type="image/webp">
-                <img src="images/compressed/diseno-neotribal2.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/diseno-neotribal3.webp" type="image/webp">
-                <img src="images/compressed/diseno-neotribal3.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/diseno-neotribal4.webp" type="image/webp">
-                <img src="images/compressed/diseno-neotribal4.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
-        <div class="gallery-item">
-            <picture>
-                <source srcset="images/webp/diseno-corazon-neotribal.webp" type="image/webp">
-                <img src="images/compressed/diseno-corazon-neotribal.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
-            </picture>
-        </div>
+      <!-- Repeat for each diseño -->
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/diseno-neotribal.webp" type="image/webp">
+          <img src="images/compressed/diseno-neotribal.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/diseno-alas-neotribal.webp" type="image/webp">
+          <img src="images/compressed/diseno-alas-neotribal.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/diseno-neotribal2.webp" type="image/webp">
+          <img src="images/compressed/diseno-neotribal2.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/diseno-neotribal3.webp" type="image/webp">
+          <img src="images/compressed/diseno-neotribal3.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/diseno-neotribal4.webp" type="image/webp">
+          <img src="images/compressed/diseno-neotribal4.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
+      <div class="gallery-item">
+        <picture>
+          <source srcset="images/webp/diseno-corazon-neotribal.webp" type="image/webp">
+          <img src="images/compressed/diseno-corazon-neotribal.png" alt="Diseño propio estilo neotribal" class="thumbnail" loading="lazy" width="250" height="250">
+        </picture>
+      </div>
     </div>
-</section>
+  </section>
 
+  <!-- =======================
+       LINK TO FULL GALLERY
+  ======================== -->
+  <div class="gallery-link">
+    <a href="gallery" class="gallery-btn">Ver Galería Completa</a>
+  </div>
 
-    <!-- Link to Full Gallery -->
-    <div class="gallery-link">
-        <a href="gallery" class="gallery-btn">Ver Galería Completa</a>
-    </div>
-
-    <!-- Lightbox Container -->
-<div id="lightbox" role="dialog" aria-label="Vista ampliada">
-    <!-- Add to your lightbox HTML -->
-<div id="magnifier"></div>
+  <!-- =======================
+       LIGHTBOX MODAL
+  ======================== -->
+  <div id="lightbox" role="dialog" aria-label="Vista ampliada">
+    <!-- Magnifier (if used) -->
+    <div id="magnifier"></div>
     <span class="close" aria-label="Cerrar vista ampliada">&times;</span>
     <img class="lightbox-content" id="lightbox-img" alt="Imagen ampliada">
     <!-- Lightbox navigation arrows -->
-<button class="lightbox-nav prev" aria-label="Imagen anterior">&#10094;</button>
-<button class="lightbox-nav next" aria-label="Imagen siguiente">&#10095;</button>
-</div>
-    <!-- About Me Section -->
-    <section id="about">
-        <h2>Sobre Mí</h2>
-        <div class="about-content">
-            <h3>Tatuadora Profesional en Jujuy</h3>
-            <p>Soy <strong>Lucía Daiana Nuñez</strong>, tatuadora en Jujuy especializada en <strong>tribal, neotribal y línea fina</strong>, con un enfoque personalizado que se adapta a la idea y personalidad de cada cliente.</p>
-            
-            <h4>Mi Formación</h4>
-            <p>Me formé en la <strong>Escuela SET en Córdoba Capital</strong>, donde completé un curso intensivo de 8 meses y obtuve el mejor promedio de mi promoción. Actualmente, estoy perfeccionando técnicas de <strong>black and grey y estilos ornamentales</strong> para ampliar mi repertorio artístico.</p>
-            
-            <h4>Experiencia y Estudio Propio</h4>
-            <p>En 2024 trabajé en un estudio privado colaborando con otros artistas, experiencia que enriqueció significativamente mi visión del arte del tatuaje. En 2025, inauguré mi propio estudio en <strong>Jujuy</strong>, un espacio diseñado para ofrecer un ambiente profesional, seguro y acogedor.</p>
-            
-            <h4>Mi Compromiso</h4>
-            <p>Me caracterizo por mi honestidad profesional: si considero que un diseño está fuera de mi especialidad, prefiero asesorarte y recomendarte colegas de confianza que puedan realizar tu tatuaje con excelencia.</p>
-            
-            <p>La <strong>bioseguridad</strong> es una prioridad absoluta en mi estudio, garantizando los más altos estándares de higiene y cuidado tanto para mis clientes como para mí.</p>
-                <!-- Add this instead of the full address -->
-<h4>Ubicación</h4>
-<div class="location-info">
-    <p>Estudio privado en <strong>San Salvador de Jujuy, Argentina</strong></p>
-    <p>Atención con turno previo unicamente</p>
-</div>
-        </div>
-    </section>
-    <section id="testimonios">
+    <button class="lightbox-nav prev" aria-label="Imagen anterior">&#10094;</button>
+    <button class="lightbox-nav next" aria-label="Imagen siguiente">&#10095;</button>
+  </div>
+
+  <!-- =======================
+       ABOUT ME SECTION
+  ======================== -->
+  <section id="about">
+    <h2>Sobre Mí</h2>
+    <div class="about-content">
+      <h3>Tatuadora Profesional en Jujuy</h3>
+      <p>Soy <strong>Lucía Daiana Nuñez</strong>, tatuadora en Jujuy especializada en <strong>tribal, neotribal y línea fina</strong>, con un enfoque personalizado que se adapta a la idea y personalidad de cada cliente.</p>
+      <h4>Mi Formación</h4>
+      <p>Me formé en la <strong>Escuela SET en Córdoba Capital</strong>, donde completé un curso intensivo de 8 meses y obtuve el mejor promedio de mi promoción. Actualmente, estoy perfeccionando técnicas de <strong>black and grey y estilos ornamentales</strong> para ampliar mi repertorio artístico.</p>
+      <h4>Experiencia y Estudio Propio</h4>
+      <p>En 2024 trabajé en un estudio privado colaborando con otros artistas, experiencia que enriqueció significativamente mi visión del arte del tatuaje. En 2025, inauguré mi propio estudio en <strong>Jujuy</strong>, un espacio diseñado para ofrecer un ambiente profesional, seguro y acogedor.</p>
+      <h4>Mi Compromiso</h4>
+      <p>Me caracterizo por mi honestidad profesional: si considero que un diseño está fuera de mi especialidad, prefiero asesorarte y recomendarte colegas de confianza que puedan realizar tu tatuaje con excelencia.</p>
+      <p>La <strong>bioseguridad</strong> es una prioridad absoluta en mi estudio, garantizando los más altos estándares de higiene y cuidado tanto para mis clientes como para mí.</p>
+      <h4>Ubicación</h4>
+      <div class="location-info">
+        <p>Estudio privado en <strong>San Salvador de Jujuy, Argentina</strong></p>
+        <p>Atención con turno previo unicamente</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================
+       TESTIMONIOS SECTION
+  ======================== -->
+  <section id="testimonios">
     <h2>Opiniones de Nuestros Clientes</h2>
     <div class="custom-reviews-container">
       <!-- Rating Summary -->
@@ -256,20 +276,19 @@
           <span class="star">★</span>
         </div>
         <div class="rating-count">Basado en reseñas de Google</div>
-        <!-- With this inline SVG: -->
-<div class="google-icon">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-    </svg>
-  </div>
+        <div class="google-icon">
+          <!-- Google SVG Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+        </div>
       </div>
-      
       <!-- Reviews Slider/Container -->
       <div class="reviews-slider">
-        <!-- Review Item 1 -->
+        <!-- Repeat for each review -->
         <div class="review-item">
           <div class="review-header">
             <div class="reviewer-image">
@@ -292,7 +311,7 @@
             <p>Excelente atención. Me asesoró para encontrar el diseño que mas se adaptó a mí, es muy amable y trabaja con la mejor calidad de insumos, volvería una y mil veces más</p>
           </div>
         </div>
-        
+
         <!-- Review Item 2 -->
         <div class="review-item">
           <div class="review-header">
@@ -315,7 +334,7 @@
             <p>Excelente atención, lugar super cómodo y limpio. Recomiendo a Lucia como tatuadora</p>
           </div>
         </div>
-        
+
         <!-- Review Item 3 -->
         <div class="review-item">
           <div class="review-header">
@@ -338,86 +357,120 @@
             <p>Si estás buscando tatuajes únicos y delicados te recomiendo a Lu 100%, me tatuó en cuatro ocasiones con resultados increíbles. Tiene una habilidad artística y atención al detalle que son incomparables.</p>
           </div>
         </div>
-<div class="review-item">
-    <div class="review-header">
-      <div class="reviewer-image">
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23DDD' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Usuario" width="50" height="50">
+        <div class="review-item">
+          <div class="review-header">
+            <div class="reviewer-image">
+              <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23DDD' d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Usuario" width="50" height="50">
+            </div>
+            <div class="reviewer-info">
+              <div class="reviewer-name">Julia Deleu</div>
+              <div class="review-date">hace 1 mes</div>
+            </div>
+          </div>
+          <div class="review-rating">
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+            <span class="star">★</span>
+          </div>
+          <div class="review-text">
+            <p>Es un ambiente super cómodo y Lu te hace sentir super segura, recomendadisimo</p>
+          </div>
+        </div>
       </div>
-      <div class="reviewer-info">
-        <div class="reviewer-name">Julia Deleu</div>
-        <div class="review-date">hace 1 mes</div>
-      </div>
-    </div>
-    <div class="review-rating">
-      <span class="star">★</span>
-      <span class="star">★</span>
-      <span class="star">★</span>
-      <span class="star">★</span>
-      <span class="star">★</span>
-    </div>
-    <div class="review-text">
-      <p>Es un ambiente super cómodo y Lu te hace sentir super segura, recomendadisimo</p>
-    </div>
-  </div>
-      </div>
-      
+
       <!-- Write Review Button -->
       <div class="reviews-footer">
         <a href="https://g.page/r/CSvRTlBHkAzIEBM/review" class="write-review-btn" target="_blank" rel="noopener">
-            <span class="google-icon-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-            </span>
-            Escribir una reseña
+          <span class="google-icon-button">
+            <!-- Google SVG Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+          </span>
+          Escribir una reseña
         </a>
         <div class="powered-by">Reseñas de Google</div>
       </div>
     </div>
   </section>
-    <!-- Social Media Buttons -->
-<div class="social-media">
+
+  <!-- =======================
+       SOCIAL MEDIA BUTTONS
+  ======================== -->
+  <div class="social-media">
     <a href="https://instagram.com/lucidda.tattoo" class="social-btn instagram" target="_blank" rel="noopener" aria-label="Seguir en Instagram"><i class="fab fa-instagram"></i></a>
     <a href="https://tiktok.com/@luciaa.nu" class="social-btn tiktok" target="_blank" rel="noopener" aria-label="Seguir en TikTok"><i class="fab fa-tiktok"></i></a>
-</div>
-    <!-- Cookie Consent Banner -->
-<div id="cookie-banner" class="cookie-banner">
+  </div>
+
+  <!-- =======================
+       COOKIE CONSENT BANNER
+  ======================== -->
+  <div id="cookie-banner" class="cookie-banner">
     <div class="cookie-content">
-        <p>Este sitio utiliza cookies para mejorar tu experiencia y ofrecer servicios personalizados. Al continuar navegando, aceptas nuestra <a href="#" id="open-policy">política de cookies</a>.</p>
+      <p>Este sitio utiliza cookies para mejorar tu experiencia y ofrecer servicios personalizados. Al continuar navegando, aceptas nuestra <a href="#" id="open-policy">política de cookies</a>.</p>
       <div class="cookie-buttons">
         <button id="accept-cookies" class="cookie-accept">Aceptar</button>
         <button id="reject-cookies" class="cookie-reject">Rechazar</button>
       </div>
     </div>
   </div>
-  <!-- Cookie Policy Modal -->
-<div id="cookie-policy-modal" class="policy-modal">
+
+  <!-- =======================
+       COOKIE POLICY MODAL
+  ======================== -->
+  <div id="cookie-policy-modal" class="policy-modal">
     <div class="policy-content">
       <span class="policy-close">&times;</span>
       <h2>Política de Cookies</h2>
       <div class="policy-text">
         <p><strong>¿Qué son las cookies?</strong><br>
-        Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.</p>
-        
+          Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.</p>
         <p><strong>¿Qué cookies utilizamos?</strong></p>
         <ul>
           <li><strong>Cookies analíticas:</strong> Utilizamos Google Analytics para recopilar información sobre cómo utilizas nuestro sitio web. Esto nos ayuda a mejorar su funcionamiento.</li>
         </ul>
-        
         <p><strong>Control de cookies</strong><br>
-        Puedes aceptar o rechazar las cookies no esenciales. También puedes configurar tu navegador para rechazar todas las cookies, aunque esto podría afectar el funcionamiento de algunos sitios web.</p>
-        
+          Puedes aceptar o rechazar las cookies no esenciales. También puedes configurar tu navegador para rechazar todas las cookies, aunque esto podría afectar el funcionamiento de algunos sitios web.</p>
         <p><strong>Duración de las cookies</strong><br>
-        Las cookies analíticas permanecen activas durante 2 años desde tu última visita.</p>
-        
+          Las cookies analíticas permanecen activas durante 2 años desde tu última visita.</p>
         <p><strong>Más información</strong><br>
-        Para más información sobre cómo utilizamos las cookies, puedes contactarnos a través de nuestras redes sociales.</p>
+          Para más información sobre cómo utilizamos las cookies, puedes contactarnos a través de nuestras redes sociales.</p>
       </div>
     </div>
   </div>
+
+  <!-- =======================
+       ACCESSIBILITY PANEL (commented out)
+  ======================== -->
+  <!--
+  <div class="accessibility-panel">
+    <button class="accessibility-toggle" aria-label="Opciones de accesibilidad" aria-expanded="false" aria-controls="accessibility-options">
+      <i class="fas fa-universal-access"></i>
+    </button>
+    <div class="accessibility-options" id="accessibility-options">
+      <span class="accessibility-title">Accesibilidad</span>
+      <button id="font-toggle-btn" class="font-toggle-btn" aria-label="Cambiar Letra">
+        <i class="fas fa-font"></i> Cambiar Fuente
+      </button>
+      You can add more accessibility options here in the future
+      <button id="high-contrast-btn" class="high-contrast-btn" aria-label="Activar modo de alto contraste">
+        <i class="fas fa-adjust"></i> Alto Contraste
+      </button>
+      <button id="mode-toggle-btn" class="mode-toggle-btn" aria-label="Cambiar a modo claro">
+        <i class="fas fa-sun"></i> Modo Claro
+      </button>
+    </div>
+  </div>
+  -->
+
+  <!-- =======================
+       SCRIPTS
+  ======================== -->
   <script src="script.js?v=1.1"></script>
   <script src="whatsapp-tracking.js"></script>
 </body>
