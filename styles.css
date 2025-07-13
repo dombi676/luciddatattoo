@@ -103,7 +103,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-    font-family: var(--font-heading-1);
+    font-family: var(--font-heading-other);
     font-size: 2.5em; /* Base size, can be overridden */
 }
 
@@ -194,9 +194,11 @@ nav {
     transform: translateX(-50%);
 }
 
-.nav-center h1 {
+.nav-center .site-title {
     font-size: 32px;
     margin: 0;
+    font-family: var(--font-heading-1);
+    color: var(--color-primary);
 }
 
 .nav-links {
@@ -894,9 +896,9 @@ nav {
 }
 .faq-question:hover { background-color: #3a3a3a; }
 
-.faq-question h3 {
+.faq-question h4 {
     margin: 0;
-    font-size: 1.2em;
+    font-size: 0.95em;
     color: var(--color-text);
     flex: 1; /* Allow the question text to take available space */
     padding-right: 10px; /* Additional padding from the icon */
@@ -971,11 +973,42 @@ nav {
 }
 
 .article-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading-other);
     font-size: 2.5em;
     color: var(--color-primary);
     margin-bottom: 20px;
     line-height: 1.2;
+}
+
+/* Blog Article Page - Roboto for better readability */
+[data-page="blog-article"] .article-title {
+    font-family: var(--font-body);
+    font-weight: 700;
+}
+
+[data-page="blog-article"] .article-toc-title {
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+[data-page="blog-article"] .article-content h2 {
+    font-family: var(--font-body);
+    font-weight: 700;
+}
+
+[data-page="blog-article"] .article-content h3 {
+    font-family: var(--font-body);
+    font-weight: 600;
+}
+
+[data-page="blog-article"] .article-cta h3 {
+    font-family: var(--font-body);
+    font-weight: 700;
+}
+
+[data-page="blog-article"] .whatsapp-btn {
+    font-family: var(--font-body);
+    font-weight: 600;
 }
 
 .article-meta {
@@ -1059,7 +1092,7 @@ nav {
 }
 
 .article-toc-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading-other);
     color: var(--color-primary);
     font-size: 1.4em;
     margin-bottom: 20px;
@@ -1105,7 +1138,7 @@ nav {
 }
 
 .article-content h2 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading-other);
     color: var(--color-primary);
     font-size: 1.8em;
     margin: 40px 0 20px 0;
@@ -1120,30 +1153,10 @@ nav {
 }
 
 .article-content h3 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading-other);
     color: var(--color-text);
     font-size: 1.5em;
     margin: 30px 0 15px 0;
-}
-
-.article-content p {
-    margin-bottom: 20px;
-    color: var(--color-text);
-}
-
-.article-content ul, .article-content ol {
-    margin-bottom: 20px;
-    padding-left: 30px;
-}
-
-.article-content li {
-    margin-bottom: 8px;
-    color: var(--color-text);
-}
-
-.article-content strong {
-    color: var(--color-primary);
-    font-weight: 600;
 }
 
 /* Article Images */
@@ -1187,7 +1200,7 @@ nav {
 }
 
 .related-articles h3 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading-other);
     color: var(--color-primary);
     font-size: 1.6em;
     margin-bottom: 30px;
@@ -1232,7 +1245,7 @@ nav {
 }
 
 .related-post-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading-other);
     color: var(--color-text);
     font-size: 1.2em;
     margin-bottom: 10px;
@@ -1472,7 +1485,7 @@ nav {
 #back-to-top {
     position: fixed;
     bottom: 30px;
-    right: 30px;
+    left: 30px; /* Moved to left to avoid WhatsApp button */
     background-color: var(--color-primary);
     color: var(--color-white);
     width: 50px;
@@ -1534,7 +1547,7 @@ nav {
 
     #back-to-top {
         bottom: 20px;
-        right: 20px;
+        left: 20px; /* Moved to left on mobile too */
         width: 45px;
         height: 45px;
         font-size: 18px;
@@ -1662,8 +1675,8 @@ nav {
         gap: 15px; /* Reduce gap slightly for mobile */
     }
 
-    .faq-question h3 {
-        font-size: 1.1em; /* Slightly smaller font on mobile */
+    .faq-question h4 {
+        font-size: 0.9em; /* Even smaller font on mobile */
         line-height: 1.3; /* Tighter line height for mobile */
     }
 
