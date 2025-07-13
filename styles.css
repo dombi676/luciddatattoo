@@ -1006,7 +1006,7 @@ nav {
     font-weight: 700;
 }
 
-[data-page="blog-article"] .whatsapp-btn {
+[data-page="blog-article"] .article-cta .whatsapp-btn {
     font-family: var(--font-body);
     font-weight: 600;
 }
