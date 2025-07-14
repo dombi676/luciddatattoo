@@ -48,6 +48,38 @@
     font-display: swap;
 }
 
+/* ==========================================================================
+   3. MOBILE TAP HIGHLIGHT REMOVAL
+   ========================================================================== */
+/* Remove blue tap highlights on mobile */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Re-enable text selection where needed */
+p, h1, h2, h3, h4, h5, h6, span, div:not(.hamburger-btn):not(.social-btn):not(.whatsapp-btn) {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Ensure inputs and textareas work properly */
+input, textarea, select {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
 @font-face {
     font-family: 'Roboto';
     src: url('fonts/Roboto-Light.woff2') format('woff2'),
