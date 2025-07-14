@@ -6,8 +6,8 @@
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-    style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-    font-src 'self' https://cdnjs.cloudflare.com;
+    style-src 'self' https://cdnjs.cloudflare.com https://fonts.googleapis.com 'unsafe-inline';
+    font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
     img-src 'self' data: https: blob:;
     connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
     frame-src 'none';
@@ -17,9 +17,8 @@
   <link rel="preload" href="styles.css" as="style">
   <link rel="preload" href="fonts/UnifrakturMaguntia.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/MedievalSharp.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="images/webp/hero-bg.webp" as="image">
-  <link rel="preload" href="script.js?v=1.1" as="script">
+  <link rel="preload" href="script.js?v=1.2" as="script">
 
   <!-- Meta tags -->
   <meta charset="UTF-8">
@@ -561,7 +560,7 @@
   <!-- =======================
        SCRIPTS
   ======================== -->
-  <script src="script.js?v=1.1"></script>
-  <script src="whatsapp-tracking.js"></script>
+  <script src="script.js?v=1.2" data-cfasync="false"></script>
+  <script src="whatsapp-tracking.js" data-cfasync="false"></script>
 </body>
 </html>

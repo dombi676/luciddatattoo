@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const policyLink = document.getElementById('open-policy');
     const policyClose = document.querySelector('.policy-close');
 
-    if (!cookieBanner) return;
+    if (!cookieBanner || !acceptButton || !rejectButton) return;
 
     function handleConsent(consent) {
       localStorage.setItem('cookieConsent', consent);
@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
       acceptButton.addEventListener('click', () => handleConsent('accepted'));
       rejectButton.addEventListener('click', () => handleConsent('rejected'));
 
-      if (policyLink && policyModal) {
+      if (policyLink && policyModal && policyClose) {
         policyLink.addEventListener('click', (e) => {
           e.preventDefault();
           policyModal.style.display = 'block';
