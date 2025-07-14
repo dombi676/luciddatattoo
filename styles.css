@@ -718,21 +718,6 @@ nav {
     }
 }
 
-/* --- Magnifier --- */
-#magnifier {
-    display: none;
-    position: fixed; /* Use fixed to position relative to viewport */
-    width: 400px;
-    height: 400px;
-    border: 2px solid var(--color-white);
-    border-radius: 50%; /* Circular magnifier */
-    overflow: hidden;
-    pointer-events: none;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    z-index: 2002;
-    background-repeat: no-repeat;
-}
-
 /* --- About Me Section --- */
 #about {
     max-width: 800px;

@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const galleryGrid = document.querySelector('.gallery-grid');
     const galleryPreviewGrids = document.querySelectorAll('.gallery-preview-grid'); // Get ALL preview grids
     const filterButtons = document.querySelectorAll('.filter-btn');
-    const magnifier = document.getElementById('magnifier');
 
     // Check if we're on a page with gallery functionality
     if (!lightbox || (!galleryGrid && galleryPreviewGrids.length === 0)) return;
@@ -112,11 +111,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Check if this request was cancelled
         if (thisRequest.cancelled) return;
         
-        // Set the medium image immediately (currently displayed)
+        // Set the medium image immediately but scale it to fill the container
         lightboxImg.src = imagePaths.medium;
         lightboxImg.alt = img.alt || 'Imagen ampliada';
         lightboxImg.style.opacity = '1';
         lightboxImg.style.transition = 'none'; // Remove any existing transitions
+        
+        // Force the image to scale properly while leaving room to click outside
+        lightboxImg.style.objectFit = 'contain';
+        lightboxImg.style.maxWidth = '85vw';
+        lightboxImg.style.maxHeight = '85vh';
+        lightboxImg.style.width = 'auto';
+        lightboxImg.style.height = 'auto';
         
         // Show lightbox
         lightbox.style.display = 'flex';
@@ -133,6 +139,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Fallback to current image if progressive loading fails
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt || 'Imagen ampliada';
+        // Apply same sizing for fallback
+        lightboxImg.style.objectFit = 'contain';
+        lightboxImg.style.width = '90vw';
+        lightboxImg.style.height = '90vh';
+        lightboxImg.style.maxWidth = '90vw';
+        lightboxImg.style.maxHeight = '90vh';
         lightbox.style.display = 'flex';
         document.body.style.overflow = 'hidden';
       }
@@ -195,10 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Smooth, single transition without opacity flicker
             lightboxImg.src = primarySrc;
             
-            // Update magnifier if active
-            if (magnifier && magnifier.style.display !== 'none') {
-              magnifier.style.backgroundImage = `url('${primarySrc}')`;
-            }
+            // No additional updates needed after setting higher quality
           }
           resolve();
         };
@@ -236,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       lightbox.style.display = 'none';
-      if (magnifier) magnifier.style.display = 'none';
       document.body.style.overflow = ''; // Restore scrolling
       isNavigating = false; // Reset navigation state
     }
@@ -252,7 +260,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const newIndex = (currentIndex + direction + visibleImages.length) % visibleImages.length;
       
       try {
-        // Cancel any ongoing loading request
+        // Update index immediately for instant response
+        currentIndex = newIndex;
+        const img = visibleImages[currentIndex];
+        const imagePaths = getProgressiveImagePaths(img);
+        
+        // IMMEDIATELY set the new medium image for instant feedback
+        lightboxImg.src = imagePaths.medium;
+        lightboxImg.alt = imagePaths.alt;
+        lightboxImg.style.transition = 'none'; // Prevent opacity flicker during navigation
+        
+        // Ensure proper scaling is maintained
+        lightboxImg.style.objectFit = 'contain';
+        lightboxImg.style.maxWidth = '85vw';
+        lightboxImg.style.maxHeight = '85vh';
+        lightboxImg.style.width = 'auto';
+        lightboxImg.style.height = 'auto';
+        
+        // Cancel any ongoing loading request AFTER setting the image
         if (currentLoadingRequest) {
           currentLoadingRequest.cancelled = true;
         }
@@ -260,18 +285,10 @@ document.addEventListener('DOMContentLoaded', () => {
         currentLoadingRequest = { cancelled: false };
         const thisRequest = currentLoadingRequest;
         
-        // Update index and get new image
-        currentIndex = newIndex;
-        const img = visibleImages[currentIndex];
-        const imagePaths = getProgressiveImagePaths(img);
-        
-        // Set medium image immediately
-        lightboxImg.src = imagePaths.medium;
-        lightboxImg.alt = imagePaths.alt;
-        lightboxImg.style.transition = 'none'; // Prevent opacity flicker during navigation
-        
-        // Start progressive loading
-        await loadProgressiveImage(imagePaths, thisRequest);
+        // Start progressive loading in background (non-blocking)
+        loadProgressiveImage(imagePaths, thisRequest).catch(error => {
+          console.log('Background progressive loading failed:', error);
+        });
         
         // Preload adjacent images for next navigation
         preloadAdjacentImages(currentIndex);
@@ -282,40 +299,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const img = visibleImages[currentIndex];
         lightboxImg.src = img.src;
         lightboxImg.alt = img.alt || 'Imagen ampliada';
+        // Apply sizing for fallback
+        lightboxImg.style.objectFit = 'contain';
+        lightboxImg.style.maxWidth = '85vw';
+        lightboxImg.style.maxHeight = '85vh';
+        lightboxImg.style.width = 'auto';
+        lightboxImg.style.height = 'auto';
       } finally {
-        // Reset navigation flag after a short delay to prevent double-clicks
+        // Reset navigation flag immediately for responsive navigation
         setTimeout(() => {
           isNavigating = false;
-        }, 150);
+        }, 50); // Reduced from 150ms to 50ms for better responsiveness
       }
-    }
-
-    /**
-     * Handles magnifier movement on the lightbox image.
-     */
-    function handleMagnifier(e) {
-        const imgRect = lightboxImg.getBoundingClientRect();
-        const mouseX = e.clientX - imgRect.left;
-        const mouseY = e.clientY - imgRect.top;
-
-        if (mouseX < 0 || mouseX > imgRect.width || mouseY < 0 || mouseY > imgRect.height) {
-            magnifier.style.display = 'none';
-            return;
-        }
-
-        magnifier.style.display = 'block';
-        const ZOOM_LEVEL = 1.2;
-        const MAGNIFIER_SIZE = 400;
-
-        magnifier.style.left = `${e.clientX - MAGNIFIER_SIZE / 2}px`;
-        magnifier.style.top = `${e.clientY - MAGNIFIER_SIZE / 2}px`;
-
-        const bgX = (mouseX / imgRect.width) * lightboxImg.naturalWidth * ZOOM_LEVEL - MAGNIFIER_SIZE / 2;
-        const bgY = (mouseY / imgRect.height) * lightboxImg.naturalHeight * ZOOM_LEVEL - MAGNIFIER_SIZE / 2;
-
-        magnifier.style.backgroundImage = `url('${lightboxImg.src}')`;
-        magnifier.style.backgroundSize = `${lightboxImg.naturalWidth * ZOOM_LEVEL}px ${lightboxImg.naturalHeight * ZOOM_LEVEL}px`;
-        magnifier.style.backgroundPosition = `-${bgX}px -${bgY}px`;
     }
 
     /**
@@ -368,13 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.key === 'ArrowRight') await navigateLightbox(1);
         }
       });
-
-      if (!isTouchDevice && lightboxImg && magnifier) {
-        lightboxImg.addEventListener('mousemove', handleMagnifier);
-        lightboxImg.addEventListener('mouseleave', () => {
-            magnifier.style.display = 'none';
-        });
-      }
       
       // Initialize images based on page type
       if (galleryGrid) {
