@@ -707,6 +707,11 @@ nav {
   border-color: var(--color-primary);
 }
 
+/* Prevent persistent focus state on mobile */
+.mobile-nav-btn:focus {
+  outline: none;
+}
+
 .mobile-nav-btn:disabled,
 .mobile-nav-btn.disabled {
   opacity: 0.5;
