@@ -364,7 +364,7 @@ nav {
     display: block;
     width: 25px;
     height: 3px;
-    background: var(--color-text);
+    background: #ffffff !important;
     margin: 4px 0;
     transition: transform 0.3s, opacity 0.3s;
 }
