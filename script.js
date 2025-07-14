@@ -404,41 +404,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const navLinks = document.querySelector('.nav-links');
     const navContainer = document.querySelector('.nav-left'); // Container for the menu
 
-    // Debug logging for homepage
-    console.log('Mobile nav debug:', {
-      hamburgerBtn: hamburgerBtn,
-      navLinks: navLinks,
-      navContainer: navContainer,
-      page: document.body.getAttribute('data-page')
-    });
+    if (!hamburgerBtn || !navLinks || !navContainer) return;
 
-    if (!hamburgerBtn || !navLinks || !navContainer) {
-      console.error('Mobile nav elements not found:', {
-        hamburgerBtn: !!hamburgerBtn,
-        navLinks: !!navLinks,
-        navContainer: !!navContainer
-      });
+    // Check if already has event listeners to prevent duplicates
+    if (hamburgerBtn.hasAttribute('data-nav-initialized')) {
       return;
     }
 
     function toggleMenu(forceClose = false) {
-      console.log('toggleMenu called with forceClose:', forceClose);
       const isActive = navLinks.classList.contains('active') && !forceClose;
-      console.log('Current state - isActive:', isActive, 'navLinks classes:', navLinks.className);
-      
       navLinks.classList.toggle('active', !isActive);
       hamburgerBtn.classList.toggle('active', !isActive);
       hamburgerBtn.setAttribute('aria-expanded', !isActive);
-      
-      console.log('After toggle - navLinks classes:', navLinks.className, 'hamburgerBtn classes:', hamburgerBtn.className);
     }
 
     function init() {
-      console.log('Mobile nav init called');
-      
       // Add click handler with multiple event types for better compatibility
       hamburgerBtn.addEventListener('click', (e) => {
-        console.log('Hamburger clicked!', e);
         e.preventDefault();
         e.stopPropagation();
         toggleMenu();
@@ -446,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Add touch support for mobile devices
       hamburgerBtn.addEventListener('touchend', (e) => {
-        console.log('Hamburger touched!', e);
         e.preventDefault();
         e.stopPropagation();
         toggleMenu();
@@ -454,14 +435,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.addEventListener('click', (e) => {
         if (!navContainer.contains(e.target) && navLinks.classList.contains('active')) {
-          console.log('Outside click - closing menu');
           toggleMenu(true); // Force close
         }
       });
 
       navLinks.addEventListener('click', (e) => {
         if (e.target.tagName === 'A') {
-          console.log('Nav link clicked - closing menu after delay');
           // Small delay to allow navigation to complete before closing menu
           setTimeout(() => {
             toggleMenu(true); // Force close on link click
@@ -470,12 +449,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       
       // Force initial state
-      console.log('Setting initial state');
       navLinks.classList.remove('active');
       hamburgerBtn.classList.remove('active');
       hamburgerBtn.setAttribute('aria-expanded', 'false');
       
-      console.log('Mobile nav initialized successfully');
+      // Mark as initialized to prevent duplicates
+      hamburgerBtn.setAttribute('data-nav-initialized', 'true');
     }
     
     init();
