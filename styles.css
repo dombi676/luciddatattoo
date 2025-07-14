@@ -702,13 +702,15 @@ nav {
 }
 
 .mobile-nav-btn:active {
-    background-color: var(--color-primary);
-    transform: scale(0.95);
+  color: var(--color-white);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
 }
 
-.mobile-nav-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.mobile-nav-btn:disabled,
+.mobile-nav-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Desktop hover effect for mobile buttons (tablets/larger screens) */
