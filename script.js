@@ -68,12 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       currentIndex = index;
       const img = visibleImages[currentIndex];
-      const pictureEl = img.closest('picture');
-      const webpSource = pictureEl ? pictureEl.querySelector('source[type="image/webp"]') : null;
       
-      // Stage 1: Load compressed/WebP version immediately for fast display
-      const initialSrc = webpSource ? webpSource.srcset : img.src;
-      lightboxImg.src = initialSrc;
+      // Get compressed version from thumbnail path
+      const thumbnailSrc = img.src;
+      let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
+      compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
+      
+      // Stage 1: Load compressed version immediately for fast display
+      lightboxImg.src = compressedSrc;
       lightboxImg.alt = img.alt || 'Imagen ampliada';
       lightbox.style.display = 'flex';
       document.body.style.overflow = 'hidden'; // Prevent background scrolling
@@ -92,8 +94,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const thumbnailSrc = thumbnail.src;
       const filename = thumbnailSrc.split('/').pop();
       
+      // Construct compressed image path from thumbnail path
+      let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
+      compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
+      
       // Construct uncompressed image path
-      const highResSrc = thumbnailSrc.replace('/compressed/', '/uncompressed/');
+      const highResSrc = compressedSrc.replace('/compressed/', '/uncompressed/');
       
       // Add loading indicator
       lightboxImage.style.opacity = '0.8';
@@ -372,8 +378,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleConsent(consent) {
       localStorage.setItem('cookieConsent', consent);
       cookieBanner.style.display = 'none';
-      if (consent === 'rejected') {
-        window['ga-disable-G-FEL31JE33S'] = true;
+      
+      if (consent === 'accepted') {
+        // Enable full analytics tracking
+        if (typeof window.enableAnalytics === 'function') {
+          window.enableAnalytics();
+        }
+      } else if (consent === 'rejected') {
+        // Disable analytics tracking
+        if (typeof window.disableAnalytics === 'function') {
+          window.disableAnalytics();
+        }
       }
     }
 
@@ -382,7 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (consent === null) {
         cookieBanner.style.display = 'block';
       } else if (consent === 'rejected') {
-        window['ga-disable-G-FEL31JE33S'] = true;
+        // Analytics already disabled by analytics-conditional.js
+        if (typeof window.disableAnalytics === 'function') {
+          window.disableAnalytics();
+        }
+      } else if (consent === 'accepted') {
+        // Analytics already enabled by analytics-conditional.js
+        if (typeof window.enableAnalytics === 'function') {
+          window.enableAnalytics();
+        }
       }
 
       acceptButton.addEventListener('click', () => handleConsent('accepted'));

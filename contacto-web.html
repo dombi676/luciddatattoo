@@ -34,9 +34,9 @@
     <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ff4444">
     
-    <!-- Google Analytics -->
+    <!-- Google Analytics with Cookie Consent -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
-    <script async src="analytics.js"></script>
+    <script src="analytics-conditional.js"></script>
     
     <!-- Source data element (no inline scripts) -->
     <meta id="source-data" data-source="website">
@@ -135,7 +135,45 @@
         <div class="source-indicator" id="source-indicator"></div>
     </div>
 
+    <!-- =======================
+         COOKIE CONSENT BANNER
+    ======================== -->
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-content">
+            <p>Este sitio utiliza cookies para mejorar tu experiencia y ofrecer servicios personalizados. Al continuar navegando, aceptás nuestra <a href="#" id="open-policy">política de cookies</a>.</p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="cookie-accept">Aceptar</button>
+                <button id="reject-cookies" class="cookie-reject">Rechazar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- =======================
+         COOKIE POLICY MODAL
+    ======================== -->
+    <div id="cookie-policy-modal" class="policy-modal">
+        <div class="policy-content">
+            <span class="policy-close">&times;</span>
+            <h2>Política de Cookies</h2>
+            <div class="policy-text">
+                <p><strong>¿Qué son las cookies?</strong><br>
+                    Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web.</p>
+                <p><strong>¿Qué cookies utilizamos?</strong></p>
+                <ul>
+                    <li><strong>Cookies analíticas:</strong> Utilizamos Google Analytics para recopilar información sobre cómo utilizas nuestro sitio web. Esto nos ayuda a mejorar su funcionamiento.</li>
+                </ul>
+                <p><strong>Control de cookies</strong><br>
+                    Puedes aceptar o rechazar las cookies no esenciales. También puedes configurar tu navegador para rechazar todas las cookies, aunque esto podría afectar el funcionamiento de algunos sitios web.</p>
+                <p><strong>Duración de las cookies</strong><br>
+                    Las cookies analíticas permanecen activas durante 2 años desde tu última visita.</p>
+                <p><strong>Más información</strong><br>
+                    Para más información sobre cómo utilizamos las cookies, puedes contactarnos a través de nuestras redes sociales.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- External script instead of inline -->
     <script src="redirect-script.js"></script>
+    <script src="script.js?v=1.1"></script>
 </body>
 </html>
