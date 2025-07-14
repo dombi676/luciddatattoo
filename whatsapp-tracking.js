@@ -79,9 +79,14 @@ const WhatsAppTracker = {
   };
   
   // Initialize tracking when the page is loaded
-  document.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      WhatsAppTracker.initDirectLinkTracking();
+    });
+  } else {
+    // DOM is already loaded, initialize immediately
     WhatsAppTracker.initDirectLinkTracking();
-  });
+  }
   
   // Export tracker for direct use
   window.WhatsAppTracker = WhatsAppTracker;

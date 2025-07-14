@@ -14,12 +14,15 @@
     object-src 'none';">
 
   <!-- Preload for critical resources -->
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://www.google-analytics.com">
   <link rel="preload" href="styles.css" as="style">
   <link rel="preload" href="fonts/UnifrakturMaguntia.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/MedievalSharp.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="images/webp/medium/hero-bg.webp" as="image">
+  <link rel="preload" href="images/webp/medium/hero-bg.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="images/webp/medium/logo2.webp" as="image" fetchpriority="high">
   <link rel="preload" href="script.js?v=1.3" as="script">
 
   <!-- Meta tags -->
@@ -214,7 +217,8 @@
            class="hero-bg-image" 
            alt="" 
            aria-hidden="true"
-           loading="eager">
+           loading="eager"
+           fetchpriority="high">
     </picture>
     <div class="hero-content">
       <picture>
@@ -223,6 +227,7 @@
              alt="Lucidda Tattoo - Logo de estudio de tatuajes en Jujuy" 
              class="hero-icon"
              loading="eager"
+             fetchpriority="high"
              width="120" 
              height="120">
       </picture>
@@ -660,6 +665,6 @@
        SCRIPTS
   ======================== -->
   <script src="script.js?v=1.3" data-cfasync="false"></script>
-  <script src="whatsapp-tracking.js" data-cfasync="false"></script>
+  <script src="whatsapp-tracking.js" data-cfasync="false" defer></script>
 </body>
 </html>
