@@ -30,53 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentLoadingRequest = null; // Track current loading request
 
     /**
-     * Preloads an image and caches it for faster navigation.
-     * @param {HTMLImageElement} thumbnailImg - The thumbnail image element
-     * @returns {Promise} Promise that resolves with the image paths
-     */
-    function preloadImage(thumbnailImg) {
-      const thumbnailSrc = thumbnailImg.src;
-      const cacheKey = thumbnailSrc;
-      
-      // Return cached version if available
-      if (imageCache.has(cacheKey)) {
-        return Promise.resolve(imageCache.get(cacheKey));
-      }
-      
-      // Generate image paths
-      let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
-      compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
-      const highResSrc = compressedSrc.replace('/compressed/', '/uncompressed/');
-      
-      const imagePaths = {
-        compressed: compressedSrc,
-        highRes: highResSrc,
-        alt: thumbnailImg.alt || 'Imagen ampliada'
-      };
-      
-      // Preload compressed image
-      return new Promise((resolve) => {
-        const compressedImg = new Image();
-        compressedImg.onload = () => {
-          imageCache.set(cacheKey, imagePaths);
-          
-          // Start preloading high-res version in background
-          const highResImg = new Image();
-          highResImg.onload = () => {
-            imagePaths.highResLoaded = true;
-          };
-          highResImg.src = highResSrc;
-          
-          resolve(imagePaths);
-        };
-        compressedImg.onerror = () => {
-          resolve(imagePaths); // Still resolve with paths even if preload fails
-        };
-        compressedImg.src = compressedSrc;
-      });
-    }
-
-    /**
      * Preloads adjacent images for smoother navigation.
      * @param {number} currentIdx - Current image index
      */
@@ -88,7 +41,18 @@ document.addEventListener('DOMContentLoaded', () => {
       
       preloadIndexes.forEach(idx => {
         if (idx !== currentIdx && visibleImages[idx]) {
-          preloadImage(visibleImages[idx]);
+          const img = visibleImages[idx];
+          const imagePaths = getProgressiveImagePaths(img);
+          
+          // Preload the large version for faster navigation
+          const preloadImg = new Image();
+          preloadImg.src = imagePaths.large;
+          
+          // Optionally preload xlarge for immediate high quality
+          setTimeout(() => {
+            const preloadXLarge = new Image();
+            preloadXLarge.src = imagePaths.xlarge;
+          }, 500);
         }
       });
     }
@@ -121,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Opens the lightbox to a specific image index.
+     * Opens the lightbox to a specific image index with progressive loading.
      * @param {number} index - The index of the image to show.
      */
     async function openLightbox(index) {
@@ -142,47 +106,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const thisRequest = currentLoadingRequest;
       
       try {
-        // Preload the image
-        const imagePaths = await preloadImage(img);
+        // Progressive loading: start with medium, then large, then xlarge
+        const imagePaths = getProgressiveImagePaths(img);
         
-        // Check if this request was cancelled (user navigated away)
+        // Check if this request was cancelled
         if (thisRequest.cancelled) return;
         
-        // Set the compressed image immediately
-        lightboxImg.src = imagePaths.compressed;
-        lightboxImg.alt = imagePaths.alt;
+        // Set the medium image immediately (currently displayed)
+        lightboxImg.src = imagePaths.medium;
+        lightboxImg.alt = img.alt || 'Imagen ampliada';
         lightboxImg.style.opacity = '1';
+        lightboxImg.style.transition = 'none'; // Remove any existing transitions
         
         // Show lightbox
         lightbox.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         
-        // Load high-res version if not already loaded
-        if (!imagePaths.highResLoaded) {
-          loadHighResVersion(imagePaths, thisRequest);
-        } else {
-          // High-res already loaded, use it immediately
-          if (!thisRequest.cancelled) {
-            lightboxImg.src = imagePaths.highRes;
-            
-            // Update magnifier background if it's being used
-            if (magnifier && magnifier.style.display !== 'none') {
-              magnifier.style.backgroundImage = `url('${imagePaths.highRes}')`;
-            }
-          }
-        }
+        // Progressive loading: medium → large → xlarge
+        await loadProgressiveImage(imagePaths, thisRequest);
         
         // Preload adjacent images for smooth navigation
         preloadAdjacentImages(currentIndex);
         
       } catch (error) {
         console.log('Error loading image:', error);
-        // Fallback to direct loading if preload fails
-        const thumbnailSrc = img.src;
-        let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
-        compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
-        
-        lightboxImg.src = compressedSrc;
+        // Fallback to current image if progressive loading fails
+        lightboxImg.src = img.src;
         lightboxImg.alt = img.alt || 'Imagen ampliada';
         lightbox.style.display = 'flex';
         document.body.style.overflow = 'hidden';
@@ -190,34 +139,90 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Loads high-resolution version of image for better zoom quality.
+     * Gets progressive image paths from an image element.
+     * @param {HTMLImageElement} img - The image element
+     * @returns {Object} Object containing all image size paths
+     */
+    function getProgressiveImagePaths(img) {
+      const currentSrc = img.src;
+      const largeSrc = img.dataset.large;
+      const xlargeSrc = img.dataset.xlarge;
+      const fallbackLargeSrc = img.dataset.fallbackLarge;
+      
+      // Determine WebP support
+      const supportsWebp = document.querySelector('picture source[type="image/webp"]') !== null;
+      
+      return {
+        medium: currentSrc, // Currently displayed image
+        large: largeSrc || currentSrc.replace('/medium/', '/large/'),
+        xlarge: xlargeSrc || currentSrc.replace('/medium/', '/xlarge/'),
+        fallbackLarge: fallbackLargeSrc || currentSrc.replace('/webp/', '/fallback/').replace('/medium/', '/large/'),
+        alt: img.alt || 'Imagen ampliada',
+        supportsWebp: supportsWebp
+      };
+    }
+
+    /**
+     * Loads progressively larger images for better quality.
      * @param {Object} imagePaths - Object containing image paths
      * @param {Object} request - The loading request object
      */
-    function loadHighResVersion(imagePaths, request) {
-      // Don't show loading indicator or change opacity - keep image stable
-      const highResImg = new Image();
+    async function loadProgressiveImage(imagePaths, request) {
+      // Step 1: Load large version
+      if (imagePaths.large && !request.cancelled) {
+        await loadImageVersion(imagePaths.large, imagePaths.fallbackLarge, request, 'large');
+      }
       
-      highResImg.onload = function() {
-        // Only update if this request wasn't cancelled and is still current
-        if (!request.cancelled && request === currentLoadingRequest) {
-          lightboxImg.src = imagePaths.highRes;
-          imagePaths.highResLoaded = true;
-          
-          // Update magnifier background if it's being used
-          if (magnifier && magnifier.style.display !== 'none') {
-            magnifier.style.backgroundImage = `url('${imagePaths.highRes}')`;
+      // Step 2: Load xlarge version for maximum quality
+      if (imagePaths.xlarge && !request.cancelled) {
+        await loadImageVersion(imagePaths.xlarge, imagePaths.fallbackLarge, request, 'xlarge');
+      }
+    }
+
+    /**
+     * Loads a specific image version with fallback support.
+     * @param {string} primarySrc - The primary image source (WebP)
+     * @param {string} fallbackSrc - The fallback image source (JPEG/PNG)
+     * @param {Object} request - The loading request object
+     * @param {string} version - The version being loaded (for logging)
+     */
+    function loadImageVersion(primarySrc, fallbackSrc, request, version) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        
+        img.onload = function() {
+          if (!request.cancelled && request === currentLoadingRequest) {
+            // Smooth, single transition without opacity flicker
+            lightboxImg.src = primarySrc;
+            
+            // Update magnifier if active
+            if (magnifier && magnifier.style.display !== 'none') {
+              magnifier.style.backgroundImage = `url('${primarySrc}')`;
+            }
           }
-        }
-      };
-      
-      highResImg.onerror = function() {
-        // High-res version failed, but keep the compressed version
-        console.log('High-res version not available for:', imagePaths.highRes);
-      };
-      
-      // Start loading high-res version
-      highResImg.src = imagePaths.highRes;
+          resolve();
+        };
+        
+        img.onerror = function() {
+          // Try fallback version
+          if (fallbackSrc && fallbackSrc !== primarySrc) {
+            const fallbackImg = new Image();
+            fallbackImg.onload = function() {
+              if (!request.cancelled && request === currentLoadingRequest) {
+                lightboxImg.src = fallbackSrc;
+              }
+              resolve();
+            };
+            fallbackImg.onerror = () => resolve(); // Give up on this version
+            fallbackImg.src = fallbackSrc;
+          } else {
+            console.log(`Failed to load ${version} version:`, primarySrc);
+            resolve();
+          }
+        };
+        
+        img.src = primarySrc;
+      });
     }
 
     /**
@@ -247,49 +252,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const newIndex = (currentIndex + direction + visibleImages.length) % visibleImages.length;
       
       try {
-        // Check if the target image is already preloaded
-        const targetImg = visibleImages[newIndex];
-        const imagePaths = await preloadImage(targetImg);
-        
         // Cancel any ongoing loading request
         if (currentLoadingRequest) {
           currentLoadingRequest.cancelled = true;
         }
         
-        // Create new loading request
         currentLoadingRequest = { cancelled: false };
         const thisRequest = currentLoadingRequest;
         
-        // Update index and image immediately
+        // Update index and get new image
         currentIndex = newIndex;
-        lightboxImg.src = imagePaths.compressed;
-        lightboxImg.alt = imagePaths.alt;
+        const img = visibleImages[currentIndex];
+        const imagePaths = getProgressiveImagePaths(img);
         
-        // Use high-res if already loaded, otherwise load it
-        if (imagePaths.highResLoaded) {
-          lightboxImg.src = imagePaths.highRes;
-          
-          // Update magnifier background if it's being used
-          if (magnifier && magnifier.style.display !== 'none') {
-            magnifier.style.backgroundImage = `url('${imagePaths.highRes}')`;
-          }
-        } else {
-          loadHighResVersion(imagePaths, thisRequest);
-        }
+        // Set medium image immediately
+        lightboxImg.src = imagePaths.medium;
+        lightboxImg.alt = imagePaths.alt;
+        lightboxImg.style.transition = 'none'; // Prevent opacity flicker during navigation
+        
+        // Start progressive loading
+        await loadProgressiveImage(imagePaths, thisRequest);
         
         // Preload adjacent images for next navigation
         preloadAdjacentImages(currentIndex);
         
       } catch (error) {
         console.log('Error during navigation:', error);
-        // Fallback to original method if preload fails
-        currentIndex = newIndex;
+        // Fallback to current image
         const img = visibleImages[currentIndex];
-        const thumbnailSrc = img.src;
-        let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
-        compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
-        
-        lightboxImg.src = compressedSrc;
+        lightboxImg.src = img.src;
         lightboxImg.alt = img.alt || 'Imagen ampliada';
       } finally {
         // Reset navigation flag after a short delay to prevent double-clicks
