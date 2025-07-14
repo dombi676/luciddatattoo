@@ -25,10 +25,73 @@ document.addEventListener('DOMContentLoaded', () => {
     let visibleImages = [];
     let activeFilter = 'all';
     const isTouchDevice = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+    let isNavigating = false;
+    let imageCache = new Map(); // Cache for preloaded images
+    let currentLoadingRequest = null; // Track current loading request
 
     /**
-     * Updates the gallery view based on the active filter.
+     * Preloads an image and caches it for faster navigation.
+     * @param {HTMLImageElement} thumbnailImg - The thumbnail image element
+     * @returns {Promise} Promise that resolves with the image paths
      */
+    function preloadImage(thumbnailImg) {
+      const thumbnailSrc = thumbnailImg.src;
+      const cacheKey = thumbnailSrc;
+      
+      // Return cached version if available
+      if (imageCache.has(cacheKey)) {
+        return Promise.resolve(imageCache.get(cacheKey));
+      }
+      
+      // Generate image paths
+      let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
+      compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
+      const highResSrc = compressedSrc.replace('/compressed/', '/uncompressed/');
+      
+      const imagePaths = {
+        compressed: compressedSrc,
+        highRes: highResSrc,
+        alt: thumbnailImg.alt || 'Imagen ampliada'
+      };
+      
+      // Preload compressed image
+      return new Promise((resolve) => {
+        const compressedImg = new Image();
+        compressedImg.onload = () => {
+          imageCache.set(cacheKey, imagePaths);
+          
+          // Start preloading high-res version in background
+          const highResImg = new Image();
+          highResImg.onload = () => {
+            imagePaths.highResLoaded = true;
+          };
+          highResImg.src = highResSrc;
+          
+          resolve(imagePaths);
+        };
+        compressedImg.onerror = () => {
+          resolve(imagePaths); // Still resolve with paths even if preload fails
+        };
+        compressedImg.src = compressedSrc;
+      });
+    }
+
+    /**
+     * Preloads adjacent images for smoother navigation.
+     * @param {number} currentIdx - Current image index
+     */
+    function preloadAdjacentImages(currentIdx) {
+      const preloadIndexes = [
+        (currentIdx - 1 + visibleImages.length) % visibleImages.length, // Previous
+        (currentIdx + 1) % visibleImages.length // Next
+      ];
+      
+      preloadIndexes.forEach(idx => {
+        if (idx !== currentIdx && visibleImages[idx]) {
+          preloadImage(visibleImages[idx]);
+        }
+      });
+    }
     function updateGalleryView() {
       const allItems = document.querySelectorAll('.gallery-item');
       visibleImages = [];
@@ -61,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Opens the lightbox to a specific image index.
      * @param {number} index - The index of the image to show.
      */
-    function openLightbox(index) {
+    async function openLightbox(index) {
       if (index < 0 || index >= visibleImages.length) {
         return;
       }
@@ -69,85 +132,171 @@ document.addEventListener('DOMContentLoaded', () => {
       currentIndex = index;
       const img = visibleImages[currentIndex];
       
-      // Get compressed version from thumbnail path
-      const thumbnailSrc = img.src;
-      let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
-      compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
+      // Cancel any ongoing loading request
+      if (currentLoadingRequest) {
+        currentLoadingRequest.cancelled = true;
+      }
       
-      // Stage 1: Load compressed version immediately for fast display
-      lightboxImg.src = compressedSrc;
-      lightboxImg.alt = img.alt || 'Imagen ampliada';
-      lightbox.style.display = 'flex';
-      document.body.style.overflow = 'hidden'; // Prevent background scrolling
-
-      // Stage 2: Progressive enhancement - load high-res version in background
-      loadHighResVersion(img, lightboxImg);
+      // Create new loading request
+      currentLoadingRequest = { cancelled: false };
+      const thisRequest = currentLoadingRequest;
+      
+      try {
+        // Preload the image
+        const imagePaths = await preloadImage(img);
+        
+        // Check if this request was cancelled (user navigated away)
+        if (thisRequest.cancelled) return;
+        
+        // Set the compressed image immediately
+        lightboxImg.src = imagePaths.compressed;
+        lightboxImg.alt = imagePaths.alt;
+        lightboxImg.style.opacity = '1';
+        
+        // Show lightbox
+        lightbox.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        
+        // Load high-res version if not already loaded
+        if (!imagePaths.highResLoaded) {
+          loadHighResVersion(imagePaths, thisRequest);
+        } else {
+          // High-res already loaded, use it immediately
+          if (!thisRequest.cancelled) {
+            lightboxImg.src = imagePaths.highRes;
+            
+            // Update magnifier background if it's being used
+            if (magnifier && magnifier.style.display !== 'none') {
+              magnifier.style.backgroundImage = `url('${imagePaths.highRes}')`;
+            }
+          }
+        }
+        
+        // Preload adjacent images for smooth navigation
+        preloadAdjacentImages(currentIndex);
+        
+      } catch (error) {
+        console.log('Error loading image:', error);
+        // Fallback to direct loading if preload fails
+        const thumbnailSrc = img.src;
+        let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
+        compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
+        
+        lightboxImg.src = compressedSrc;
+        lightboxImg.alt = img.alt || 'Imagen ampliada';
+        lightbox.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
     }
 
     /**
      * Loads high-resolution version of image for better zoom quality.
-     * @param {HTMLImageElement} thumbnail - The thumbnail image element
-     * @param {HTMLImageElement} lightboxImage - The lightbox image element
+     * @param {Object} imagePaths - Object containing image paths
+     * @param {Object} request - The loading request object
      */
-    function loadHighResVersion(thumbnail, lightboxImage) {
-      // Extract filename from thumbnail src
-      const thumbnailSrc = thumbnail.src;
-      const filename = thumbnailSrc.split('/').pop();
-      
-      // Construct compressed image path from thumbnail path
-      let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
-      compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
-      
-      // Construct uncompressed image path
-      const highResSrc = compressedSrc.replace('/compressed/', '/uncompressed/');
-      
-      // Add loading indicator
-      lightboxImage.style.opacity = '0.8';
-      lightboxImage.dataset.highRes = 'loading';
-      
-      // Preload high-res image
+    function loadHighResVersion(imagePaths, request) {
+      // Don't show loading indicator or change opacity - keep image stable
       const highResImg = new Image();
+      
       highResImg.onload = function() {
-        // Only update if this is still the current lightbox image
-        if (lightboxImage.src.includes(filename.split('.')[0])) {
-          lightboxImage.src = highResSrc;
-          lightboxImage.dataset.highRes = 'true';
-          lightboxImage.style.opacity = '1';
+        // Only update if this request wasn't cancelled and is still current
+        if (!request.cancelled && request === currentLoadingRequest) {
+          lightboxImg.src = imagePaths.highRes;
+          imagePaths.highResLoaded = true;
           
           // Update magnifier background if it's being used
           if (magnifier && magnifier.style.display !== 'none') {
-            magnifier.style.backgroundImage = `url('${highResSrc}')`;
+            magnifier.style.backgroundImage = `url('${imagePaths.highRes}')`;
           }
         }
       };
       
       highResImg.onerror = function() {
-        // If high-res version fails, keep the compressed version
-        lightboxImage.style.opacity = '1';
-        lightboxImage.dataset.highRes = 'failed';
-        console.log('High-res version not available for:', filename);
+        // High-res version failed, but keep the compressed version
+        console.log('High-res version not available for:', imagePaths.highRes);
       };
       
       // Start loading high-res version
-      highResImg.src = highResSrc;
+      highResImg.src = imagePaths.highRes;
     }
 
     /**
      * Closes the lightbox.
      */
     function closeLightbox() {
+      // Cancel any ongoing loading request
+      if (currentLoadingRequest) {
+        currentLoadingRequest.cancelled = true;
+        currentLoadingRequest = null;
+      }
+      
       lightbox.style.display = 'none';
       if (magnifier) magnifier.style.display = 'none';
       document.body.style.overflow = ''; // Restore scrolling
+      isNavigating = false; // Reset navigation state
     }
 
     /**
      * Navigates to the previous or next image.
      * @param {number} direction - -1 for previous, 1 for next.
      */
-    function navigateLightbox(direction) {
-      currentIndex = (currentIndex + direction + visibleImages.length) % visibleImages.length;
-      openLightbox(currentIndex);
+    async function navigateLightbox(direction) {
+      if (isNavigating) return; // Prevent rapid navigation
+      
+      isNavigating = true;
+      const newIndex = (currentIndex + direction + visibleImages.length) % visibleImages.length;
+      
+      try {
+        // Check if the target image is already preloaded
+        const targetImg = visibleImages[newIndex];
+        const imagePaths = await preloadImage(targetImg);
+        
+        // Cancel any ongoing loading request
+        if (currentLoadingRequest) {
+          currentLoadingRequest.cancelled = true;
+        }
+        
+        // Create new loading request
+        currentLoadingRequest = { cancelled: false };
+        const thisRequest = currentLoadingRequest;
+        
+        // Update index and image immediately
+        currentIndex = newIndex;
+        lightboxImg.src = imagePaths.compressed;
+        lightboxImg.alt = imagePaths.alt;
+        
+        // Use high-res if already loaded, otherwise load it
+        if (imagePaths.highResLoaded) {
+          lightboxImg.src = imagePaths.highRes;
+          
+          // Update magnifier background if it's being used
+          if (magnifier && magnifier.style.display !== 'none') {
+            magnifier.style.backgroundImage = `url('${imagePaths.highRes}')`;
+          }
+        } else {
+          loadHighResVersion(imagePaths, thisRequest);
+        }
+        
+        // Preload adjacent images for next navigation
+        preloadAdjacentImages(currentIndex);
+        
+      } catch (error) {
+        console.log('Error during navigation:', error);
+        // Fallback to original method if preload fails
+        currentIndex = newIndex;
+        const img = visibleImages[currentIndex];
+        const thumbnailSrc = img.src;
+        let compressedSrc = thumbnailSrc.replace('/thumbnails/fallback/', '/compressed/');
+        compressedSrc = compressedSrc.replace('/thumbnails/webp/', '/compressed/');
+        
+        lightboxImg.src = compressedSrc;
+        lightboxImg.alt = img.alt || 'Imagen ampliada';
+      } finally {
+        // Reset navigation flag after a short delay to prevent double-clicks
+        setTimeout(() => {
+          isNavigating = false;
+        }, 150);
+      }
     }
 
     /**
@@ -199,33 +348,33 @@ document.addEventListener('DOMContentLoaded', () => {
       // Set up click listeners for gallery grid and all preview grids
       const clickableContainers = [galleryGrid, ...galleryPreviewGrids].filter(Boolean);
       clickableContainers.forEach(container => {
-        container.addEventListener('click', (e) => {
+        container.addEventListener('click', async (e) => {
           const clickedThumbnail = e.target.closest('.thumbnail');
           if (clickedThumbnail) {
             const index = visibleImages.indexOf(clickedThumbnail);
-            if (index > -1) openLightbox(index);
+            if (index > -1) await openLightbox(index);
           }
         });
       });
 
       // Lightbox navigation and controls
       if (closeButton) closeButton.addEventListener('click', closeLightbox);
-      if (prevButton) prevButton.addEventListener('click', () => navigateLightbox(-1));
-      if (nextButton) nextButton.addEventListener('click', () => navigateLightbox(1));
+      if (prevButton) prevButton.addEventListener('click', async () => await navigateLightbox(-1));
+      if (nextButton) nextButton.addEventListener('click', async () => await navigateLightbox(1));
       
       // Mobile navigation buttons
-      if (mobilePrevButton) mobilePrevButton.addEventListener('click', () => navigateLightbox(-1));
-      if (mobileNextButton) mobileNextButton.addEventListener('click', () => navigateLightbox(1));
+      if (mobilePrevButton) mobilePrevButton.addEventListener('click', async () => await navigateLightbox(-1));
+      if (mobileNextButton) mobileNextButton.addEventListener('click', async () => await navigateLightbox(1));
 
       lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
       });
 
-      document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', async (e) => {
         if (lightbox.style.display === 'flex') {
           if (e.key === 'Escape') closeLightbox();
-          if (e.key === 'ArrowLeft') navigateLightbox(-1);
-          if (e.key === 'ArrowRight') navigateLightbox(1);
+          if (e.key === 'ArrowLeft') await navigateLightbox(-1);
+          if (e.key === 'ArrowRight') await navigateLightbox(1);
         }
       });
 
