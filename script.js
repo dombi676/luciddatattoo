@@ -415,6 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function init() {
       hamburgerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
         toggleMenu();
       });
