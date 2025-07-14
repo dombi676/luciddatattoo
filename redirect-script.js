@@ -10,27 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
         sourceIndicator.textContent = 'via ' + source;
     }
     
-    // Initialize GA but don't send events yet
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    
     // Check if cookie consent is EXPLICITLY accepted
     const cookieConsent = localStorage.getItem('cookieConsent');
     
-    // Disable GA tracking if consent wasn't explicitly accepted
-    if (cookieConsent !== 'accepted') {
-        window['ga-disable-G-FEL31JE33S'] = true;
-        // Basic page view without personal data
-        gtag('config', 'G-FEL31JE33S', {
-            'anonymize_ip': true,
-            'client_storage': 'none'
-        });
-    } else {
-        // Full tracking if consent was given
-        gtag('config', 'G-FEL31JE33S');
-        
-        // Track the WhatsApp contact view event
+    // Track the WhatsApp contact view event only if consent was given
+    if (cookieConsent === 'accepted' && typeof gtag === 'function') {
         gtag('event', 'whatsapp_contact_view', {
             'event_category': 'engagement',
             'event_label': source
@@ -42,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (whatsappLink) {
         whatsappLink.addEventListener('click', function(e) {
             // Only track click if consent was explicitly given
-            if (cookieConsent === 'accepted') {
+            if (cookieConsent === 'accepted' && typeof gtag === 'function') {
                 e.preventDefault();
                 
                 // Track the click event
@@ -65,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Set up automatic redirect regardless of tracking consent
     setTimeout(function() {
-        if (cookieConsent === 'accepted') {
+        if (cookieConsent === 'accepted' && typeof gtag === 'function') {
             // Track the auto-redirect event with consent
             gtag('event', 'whatsapp_auto_redirect', {
                 'event_category': 'engagement',
