@@ -414,7 +414,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function init() {
+      // Add click handler with multiple event types for better compatibility
       hamburgerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu();
+      });
+      
+      // Add touch support for mobile devices
+      hamburgerBtn.addEventListener('touchend', (e) => {
         e.preventDefault();
         e.stopPropagation();
         toggleMenu();
@@ -428,9 +436,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
       navLinks.addEventListener('click', (e) => {
         if (e.target.tagName === 'A') {
-          toggleMenu(true); // Force close on link click
+          // Small delay to allow navigation to complete before closing menu
+          setTimeout(() => {
+            toggleMenu(true); // Force close on link click
+          }, 100);
         }
       });
+      
+      // Force initial state
+      navLinks.classList.remove('active');
+      hamburgerBtn.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
     }
     
     init();
