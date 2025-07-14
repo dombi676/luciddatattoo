@@ -22,7 +22,9 @@
   <link rel="preload" href="fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="images/webp/medium/hero-bg.webp" as="image" fetchpriority="high">
-  <link rel="preload" href="images/webp/medium/logo2.webp" as="image" fetchpriority="high">
+  <!-- Responsive logo preload: thumbnail for mobile, medium for desktop -->
+  <link rel="preload" href="images/webp/thumbnails/logo2.webp" as="image" fetchpriority="high" media="(max-width: 768px)">
+  <link rel="preload" href="images/webp/medium/logo2.webp" as="image" fetchpriority="high" media="(min-width: 769px)">
   <link rel="preload" href="script.js?v=1.3" as="script">
 
   <!-- Meta tags -->
@@ -90,7 +92,7 @@
     "alternateName": "Lucidda Tattoo Jujuy",
     "description": "Estudio profesional de tatuajes en Jujuy especializado en tribal, neotribal y línea fina. Diseños exclusivos personalizados con guía completa de cuidados.",
     "url": "https://lucidda.tattoo",
-    "logo": "https://lucidda.tattoo/images/fallback/medium/logo.png",
+    "logo": "https://lucidda.tattoo/images/fallback/medium/logo2.png",
     "image": "https://lucidda.tattoo/images/fallback/medium/twittercard.jpg",
     "telephone": "+549-388-XXX-XXXX",
     "address": {
@@ -222,6 +224,13 @@
     </picture>
     <div class="hero-content">
       <picture>
+        <!-- Mobile: use thumbnail for better performance -->
+        <source srcset="images/webp/thumbnails/logo2.webp" 
+                type="image/webp" 
+                media="(max-width: 768px)">
+        <source srcset="images/fallback/thumbnails/logo2.png" 
+                media="(max-width: 768px)">
+        <!-- Desktop: use medium for better quality -->
         <source srcset="images/webp/medium/logo2.webp" type="image/webp">
         <img src="images/fallback/medium/logo2.png" 
              alt="Lucidda Tattoo - Logo de estudio de tatuajes en Jujuy" 

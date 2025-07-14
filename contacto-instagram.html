@@ -121,6 +121,13 @@
 <body>
     <div class="redirect-container">
         <picture>
+            <!-- Mobile: use thumbnail for better performance -->
+            <source srcset="images/webp/thumbnails/logo2.webp" 
+                    type="image/webp" 
+                    media="(max-width: 768px)">
+            <source srcset="images/fallback/thumbnails/logo2.png" 
+                    media="(max-width: 768px)">
+            <!-- Desktop: use medium for better quality -->
             <source srcset="images/webp/medium/logo2.webp" type="image/webp">
             <img src="images/fallback/medium/logo2.png" alt="Lucidda Tattoo" class="logo">
         </picture>
