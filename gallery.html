@@ -1,12 +1,4 @@
-<!DOCT    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-        style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-        font-src 'self' https://cdnjs.cloudflare.com;
-        img-src 'self' data: https: blob:;
-        connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
-        frame-src 'none';
-        object-src 'none';">
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <!-- =======================
@@ -14,9 +6,9 @@
     ======================== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-        style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-        font-src 'self' https://cdnjs.cloudflare.com;
+        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
+        style-src 'self' 'unsafe-inline';
+        font-src 'self';
         img-src 'self' data: https: blob:;
         connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
         frame-src 'none';
@@ -40,7 +32,6 @@
          STYLES & ICONS
     ======================== -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- =======================
          FAVICONS

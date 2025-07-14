@@ -1,12 +1,4 @@
-<!DOCTY    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-        style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-        font-src 'self' https://cdnjs.cloudflare.com;
-        img-src 'self' data: https: blob:;
-        connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
-        frame-src 'none';
-        object-src 'none';">
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -15,9 +7,9 @@
     ======================== -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://cdnjs.cloudflare.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
-        style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline';
-        font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com;
+        script-src 'self' https://www.googletagmanager.com https://www.google-analytics.com https://*.cloudflareinsights.com https://static.cloudflareinsights.com;
+        style-src 'self' 'unsafe-inline';
+        font-src 'self';
         img-src 'self' data: https: blob:;
         connect-src 'self' https://www.google-analytics.com https://*.cloudflareinsights.com;
         frame-src 'none';
@@ -30,6 +22,8 @@
     <link rel="preload" href="fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/Roboto-Light.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="script.js?v=1.3" as="script">
 
     <!-- =======================
@@ -45,7 +39,6 @@
          STYLES & ICONS
     ======================== -->
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- =======================
          FAVICONS
@@ -346,10 +339,13 @@
             </header>
 
             <picture>
-                <source srcset="images/webp/tatuaje-alas-espalda-neotribal-puntillismo.webp" type="image/webp">
-                <img src="images/compressed/tatuaje-alas-espalda-neotribal-puntillismo.jpg"
+                <source srcset="images/webp/tatuaje-alas-espalda-neotribal-puntillismo-article.webp" type="image/webp">
+                <img src="images/compressed/tatuaje-alas-espalda-neotribal-puntillismo-article.jpg"
                     alt="Tatuaje de alas neotribal en la espalda - ejemplo de trabajo de calidad en Jujuy Argentina"
-                    class="article-featured-image" loading="lazy">
+                    class="article-featured-image" 
+                    fetchpriority="high" 
+                    width="382" 
+                    height="509">
             </picture>
             <div class="article-toc">
                 <h3 class="article-toc-title">Contenido del artículo</h3>
@@ -405,9 +401,12 @@
 
                     <figure>
                         <picture>
-                            <source srcset="images/webp/tatuaje-luna-sol-brazo-fineline.webp" type="image/webp">
-                            <img src="images/compressed/tatuaje-luna-sol-brazo-fineline.jpg"
-                                alt="Tatuaje de luna y sol en línea fina, ejemplo de piel bien preparada" loading="lazy">
+                            <source srcset="images/webp/tatuaje-luna-sol-brazo-fineline-article.webp" type="image/webp">
+                            <img src="images/compressed/tatuaje-luna-sol-brazo-fineline-article.jpg"
+                                alt="Tatuaje de luna y sol en línea fina, ejemplo de piel bien preparada" 
+                                loading="lazy" 
+                                width="382" 
+                                height="386">
                         </picture>
                         <figcaption>Tatuaje en línea fina - La piel bien preparada y humectada permite trabajar con mayor precisión en cualquier estilo</figcaption>
                     </figure>
@@ -442,9 +441,12 @@
 
                     <figure>
                         <picture>
-                            <source srcset="images/webp/mesa-trabajo-tattoo.webp" type="image/webp">
-                            <img src="images/compressed/mesa-trabajo-tattoo.jpg"
-                                alt="Mesa de trabajo de tatuajes completamente preparada con implementos de seguridad y todo cubierto en papel protector" loading="lazy">
+                            <source srcset="images/webp/mesa-trabajo-tattoo-article.webp" type="image/webp">
+                            <img src="images/compressed/mesa-trabajo-tattoo-article.jpg"
+                                alt="Mesa de trabajo de tatuajes completamente preparada con implementos de seguridad y todo cubierto en papel protector" 
+                                loading="lazy" 
+                                width="382" 
+                                height="509">
                         </picture>
                         <figcaption>Estación de trabajo profesional preparada - Todos los implementos esterilizados y superficie protegida garantizan la máxima seguridad e higiene</figcaption>
                     </figure>
@@ -496,9 +498,12 @@
 
                     <figure>
                         <picture>
-                            <source srcset="images/webp/tinta-y-plasma-tatuaje-nuevo.webp" type="image/webp">
-                            <img src="images/compressed/tinta-y-plasma-tatuaje-nuevo.jpg"
-                                alt="Ejemplo de plasma y tinta normal en tatuaje nuevo durante las primeras 48 horas" loading="lazy">
+                            <source srcset="images/webp/tinta-y-plasma-tatuaje-nuevo-article.webp" type="image/webp">
+                            <img src="images/compressed/tinta-y-plasma-tatuaje-nuevo-article.jpg"
+                                alt="Ejemplo de plasma y tinta normal en tatuaje nuevo durante las primeras 48 horas" 
+                                loading="lazy" 
+                                width="382" 
+                                height="509">
                         </picture>
                         <figcaption>Plasma y tinta normal en un tatuaje recién hecho - Esta secreción es parte del proceso natural de cicatrización</figcaption>
                     </figure>
@@ -542,9 +547,12 @@
 
                     <figure>
                         <picture>
-                            <source srcset="images/webp/tatuaje-freehand-hombro-neotribal.webp" type="image/webp">
-                            <img src="images/compressed/tatuaje-freehand-hombro-neotribal.jpg"
-                                alt="Tatuaje neotribal completamente cicatrizado" loading="lazy">
+                            <source srcset="images/webp/tatuaje-freehand-hombro-neotribal-article.webp" type="image/webp">
+                            <img src="images/compressed/tatuaje-freehand-hombro-neotribal-article.jpg"
+                                alt="Tatuaje neotribal completamente cicatrizado" 
+                                loading="lazy" 
+                                width="382" 
+                                height="509">
                         </picture>
                         <figcaption>Tatuaje neotribal freehand en el hombro completamente cicatrizado - Resultado después de seguir correctamente el proceso de cuidados</figcaption>
                     </figure>
@@ -573,9 +581,12 @@
 
                     <figure>
                         <picture>
-                            <source srcset="images/webp/tatuaje-linea-fina-T-inflamado.webp" type="image/webp">
-                            <img src="images/compressed/tatuaje-linea-fina-T-inflamado.jpg"
-                                alt="Ejemplo de tatuaje con signos de inflamación excesiva que requiere atención" loading="lazy">
+                            <source srcset="images/webp/tatuaje-linea-fina-T-inflamado-article.webp" type="image/webp">
+                            <img src="images/compressed/tatuaje-linea-fina-T-inflamado-article.jpg"
+                                alt="Ejemplo de tatuaje con signos de inflamación excesiva que requiere atención" 
+                                loading="lazy" 
+                                width="382" 
+                                height="509">
                         </picture>
                         <figcaption>Tatuaje nuevo con inflamación normal - Una ligera inflamación es común después de la sesion y durante los primeros días.</figcaption>
                     </figure>
