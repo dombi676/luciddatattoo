@@ -701,7 +701,8 @@ nav {
     user-select: none;
 }
 
-.mobile-nav-btn:active {
+.mobile-nav-btn:active,
+.mobile-nav-btn.touch-active {
   color: var(--color-white);
   background: var(--color-primary);
   border-color: var(--color-primary);
@@ -710,6 +711,13 @@ nav {
 /* Prevent persistent focus state on mobile */
 .mobile-nav-btn:focus {
   outline: none;
+}
+
+/* Explicit normal state to override any persistent states */
+.mobile-nav-btn:not(:active):not(.touch-active) {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: var(--color-white);
+  border-color: var(--color-primary);
 }
 
 .mobile-nav-btn:disabled,

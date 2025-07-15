@@ -349,8 +349,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (nextButton) nextButton.addEventListener('click', async () => await navigateLightbox(1));
       
       // Mobile navigation buttons
-      if (mobilePrevButton) mobilePrevButton.addEventListener('click', async () => await navigateLightbox(-1));
-      if (mobileNextButton) mobileNextButton.addEventListener('click', async () => await navigateLightbox(1));
+      if (mobilePrevButton) {
+        mobilePrevButton.addEventListener('click', async () => await navigateLightbox(-1));
+        // Fix persistent active state on mobile
+        mobilePrevButton.addEventListener('touchstart', (e) => {
+          e.currentTarget.classList.add('touch-active');
+        });
+        mobilePrevButton.addEventListener('touchend', (e) => {
+          e.currentTarget.classList.remove('touch-active');
+          e.currentTarget.blur(); // Remove focus to prevent persistent state
+        });
+      }
+      if (mobileNextButton) {
+        mobileNextButton.addEventListener('click', async () => await navigateLightbox(1));
+        // Fix persistent active state on mobile
+        mobileNextButton.addEventListener('touchstart', (e) => {
+          e.currentTarget.classList.add('touch-active');
+        });
+        mobileNextButton.addEventListener('touchend', (e) => {
+          e.currentTarget.classList.remove('touch-active');
+          e.currentTarget.blur(); // Remove focus to prevent persistent state
+        });
+      }
 
       lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
