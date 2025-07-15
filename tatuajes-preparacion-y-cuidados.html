@@ -25,7 +25,7 @@
     <link rel="preload" href="fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="fonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="images/webp/medium/tatuaje-alas-espalda-neotribal-puntillismo.webp" as="image" fetchpriority="high">
+    <link rel="preload" href="images/webp/medium/tatuaje-alas-espalda-neotribal-puntillismo.webp" as="image" type="image/webp" fetchpriority="high">
     <link rel="preload" href="script.js?v=1.3" as="script">
 
     <!-- =======================
@@ -40,6 +40,37 @@
     <!-- =======================
          STYLES & ICONS
     ======================== -->
+    <style>
+    /* Critical CSS for LCP - Featured Image */
+    .article-featured-image {
+        width: 100%;
+        height: auto;
+        min-height: 400px;
+        max-height: 500px;
+        object-fit: cover;
+        object-position: center 70%;
+        border-radius: 12px;
+        margin-bottom: 40px;
+        display: block;
+    }
+    .article-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: calc(80px + 40px) 20px 40px;
+    }
+    .article-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    .article-title {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 2.5em;
+        color: #ff4444;
+        margin-bottom: 20px;
+        line-height: 1.2;
+        font-weight: 700;
+    }
+    </style>
     <link rel="stylesheet" href="styles.css">
 
     <!-- =======================
@@ -345,10 +376,11 @@
                 <img src="images/fallback/medium/tatuaje-alas-espalda-neotribal-puntillismo.jpg"
                     alt="Tatuaje de alas neotribal en la espalda - ejemplo de trabajo de calidad en Jujuy Argentina"
                     class="article-featured-image" 
-                    fetchpriority="high" 
+                    fetchpriority="high"
+                    loading="eager"
                     width="382" 
                     height="509"
-                    style="aspect-ratio: 382/509;">
+                    style="aspect-ratio: 382/509; min-height: 400px; display: block; width: 100%; height: auto; object-fit: cover; border-radius: 12px; margin-bottom: 40px;">
             </picture>
             <div class="article-toc">
                 <h3 class="article-toc-title">Contenido del artículo</h3>

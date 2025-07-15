@@ -1230,11 +1230,13 @@ nav {
 .article-featured-image {
     width: 100%;
     height: auto;
-    max-height: 400px;
+    min-height: 400px;
+    max-height: 500px;
     object-fit: cover;
     object-position: center 70%;
     border-radius: 12px;
     margin-bottom: 40px;
+    display: block;
 }
 
 /* Figure and figcaption styling */
