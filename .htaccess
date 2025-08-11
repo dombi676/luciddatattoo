@@ -1,24 +1,23 @@
 ###############################################################################
+# FORCE WWW
+###############################################################################
+RewriteEngine On
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [L,R=301]
+
+###############################################################################
 # SECURITY HEADERS
 ###############################################################################
 <IfModule mod_headers.c>
-  # Set XSS Protection
   Header set X-XSS-Protection "1; mode=block"
-  
-  # Prevent MIME-sniffing
   Header set X-Content-Type-Options "nosniff"
-  
-  # Referrer Policy
   Header set Referrer-Policy "strict-origin-when-cross-origin"
-  
-  # Add header to recognize Cloudflare's HTTPS
   SetEnvIf X-Forwarded-Proto "https" HTTPS=on
 </IfModule>
 
 ###############################################################################
 # COMPRESSION & CACHING
 ###############################################################################
-# Enable Gzip Compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/plain
     AddOutputFilterByType DEFLATE text/html
@@ -32,7 +31,6 @@
     AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# Browser Caching
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresByType text/css "access plus 1 month"
@@ -59,38 +57,21 @@ DirectoryIndex index.html
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
-  # Check if request is coming through Cloudflare and set HTTPS properly
   RewriteCond %{HTTP:CF-Visitor} '"scheme":"https"'
   RewriteRule .* - [E=HTTPS:on]
   
-  # 1. Handle index.html redirects
-  # Redirect /index.html to / (domain root)
+  # Remove /index.html
   RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\ HTTP/
   RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
   
-  # Redirect /index.html?query to /?query (preserve query strings)
   RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /.*index\.html\?(.*)\ HTTP/
   RewriteRule ^(.*)index\.html$ /$1?%1 [R=301,L]
   
-  # 2. Handle .html extension removal
-  # Redirect any other .html files to clean URLs
+  # Remove .html extension
   RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.html [NC]
   RewriteRule ^ %1 [R=301,L]
   
-  # Internally map clean URLs to .html files
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME}.html -f
   RewriteRule ^(.*)$ $1.html [L]
-  
-  # 3. Origin protection - Allow only Cloudflare and admin access
-  # Allow access via a secret URL parameter (for admin access with dynamic IP)
-  RewriteCond %{QUERY_STRING} adminkey=$ZkpncJhT@YslCp14%hyhIly [NC]
-  RewriteRule .* - [L]
-  
-  # Allow Cloudflare IPs
-  RewriteCond %{HTTP:CF-Connecting-IP} !^$
-  RewriteRule .* - [L]
-  
-  # Block all other direct access
-  RewriteRule .* - [F,L]
 </IfModule>
