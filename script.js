@@ -635,29 +635,46 @@ document.addEventListener('DOMContentLoaded', () => {
     function faqAccordion() {
       const faqQuestions = document.querySelectorAll('.faq-question');
       
-      faqQuestions.forEach((question, index) => {
-        // Open the first FAQ item by default
-        if (index === 0) {
-          const answer = question.nextElementSibling;
-          if (answer && answer.classList.contains('faq-answer')) {
-            question.classList.add('active');
-            answer.classList.add('active');
-            question.setAttribute('aria-expanded', 'true');
-          }
+      if (!faqQuestions.length) return; // Exit if no FAQ questions found
+      
+      // Initialize height for all answers
+      faqQuestions.forEach((question) => {
+        const answer = question.nextElementSibling;
+        if (answer && answer.classList.contains('faq-answer')) {
+          // Set initial state
+          answer.style.maxHeight = '0px';
+          answer.style.overflow = 'hidden';
+          answer.style.transition = 'max-height 0.3s ease-out';
+          question.setAttribute('aria-expanded', 'false');
+          
+          // Add click event listener
+          question.addEventListener('click', function() {
+            // Get the answer element
+            const answer = this.nextElementSibling;
+            
+            // Toggle active state for this question/answer only
+            const isActive = this.classList.contains('active');
+            this.classList.toggle('active');
+            
+            if (answer && answer.classList.contains('faq-answer')) {
+              answer.classList.toggle('active');
+              // Toggle maxHeight between 0 and the actual height needed
+              answer.style.maxHeight = isActive ? '0px' : `${answer.scrollHeight}px`;
+              this.setAttribute('aria-expanded', !isActive);
+            }
+          });
         }
-        
-        question.addEventListener('click', () => {
-          const answer = question.nextElementSibling;
-          if (answer && answer.classList.contains('faq-answer')) {
-            // Toggle active classes for question and answer
-            question.classList.toggle('active');
-            answer.classList.toggle('active');
-            // Update ARIA attribute
-            const isExpanded = question.classList.contains('active');
-            question.setAttribute('aria-expanded', isExpanded);
-          }
-        });
       });
+      
+      // Open first FAQ by default
+      const firstQuestion = faqQuestions[0];
+      const firstAnswer = firstQuestion.nextElementSibling;
+      if (firstAnswer && firstAnswer.classList.contains('faq-answer')) {
+        firstQuestion.classList.add('active');
+        firstAnswer.classList.add('active');
+        firstAnswer.style.maxHeight = `${firstAnswer.scrollHeight}px`;
+        firstQuestion.setAttribute('aria-expanded', 'true');
+      }
     }
 
     /**

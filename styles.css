@@ -1077,51 +1077,77 @@ nav {
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Change from center to flex-start for proper multi-line alignment */
-    transition: background-color 0.3s;
-    gap: 20px; /* Add space between question text and cross icon */
+    align-items: flex-start;
+    transition: all 0.3s ease;
+    gap: 20px;
+    position: relative;
+    border: 1px solid transparent;
 }
-.faq-question:hover { background-color: #3a3a3a; }
+
+.faq-question:hover { 
+    background-color: #3a3a3a;
+    border-color: var(--color-primary);
+}
 
 .faq-question h4 {
     margin: 0;
     font-size: 1.1em;
     color: var(--color-text);
-    flex: 1; /* Allow the question text to take available space */
-    padding-right: 10px; /* Additional padding from the icon */
-    text-align: left; /* Ensure text is always left-aligned */
-    line-height: 1.4; /* Better line height for multi-line questions */
+    flex: 1;
+    padding-right: 10px;
+    text-align: left;
+    line-height: 1.4;
+    transition: color 0.3s ease;
 }
 
 .faq-question::after {
-    content: '+';
-    font-size: 1.5em;
+    content: '\f107';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 1.2em;
     color: var(--color-primary);
-    transition: transform 0.3s ease;
-    flex-shrink: 0; /* Prevent the icon from shrinking */
-    width: 24px; /* Fixed width for consistent spacing */
-    text-align: center; /* Center the icon within its width */
-    line-height: 1; /* Consistent line height for the icon */
-    margin-top: 2px; /* Small adjustment to align with first line of text */
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.faq-question.active {
+    background-color: #3a3a3a;
+    border-color: var(--color-primary);
+    margin-bottom: 0;
 }
 
 .faq-question.active::after {
-    transform: rotate(45deg);
+    transform: rotate(-180deg);
+}
+
+.faq-question.active h4 {
+    color: var(--color-primary);
 }
 
 .faq-answer {
+    background-color: var(--color-surface);
+    border-radius: 0 0 5px 5px;
+    margin-top: -5px;
+    padding: 0 20px;
     max-height: 0;
     overflow: hidden;
-    background-color: var(--color-surface);
-    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-    border-radius: 5px;
-    padding: 0 20px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
 }
 
 .faq-answer.active {
     padding: 20px;
-    max-height: 500px; /* Adjust as needed */
-    margin-bottom: 20px; /* Add spacing between open answer and next FAQ item */
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 15px;
+    border: 1px solid var(--color-primary);
+    border-top: none;
 }
 
 /* --- Blog Article --- */
