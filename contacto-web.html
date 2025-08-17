@@ -33,9 +33,6 @@
     <meta name="msapplication-TileImage" content="images/icons/ms-icon-144x144.png">
     <meta name="theme-color" content="#ff4444">
     
-    <!-- Google Analytics with Cookie Consent -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
-    <script src="analytics-conditional.js"></script>
     
     <!-- Source data element (no inline scripts) -->
     <meta id="source-data" data-source="website">
@@ -179,7 +176,12 @@
     </div>
 
     <!-- External script instead of inline -->
+       <!-- Google Analytics with Cookie Consent -->
+  <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
+  <script defer src="analytics-conditional.js"></script>
+  
+  <!-- Main site script -->
+  <script src="script.js?v=1.4" data-cfasync="false"></script>
     <script src="redirect-script.js"></script>
-    <script src="script.js?v=1.4"></script>
 </body>
 </html>

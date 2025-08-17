@@ -715,7 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const scrolled = window.scrollY;
           const scrollProgress = (scrolled / (fullHeight - windowHeight)) * 100;
           progressBar.style.width = `${scrollProgress}%`;
-        });
+        }, { passive: true });
       }
 
       document.querySelectorAll('.article-toc-list a').forEach(link => {
@@ -741,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       window.addEventListener('scroll', () => {
         button.classList.toggle('visible', window.scrollY > 300);
-      });
+      }, { passive: true });
 
       button.addEventListener('click', (e) => {
         e.preventDefault();

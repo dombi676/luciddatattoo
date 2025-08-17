@@ -78,11 +78,7 @@
     <link rel="alternate" hreflang="x-default" href="https://lucidda.tattoo/gallery">
     <link rel="canonical" href="https://lucidda.tattoo/gallery">
 
-    <!-- =======================
-         GOOGLE ANALYTICS WITH COOKIE CONSENT
-    ======================== -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
-    <script src="analytics-conditional.js"></script>
+    <!-- No analytics scripts in head for better loading performance -->
 </head>
 <body data-page="gallery">
     <!-- =======================
@@ -891,6 +887,11 @@
     <!-- =======================
          SCRIPTS
     ======================== -->
-    <script src="script.js?v=1.4"></script>
+  <!-- Google Analytics with Cookie Consent -->
+  <script async defer src="https://www.googletagmanager.com/gtag/js?id=G-FEL31JE33S"></script>
+  <script defer src="analytics-conditional.js"></script>
+  
+  <!-- Main site script -->
+  <script src="script.js?v=1.4" data-cfasync="false"></script>
 </body>
 </html>
