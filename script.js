@@ -635,6 +635,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function faqAccordion() {
       const faqQuestions = document.querySelectorAll('.faq-question');
       
+      console.log('FAQ Questions found:', faqQuestions.length);
       if (!faqQuestions.length) return; // Exit if no FAQ questions found
       
       // Initialize height for all answers
@@ -649,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Add click event listener
           question.addEventListener('click', function() {
+            console.log('FAQ question clicked');
             // Get the answer element
             const answer = this.nextElementSibling;
             
