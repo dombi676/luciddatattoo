@@ -1,4 +1,20 @@
+console.log('Script loading at:', new Date().toISOString(), 'on domain:', window.location.hostname);
+// Prevent multiple initializations
+if (window.siteInitialized) {
+    console.log('Site already initialized on:', window.location.hostname);
+    return;
+}
+
+// Check if this is a redirect in progress
+const isRedirect = document.referrer && 
+    new URL(document.referrer).hostname === window.location.hostname.replace('www.', '');
+
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.siteInitialized) {
+        console.log('DOMContentLoaded: Site already initialized, preventing double initialization');
+        return;
+    }
+    window.siteInitialized = true;
 
   // ===================================
   // ===== GALLERY & LIGHTBOX MODULE ====
@@ -633,10 +649,19 @@ document.addEventListener('DOMContentLoaded', () => {
      * FAQ Accordion functionality.
      */
     function faqAccordion() {
+      // Check if already initialized
+      if (document.body.hasAttribute('data-faq-initialized')) {
+        console.log('FAQ already initialized, skipping');
+        return;
+      }
+      
       const faqQuestions = document.querySelectorAll('.faq-question');
       
       console.log('FAQ Questions found:', faqQuestions.length);
       if (!faqQuestions.length) return; // Exit if no FAQ questions found
+      
+      // Mark as initialized
+      document.body.setAttribute('data-faq-initialized', 'true');
       
       // Initialize height for all answers
       faqQuestions.forEach((question) => {
