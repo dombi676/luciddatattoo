@@ -1,27 +1,18 @@
-// Wrap initialization check in IIFE
+// Prevent multiple initializations
 (function() {
-    console.log('Script loading at:', new Date().toISOString(), 'on domain:', window.location.hostname);
-    
-    // Prevent multiple initializations
-    if (window.siteInitialized) {
-        console.log('Site already initialized on:', window.location.hostname);
+    if (window._siteModules && window._siteModules.initialized) {
         return;
     }
-
-    // Check if this is a redirect in progress
-    const isRedirect = document.referrer && 
-        new URL(document.referrer).hostname === window.location.hostname.replace('www.', '');
+    window._siteModules = window._siteModules || {};
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
     // Check for previous initialization
     if (window._siteModules && window._siteModules.initialized) {
-        console.log('DOMContentLoaded: Site already initialized on:', window.location.hostname);
         return;
     }
 
-    // Create namespace for our initialization flags
-    window._siteModules = window._siteModules || {};
+    // Mark as initialized
     window._siteModules.initialized = true;
 
   // ===================================
@@ -665,7 +656,6 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const faqQuestions = document.querySelectorAll('.faq-question');
       
-      console.log('FAQ Questions found:', faqQuestions.length);
       if (!faqQuestions.length) return; // Exit if no FAQ questions found
       
       // Mark as initialized
@@ -683,7 +673,6 @@ document.addEventListener('DOMContentLoaded', () => {
           
           // Add click event listener
           question.addEventListener('click', function() {
-            console.log('FAQ question clicked');
             // Get the answer element
             const answer = this.nextElementSibling;
             
