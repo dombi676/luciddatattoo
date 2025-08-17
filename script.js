@@ -1,20 +1,28 @@
-console.log('Script loading at:', new Date().toISOString(), 'on domain:', window.location.hostname);
-// Prevent multiple initializations
-if (window.siteInitialized) {
-    console.log('Site already initialized on:', window.location.hostname);
-    return;
-}
-
-// Check if this is a redirect in progress
-const isRedirect = document.referrer && 
-    new URL(document.referrer).hostname === window.location.hostname.replace('www.', '');
-
-document.addEventListener('DOMContentLoaded', () => {
+// Wrap initialization check in IIFE
+(function() {
+    console.log('Script loading at:', new Date().toISOString(), 'on domain:', window.location.hostname);
+    
+    // Prevent multiple initializations
     if (window.siteInitialized) {
-        console.log('DOMContentLoaded: Site already initialized, preventing double initialization');
+        console.log('Site already initialized on:', window.location.hostname);
         return;
     }
-    window.siteInitialized = true;
+
+    // Check if this is a redirect in progress
+    const isRedirect = document.referrer && 
+        new URL(document.referrer).hostname === window.location.hostname.replace('www.', '');
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Check for previous initialization
+    if (window._siteModules && window._siteModules.initialized) {
+        console.log('DOMContentLoaded: Site already initialized on:', window.location.hostname);
+        return;
+    }
+
+    // Create namespace for our initialization flags
+    window._siteModules = window._siteModules || {};
+    window._siteModules.initialized = true;
 
   // ===================================
   // ===== GALLERY & LIGHTBOX MODULE ====
