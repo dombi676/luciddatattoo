@@ -400,7 +400,7 @@ nav {
 
 .whatsapp-btn {
     background-color: var(--color-success);
-    color: var(--color-white);
+    color: var(--color-background);
     padding: 10px 15px;
     border-radius: 5px;
     display: inline-flex;
@@ -408,12 +408,22 @@ nav {
     gap: 8px;
     font-family: var(--font-heading-other);
     font-size: 18px;
+    font-weight: bold;
     transition: background-color 0.3s ease;
+}
+
+.whatsapp-btn i {
+    color: var(--color-white);
 }
 
 .whatsapp-btn:hover {
     background-color: var(--color-success-dark);
     text-decoration: none;
+    color: var(--color-background);
+}
+
+.whatsapp-btn:hover i {
+    color: var(--color-white);
 }
 
 /* --- Hero Section --- */
@@ -477,7 +487,15 @@ nav {
 }
 
 /* Hero content link styling (Explorar Diseños button) */
-.hero-content a {
+.hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-content .explore-btn {
     display: inline-block;
     padding: 12px 24px;
     background-color: var(--color-primary);
@@ -490,9 +508,15 @@ nav {
     text-decoration: none;
 }
 
-.hero-content a:hover {
+.hero-content .explore-btn:hover {
     background-color: var(--color-primary-dark);
     text-decoration: none;
+}
+
+.hero-content .hero-whatsapp {
+    padding: 12px 24px;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 /* --- Gallery & Previews --- */
@@ -1796,12 +1820,21 @@ nav {
 .mobile-menu-whatsapp-btn {
     background-color: var(--color-success) !important;
     border-color: var(--color-success) !important;
+    color: var(--color-background) !important;
+    font-weight: bold !important;
+}
+
+.mobile-menu-whatsapp-btn i {
     color: var(--color-white) !important;
 }
 
 .mobile-menu-whatsapp-btn:hover {
     background-color: var(--color-success-dark) !important;
     border-color: var(--color-success-dark) !important;
+    color: var(--color-background) !important;
+}
+
+.mobile-menu-whatsapp-btn:hover i {
     color: var(--color-white) !important;
 }
 
